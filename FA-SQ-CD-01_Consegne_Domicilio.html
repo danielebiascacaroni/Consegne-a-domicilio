@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Consegne Domicilio — Farmacia Ascona</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --green-dark:#1B5E20;--green-med:#2E7D32;--green-light:#E8F5E9;--green-accent:#69F0AE;
+  --red-dark:#C62828;--red-light:#FFEBEE;
+  --amber:#F57F17;--amber-light:#FFF8E1;
+  --blue:#1565C0;--blue-light:#E3F2FD;
+  --gray-d:#37474F;--gray-m:#546E7A;--gray-l:#ECEFF1;--gray-ll:#F5F5F5;
+  --text:#1A1A1A;--white:#ffffff;
+  --radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-ll);color:var(--text);font-size:15px;}
+.screen{background:var(--gray-ll);}
+
+/* ── LAYOUT ── */
+.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--green-dark);color:white;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.topbar-back{background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.topbar-info{flex:1;}
+.topbar-title{font-size:16px;font-weight:700;}
+.topbar-sub{font-size:11px;opacity:0.75;margin-top:1px;}
+
+/* ── PROGRESS ── */
+.progress-bar{background:var(--green-med);padding:8px 18px;display:flex;gap:6px;align-items:center;}
+.step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.35);transition:all .2s;}
+.step-dot.done{background:var(--green-accent);}
+.step-dot.active{background:white;width:22px;border-radius:4px;}
+.step-label{color:rgba(255,255,255,0.85);font-size:11px;margin-left:6px;}
+
+/* ── SCROLLABLE BODY ── */
+.scroll-body{flex:1;overflow-y:auto;padding:16px 16px 100px;background:var(--gray-ll);}
+.scroll-body > *{max-width:560px;margin-left:auto;margin-right:auto;}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px;width:100%;}
+.card-title{font-size:13px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-title .icon{font-size:16px;}
+
+/* ── FORM FIELDS ── */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--gray-m);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.3px;}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--gray-l);border-radius:9px;font-size:15px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green-med);}
+.field textarea{min-height:70px;resize:vertical;}
+.field-hint{font-size:11px;color:var(--gray-m);margin-top:4px;}
+
+/* ── SEARCH PAZIENTE ── */
+.search-wrap{position:relative;}
+.search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--green-med);border-top:none;border-radius:0 0 9px 9px;z-index:100;max-height:200px;overflow-y:auto;display:none;}
+.search-result-item{padding:11px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--gray-l);}
+.search-result-item:hover,.search-result-item:active{background:var(--green-light);}
+.search-result-item .item-nome{font-weight:600;}
+.search-result-item .item-addr{font-size:12px;color:var(--gray-m);}
+.search-result-item:last-child{border-bottom:none;}
+
+/* ── OPERATOR GRID ── */
+.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+.op-card{background:var(--gray-ll);border:2px solid var(--gray-l);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;}
+.op-card:hover,.op-card:active{border-color:var(--green-med);background:var(--green-light);}
+.op-card.selected{border-color:var(--green-med);background:var(--green-light);}
+.op-card .op-sigla{font-size:26px;font-weight:800;color:var(--green-dark);}
+.op-card .op-nome{font-size:11px;color:var(--gray-m);margin-top:4px;}
+.op-card .op-ruolo{font-size:10px;color:var(--gray-m);margin-top:2px;text-transform:capitalize;}
+
+/* ── PIN ── */
+.pin-display{display:flex;justify-content:center;gap:10px;margin:16px 0 8px;}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--gray-l);background:white;transition:all .2s;}
+.pin-dot.filled{background:var(--green-dark);border-color:var(--green-dark);}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto;}
+.pin-btn{background:white;border:1.5px solid var(--gray-l);border-radius:10px;padding:14px;font-size:20px;font-weight:600;cursor:pointer;transition:all .1s;text-align:center;}
+.pin-btn:active{background:var(--green-light);border-color:var(--green-med);}
+.pin-btn.del{font-size:16px;color:var(--gray-m);}
+.pin-btn.empty{visibility:hidden;}
+.pin-error{color:var(--red-dark);font-size:13px;text-align:center;margin-top:8px;display:none;}
+
+/* ── FRIGO TOGGLE ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--gray-l);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-label{font-size:14px;font-weight:600;}
+.toggle-sub{font-size:12px;color:var(--gray-m);margin-top:2px;}
+.toggle{position:relative;width:50px;height:28px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--gray-l);border-radius:28px;cursor:pointer;transition:.2s;}
+.toggle-slider:before{content:'';position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+input:checked+.toggle-slider{background:var(--green-med);}
+input:checked+.toggle-slider:before{transform:translateX(22px);}
+
+/* ── FOTO ── */
+.foto-area{border:2px dashed var(--gray-l);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--gray-ll);}
+.foto-area:hover,.foto-area:active{border-color:var(--green-med);background:var(--green-light);}
+.foto-area.has-foto{border-style:solid;border-color:var(--green-med);background:white;padding:8px;}
+.foto-icon{font-size:32px;margin-bottom:6px;}
+.foto-label{font-size:13px;color:var(--gray-m);}
+.foto-preview{width:100%;max-height:200px;object-fit:contain;border-radius:8px;display:none;}
+.foto-change{font-size:12px;color:var(--green-med);margin-top:6px;cursor:pointer;font-weight:600;}
+input[type=file]{display:none;}
+
+/* ── CHECKBOX AVVISO ── */
+.checkbox-row{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--amber-light);border:1.5px solid var(--amber);border-radius:10px;margin-top:12px;}
+.checkbox-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:var(--green-med);}
+.checkbox-row label{font-size:13px;font-weight:600;color:var(--amber);line-height:1.4;cursor:pointer;}
+
+/* ── CONSEGNANTE ── */
+.consegnante-list{display:flex;flex-direction:column;gap:8px;}
+.consegnante-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;}
+.consegnante-item:hover,.consegnante-item:active{border-color:var(--green-med);background:var(--green-light);}
+.consegnante-item.selected{border-color:var(--green-med);background:var(--green-light);}
+.consegnante-item .c-sigla{font-size:20px;font-weight:800;color:var(--green-dark);width:40px;text-align:center;}
+.consegnante-item .c-nome{font-size:14px;font-weight:600;}
+.consegnante-item .c-ruolo{font-size:11px;color:var(--gray-m);}
+.consegnante-item .c-check{margin-left:auto;color:var(--green-med);font-size:20px;display:none;}
+.consegnante-item.selected .c-check{display:block;}
+.consegnante-esterno{border-style:dashed;}
+
+/* ── RIEPILOGO ── */
+.riepilogo-row{display:flex;padding:9px 0;border-bottom:1px solid var(--gray-l);font-size:13px;}
+.riepilogo-row:last-child{border-bottom:none;}
+.riepilogo-label{color:var(--gray-m);width:120px;flex-shrink:0;font-weight:600;}
+.riepilogo-val{flex:1;color:var(--text);}
+.badge-frigo{background:var(--blue-light);color:var(--blue);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;}
+.badge-ok{background:var(--green-light);color:var(--green-dark);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;}
+
+/* ── SUCCESS ── */
+.success-icon{font-size:64px;text-align:center;margin:24px 0 10px;}
+.success-title{font-size:22px;font-weight:800;color:var(--green-dark);text-align:center;}
+.success-sub{font-size:14px;color:var(--gray-m);text-align:center;margin-top:6px;}
+
+/* ── BOTTOM CTA ── */
+.bottom-cta{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:white;border-top:1px solid var(--gray-l);z-index:40;}
+.bottom-cta .btn{max-width:560px;margin-left:auto;margin-right:auto;display:block;}
+.btn{width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-green{background:var(--green-med);color:white;}
+.btn-green:hover{background:var(--green-dark);}
+.btn-green:disabled{background:var(--gray-l);color:var(--gray-m);cursor:not-allowed;}
+.btn-outline{background:white;color:var(--green-med);border:2px solid var(--green-med);}
+.btn-download{background:var(--green-dark);color:white;}
+.btn-sm{padding:10px 18px;font-size:14px;width:auto;border-radius:8px;}
+
+/* ── SALVA PAZIENTE ── */
+.save-paziente-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--blue-light);border-radius:8px;margin-top:8px;}
+.save-paziente-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);}
+.save-paziente-row label{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;}
+#toast.ok{background:var(--green-med);}
+#toast.err{background:var(--red-dark);}
+
+/* ── LOADING ── */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.85);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.loading-overlay.show{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--gray-l);border-top:3px solid var(--green-med);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════ -->
+<!-- SCREEN 1 — LOGIN PREPARATORE      -->
+<!-- ══════════════════════════════════ -->
+<div id="s1" class="screen active">
+  <div class="topbar">
+    <div class="topbar-info">
+      <div class="topbar-title">Consegna Domicilio</div>
+      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-01</div>
+    </div>
+    <span id="s1-status" style="font-size:11px;opacity:0.7;">Connessione...</span>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <span class="step-label">Preparatore</span>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <div class="card-title"><span class="icon">👤</span>Chi prepara la fornitura?</div>
+      <div class="op-grid" id="s1-op-grid">
+        <div style="color:var(--gray-m);font-size:13px;padding:10px;">Caricamento operatori...</div>
+      </div>
+    </div>
+    <div class="card" id="s1-pin-card" style="display:none;">
+      <div class="card-title"><span class="icon">🔑</span>PIN accesso — <span id="s1-op-nome-label" style="color:var(--green-med);font-weight:700;"></span></div>
+      <div class="pin-display" id="s1-pin-display">
+        <div class="pin-dot" id="s1d0"></div><div class="pin-dot" id="s1d1"></div>
+        <div class="pin-dot" id="s1d2"></div><div class="pin-dot" id="s1d3"></div>
+      </div>
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="pinPress('s1',1)">1</button>
+        <button class="pin-btn" onclick="pinPress('s1',2)">2</button>
+        <button class="pin-btn" onclick="pinPress('s1',3)">3</button>
+        <button class="pin-btn" onclick="pinPress('s1',4)">4</button>
+        <button class="pin-btn" onclick="pinPress('s1',5)">5</button>
+        <button class="pin-btn" onclick="pinPress('s1',6)">6</button>
+        <button class="pin-btn" onclick="pinPress('s1',7)">7</button>
+        <button class="pin-btn" onclick="pinPress('s1',8)">8</button>
+        <button class="pin-btn" onclick="pinPress('s1',9)">9</button>
+        <button class="pin-btn empty"></button>
+        <button class="pin-btn" onclick="pinPress('s1',0)">0</button>
+        <button class="pin-btn del" onclick="pinDel('s1')">⌫</button>
+      </div>
+      <div class="pin-error" id="s1-pin-error">PIN non corretto</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- SCREEN 2 — DESTINATARIO           -->
+<!-- ══════════════════════════════════ -->
+<div id="s2" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s1')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Destinatario</div>
+      <div class="topbar-sub" id="s2-prep-label"></div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot done"></div>
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <span class="step-label">Destinatario</span>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <div class="card-title"><span class="icon">🔍</span>Cerca paziente esistente</div>
+      <div class="field">
+        <div class="search-wrap">
+          <input type="text" id="s2-search" placeholder="Cognome o nome..." autocomplete="off"
+            oninput="cercaPaziente(this.value)" onfocus="cercaPaziente(this.value)">
+          <div class="search-results" id="s2-results"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span>Dati destinatario</div>
+      <div class="field">
+        <label>Cognome e Nome</label>
+        <input type="text" id="s2-nome" placeholder="Es. Rossi Mario" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Indirizzo di consegna</label>
+        <input type="text" id="s2-indirizzo" placeholder="Via, numero civico">
+      </div>
+      <div class="field">
+        <label>Comune / CAP</label>
+        <input type="text" id="s2-citta" placeholder="Es. Ascona 6612">
+      </div>
+      <div class="save-paziente-row" id="s2-save-row" style="display:none;">
+        <input type="checkbox" id="s2-save-check">
+        <label for="s2-save-check">Salva come nuovo paziente per le prossime consegne</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📷</span>Foto etichetta / busta <span style="font-size:11px;color:var(--gray-m);font-weight:400;text-transform:none;">(facoltativa)</span></div>
+      <div class="foto-area" id="s2-foto-area" onclick="document.getElementById('s2-foto-input').click()">
+        <div class="foto-icon">📦</div>
+        <div class="foto-label">Tocca per fotografare l'etichetta</div>
+        <img class="foto-preview" id="s2-foto-preview" alt="etichetta">
+        <div class="foto-change" id="s2-foto-change" style="display:none;">Cambia foto</div>
+      </div>
+      <input type="file" id="s2-foto-input" accept="image/*" capture="environment" onchange="loadFoto('s2',this)">
+    </div>
+  </div>
+  <div class="bottom-cta">
+    <button class="btn btn-green" id="s2-next" onclick="goToS3()">Avanti →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- SCREEN 3 — PRODOTTI + FRIGO       -->
+<!-- ══════════════════════════════════ -->
+<div id="s3" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s2')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Prodotti</div>
+      <div class="topbar-sub" id="s3-dest-label"></div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <span class="step-label">Prodotti</span>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <div class="card-title"><span class="icon">📷</span>Foto prodotti da consegnare</div>
+      <div class="foto-area" id="s3-foto-area" onclick="document.getElementById('s3-foto-input').click()">
+        <div class="foto-icon">💊</div>
+        <div class="foto-label">Tocca per fotografare tutti i prodotti</div>
+        <img class="foto-preview" id="s3-foto-preview" alt="prodotti">
+        <div class="foto-change" id="s3-foto-change" style="display:none;">Cambia foto</div>
+      </div>
+      <input type="file" id="s3-foto-input" accept="image/*" capture="environment" onchange="loadFoto('s3',this)">
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">🌡️</span>Prodotti termosensibili</div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Contiene prodotti frigo?</div>
+          <div class="toggle-sub">Farmaci da conservare 2–8°C</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="s3-frigo" onchange="toggleFrigo(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="checkbox-row" id="s3-avviso-row" style="display:none;">
+        <input type="checkbox" id="s3-avviso" onchange="checkAvviso()">
+        <label for="s3-avviso">Ho avvisato il consegnante che la fornitura contiene prodotti termosensibili che richiedono trasporto refrigerato</label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📝</span>Note <span style="font-size:11px;color:var(--gray-m);font-weight:400;text-transform:none;">(facoltative)</span></div>
+      <div class="field">
+        <textarea id="s3-note" placeholder="Istruzioni particolari, orari preferiti, ecc."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-cta">
+    <button class="btn btn-green" id="s3-next" onclick="goToS4()">Avanti →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- SCREEN 4 — CONTROLLO              -->
+<!-- ══════════════════════════════════ -->
+<div id="s4" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s3')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Controllo</div>
+      <div class="topbar-sub">Verifica e firma</div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <span class="step-label">Controllo</span>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <div class="card-title"><span class="icon">✅</span>Chi controlla?</div>
+      <div class="op-grid" id="s4-op-grid"></div>
+    </div>
+    <div class="card" id="s4-pin-card" style="display:none;">
+      <div class="card-title"><span class="icon">🔑</span>PIN — <span id="s4-op-nome-label" style="color:var(--green-med);font-weight:700;"></span></div>
+      <div class="pin-display" id="s4-pin-display">
+        <div class="pin-dot" id="s4d0"></div><div class="pin-dot" id="s4d1"></div>
+        <div class="pin-dot" id="s4d2"></div><div class="pin-dot" id="s4d3"></div>
+      </div>
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="pinPress('s4',1)">1</button>
+        <button class="pin-btn" onclick="pinPress('s4',2)">2</button>
+        <button class="pin-btn" onclick="pinPress('s4',3)">3</button>
+        <button class="pin-btn" onclick="pinPress('s4',4)">4</button>
+        <button class="pin-btn" onclick="pinPress('s4',5)">5</button>
+        <button class="pin-btn" onclick="pinPress('s4',6)">6</button>
+        <button class="pin-btn" onclick="pinPress('s4',7)">7</button>
+        <button class="pin-btn" onclick="pinPress('s4',8)">8</button>
+        <button class="pin-btn" onclick="pinPress('s4',9)">9</button>
+        <button class="pin-btn empty"></button>
+        <button class="pin-btn" onclick="pinPress('s4',0)">0</button>
+        <button class="pin-btn del" onclick="pinDel('s4')">⌫</button>
+      </div>
+      <div class="pin-error" id="s4-pin-error">PIN non corretto</div>
+    </div>
+    <div class="card" id="s4-consegnante-card">
+      <div class="card-title"><span class="icon">🚗</span>Chi fa la consegna?</div>
+      <div class="consegnante-list" id="s4-consegnante-list"></div>
+      <div id="s4-esterno-field" style="display:none;margin-top:12px;">
+        <div class="field">
+          <label>Nome del consegnante esterno</label>
+          <input type="text" id="s4-esterno-nome" placeholder="Es. Mario Rossi (corriere)">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-cta">
+    <button class="btn btn-green" id="s4-next" onclick="goToS5()" disabled>Conferma e genera PDF</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ -->
+<!-- SCREEN 5 — SUCCESSO               -->
+<!-- ══════════════════════════════════ -->
+<div id="s5" class="screen">
+  <div class="topbar">
+    <div class="topbar-info">
+      <div class="topbar-title">Completato</div>
+      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-01</div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot active"></div>
+    <span class="step-label">Fine</span>
+  </div>
+  <div class="scroll-body">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Consegna registrata</div>
+    <div class="success-sub" id="s5-dest-label"></div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title"><span class="icon">📋</span>Riepilogo</div>
+      <div id="s5-riepilogo"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+      <button class="btn btn-download" id="s5-pdf-btn" onclick="downloadPdf()">⬇ Scarica PDF</button>
+      <button class="btn btn-outline" onclick="nuovaConsegna()">+ Nuova consegna</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div style="font-size:14px;color:var(--gray-m);" id="loading-msg">Salvataggio in corso...</div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ── FIREBASE ── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- ── jsPDF ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════════════
+// FIREBASE
+// ════════════════════════════════════════════════════════
+var db = null;
+var FIREBASE_ENABLED = true;
+
+(function initFirebase(){
+  try {
+    firebase.initializeApp({
+      apiKey: 'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
+      authDomain: 'dosettes-farmacia.firebaseapp.com',
+      projectId: 'dosettes-farmacia'
+    });
+    db = firebase.firestore();
+    document.getElementById('s1-status').textContent = 'Connesso';
+    caricaOperatori();
+    caricaPazienti();
+  } catch(e) {
+    FIREBASE_ENABLED = false;
+    document.getElementById('s1-status').textContent = 'Offline';
+    toast('Firebase non raggiungibile', 'err');
+  }
+})();
+
+// ════════════════════════════════════════════════════════
+// STATO GLOBALE
+// ════════════════════════════════════════════════════════
+var OPERATORI = [];
+var PAZIENTI  = [];
+
+var stato = {
+  preparatore: null,        // { id, nome, ruolo }
+  paziente: null,           // { id?, nome, indirizzo, citta, esistente }
+  salvaPaziente: false,
+  fotoEtichetta: null,      // base64
+  fotoProdotti: null,       // base64
+  frigo: false,
+  avvisoFrigo: false,
+  note: '',
+  controllore: null,        // { id, nome, ruolo }
+  consegnante: null,        // { nome, esterno }
+  tsPreparazione: null,
+  tsControllo: null
+};
+
+// PIN state per s1 e s4
+var pinStato = {
+  s1: { digits: '', op: null },
+  s4: { digits: '', op: null }
+};
+
+// ════════════════════════════════════════════════════════
+// CARICAMENTO DATI
+// ════════════════════════════════════════════════════════
+function caricaOperatori() {
+  if (!db) return;
+  db.collection('operatori').get().then(function(snap) {
+    OPERATORI = [];
+    snap.forEach(function(doc) {
+      var d = doc.data();
+      OPERATORI.push({ id: doc.id, nome: d.nome||doc.id, ruolo: d.ruolo||'', pinHash: d.pinHash||'' });
+    });
+    renderOpGrid('s1-op-grid', 's1');
+  }).catch(function(e){ toast('Errore caricamento operatori', 'err'); });
+}
+
+function caricaPazienti() {
+  if (!db) return;
+  db.collection('pazienti').get().then(function(snap) {
+    PAZIENTI = [];
+    snap.forEach(function(doc) {
+      var d = doc.data();
+      PAZIENTI.push({
+        id: doc.id,
+        nome: ((d.cognome||'')+' '+(d.nome||'')).trim() || (d.nome||doc.id),
+        cognome: d.cognome||'',
+        indirizzo: d.indirizzo||d.address||'',
+        citta: d.citta||d.city||''
+      });
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// GRIGLIA OPERATORI
+// ════════════════════════════════════════════════════════
+function renderOpGrid(containerId, screenPrefix) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  if (!OPERATORI.length) {
+    el.innerHTML = '<div style="color:var(--gray-m);font-size:13px;padding:10px;">Nessun operatore trovato</div>';
+    return;
+  }
+  el.innerHTML = OPERATORI.map(function(op) {
+    return '<div class="op-card" id="opcard-'+screenPrefix+'-'+op.id+'" onclick="selectOp(\''+screenPrefix+'\',\''+op.id+'\')">' +
+      '<div class="op-sigla">'+escH(op.id)+'</div>' +
+      '<div class="op-nome">'+escH(op.nome)+'</div>' +
+      '<div class="op-ruolo">'+escH(op.ruolo)+'</div>' +
+      '</div>';
+  }).join('');
+}
+
+function selectOp(prefix, opId) {
+  var op = OPERATORI.find(function(o){ return o.id === opId; });
+  if (!op) return;
+  pinStato[prefix].op = op;
+  pinStato[prefix].digits = '';
+  // Evidenzia card selezionata
+  document.querySelectorAll('[id^="opcard-'+prefix+'-"]').forEach(function(c){
+    c.classList.remove('selected');
+  });
+  document.getElementById('opcard-'+prefix+'-'+opId).classList.add('selected');
+  // Mostra PIN card
+  var card = document.getElementById(prefix+'-pin-card');
+  if (card) card.style.display = 'block';
+  document.getElementById(prefix+'-op-nome-label').textContent = op.nome;
+  updatePinDots(prefix);
+  // Scroll to pin
+  setTimeout(function(){ card && card.scrollIntoView({behavior:'smooth', block:'center'}); }, 100);
+}
+
+// ════════════════════════════════════════════════════════
+// PIN
+// ════════════════════════════════════════════════════════
+function pinPress(prefix, digit) {
+  if (pinStato[prefix].digits.length >= 4) return;
+  pinStato[prefix].digits += String(digit);
+  updatePinDots(prefix);
+  if (pinStato[prefix].digits.length === 4) {
+    verificaPin(prefix);
+  }
+}
+
+function pinDel(prefix) {
+  pinStato[prefix].digits = pinStato[prefix].digits.slice(0,-1);
+  updatePinDots(prefix);
+  document.getElementById(prefix+'-pin-error').style.display = 'none';
+}
+
+function updatePinDots(prefix) {
+  var n = pinStato[prefix].digits.length;
+  for (var i=0; i<4; i++) {
+    var dot = document.getElementById(prefix+'d'+i);
+    if (dot) dot.classList.toggle('filled', i < n);
+  }
+}
+
+async function verificaPin(prefix) {
+  var op = pinStato[prefix].op;
+  var pin = pinStato[prefix].digits;
+  var hash = await sha256(pin);
+  if (hash === op.pinHash) {
+    document.getElementById(prefix+'-pin-error').style.display = 'none';
+    if (prefix === 's1') {
+      stato.preparatore = { id: op.id, nome: op.nome, ruolo: op.ruolo };
+      stato.tsPreparazione = new Date();
+      goTo('s2');
+      document.getElementById('s2-prep-label').textContent = 'Preparatore: '+op.nome;
+    } else if (prefix === 's4') {
+      stato.controllore = { id: op.id, nome: op.nome, ruolo: op.ruolo };
+      stato.tsControllo = new Date();
+      document.getElementById('s4-pin-card').style.display = 'none';
+      renderConsegnante();
+      document.getElementById('s4-consegnante-card').scrollIntoView({behavior:'smooth', block:'start'});
+      checkS4Ready();
+    }
+  } else {
+    pinStato[prefix].digits = '';
+    updatePinDots(prefix);
+    var errEl = document.getElementById(prefix+'-pin-error');
+    errEl.style.display = 'block';
+    setTimeout(function(){ errEl.style.display='none'; }, 2000);
+  }
+}
+
+async function sha256(str) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+// RICERCA PAZIENTE
+// ════════════════════════════════════════════════════════
+function cercaPaziente(val) {
+  var res = document.getElementById('s2-results');
+  if (!val || val.length < 2) { res.style.display='none'; return; }
+  var filtered = PAZIENTI.filter(function(p){
+    return p.nome.toLowerCase().includes(val.toLowerCase());
+  });
+  if (!filtered.length) { res.style.display='none'; return; }
+  res.innerHTML = filtered.slice(0,8).map(function(p){
+    return '<div class="search-result-item" onclick="selezionaPaziente(\''+p.id+'\')">' +
+      '<div class="item-nome">'+escH(p.nome)+'</div>' +
+      '<div class="item-addr">'+escH([p.indirizzo, p.citta].filter(Boolean).join(', ') || 'Indirizzo non registrato')+'</div>' +
+      '</div>';
+  }).join('');
+  res.style.display = 'block';
+}
+
+function selezionaPaziente(id) {
+  var p = PAZIENTI.find(function(x){ return x.id===id; });
+  if (!p) return;
+  document.getElementById('s2-search').value = p.nome;
+  document.getElementById('s2-nome').value = p.nome;
+  document.getElementById('s2-indirizzo').value = p.indirizzo||'';
+  document.getElementById('s2-citta').value = p.citta||'';
+  document.getElementById('s2-results').style.display = 'none';
+  document.getElementById('s2-save-row').style.display = 'none';
+  stato.paziente = { id: p.id, nome: p.nome, indirizzo: p.indirizzo, citta: p.citta, esistente: true };
+  toast('Paziente selezionato: '+p.nome, 'ok');
+}
+
+// Chiudi risultati se si clicca fuori
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.search-wrap'))
+    document.getElementById('s2-results').style.display='none';
+});
+
+// Monitora input manuale
+document.getElementById('s2-nome').addEventListener('input', function(){
+  // Se l'utente digita manualmente, mostra opzione salvataggio
+  var isNew = !stato.paziente || !stato.paziente.esistente ||
+              this.value !== stato.paziente.nome;
+  if (isNew && this.value.length > 2) {
+    stato.paziente = null; // reset selezione esistente
+    document.getElementById('s2-save-row').style.display = 'flex';
+  }
+});
+
+// ════════════════════════════════════════════════════════
+// FOTO
+// ════════════════════════════════════════════════════════
+function loadFoto(prefix, input) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    comprimiImmagine(e.target.result, 1000, 0.75, function(compressed) {
+      if (prefix === 's2') {
+        stato.fotoEtichetta = compressed;
+        showFoto('s2', compressed);
+      } else if (prefix === 's3') {
+        stato.fotoProdotti = compressed;
+        showFoto('s3', compressed);
+      }
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function showFoto(prefix, base64) {
+  var area = document.getElementById(prefix+'-foto-area');
+  var prev = document.getElementById(prefix+'-foto-preview');
+  var change = document.getElementById(prefix+'-foto-change');
+  prev.src = base64;
+  prev.style.display = 'block';
+  area.classList.add('has-foto');
+  area.querySelector('.foto-icon').style.display = 'none';
+  area.querySelector('.foto-label').style.display = 'none';
+  change.style.display = 'block';
+}
+
+function comprimiImmagine(src, maxPx, quality, cb) {
+  var img = new Image();
+  img.onload = function() {
+    var w = img.width, h = img.height;
+    if (w > maxPx || h > maxPx) {
+      if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+      else       { w = Math.round(w * maxPx / h); h = maxPx; }
+    }
+    var canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.src = src;
+}
+
+// ════════════════════════════════════════════════════════
+// FRIGO
+// ════════════════════════════════════════════════════════
+function toggleFrigo(checked) {
+  stato.frigo = checked;
+  var row = document.getElementById('s3-avviso-row');
+  row.style.display = checked ? 'flex' : 'none';
+  if (!checked) {
+    document.getElementById('s3-avviso').checked = false;
+    stato.avvisoFrigo = false;
+  }
+  checkS3Ready();
+}
+
+function checkAvviso() {
+  stato.avvisoFrigo = document.getElementById('s3-avviso').checked;
+  checkS3Ready();
+}
+
+function checkS3Ready() {
+  var ok = stato.fotoProdotti !== null;
+  if (stato.frigo && !stato.avvisoFrigo) ok = false;
+  document.getElementById('s3-next').disabled = !ok;
+}
+
+// ════════════════════════════════════════════════════════
+// CONSEGNANTE
+// ════════════════════════════════════════════════════════
+var consegnanteSelezionato = null;
+
+function renderConsegnante() {
+  var el = document.getElementById('s4-consegnante-list');
+  var items = OPERATORI.map(function(op) {
+    return '<div class="consegnante-item" id="cons-'+op.id+'" onclick="selezionaConsegnante(\''+op.id+'\',false)">' +
+      '<div class="c-sigla">'+escH(op.id)+'</div>' +
+      '<div><div class="c-nome">'+escH(op.nome)+'</div><div class="c-ruolo">'+escH(op.ruolo)+'</div></div>' +
+      '<div class="c-check">✓</div>' +
+      '</div>';
+  });
+  items.push(
+    '<div class="consegnante-item consegnante-esterno" id="cons-esterno" onclick="selezionaConsegnante(\'esterno\',true)">' +
+    '<div class="c-sigla" style="color:var(--gray-m);">+</div>' +
+    '<div><div class="c-nome">Esterno / Corriere</div><div class="c-ruolo">Inserisci nome manualmente</div></div>' +
+    '<div class="c-check">✓</div>' +
+    '</div>'
+  );
+  el.innerHTML = items.join('');
+}
+
+function selezionaConsegnante(id, esterno) {
+  consegnanteSelezionato = id;
+  document.querySelectorAll('.consegnante-item').forEach(function(c){ c.classList.remove('selected'); });
+  var target = document.getElementById('cons-'+id);
+  if (target) target.classList.add('selected');
+  var externField = document.getElementById('s4-esterno-field');
+  externField.style.display = esterno ? 'block' : 'none';
+  if (!esterno) {
+    var op = OPERATORI.find(function(o){ return o.id===id; });
+    stato.consegnante = { nome: op ? op.nome : id, esterno: false };
+  } else {
+    stato.consegnante = null; // sarà letto al momento della conferma
+  }
+  checkS4Ready();
+}
+
+function checkS4Ready() {
+  var ok = stato.controllore !== null && consegnanteSelezionato !== null;
+  if (consegnanteSelezionato === 'esterno') {
+    var nome = (document.getElementById('s4-esterno-nome').value||'').trim();
+    ok = ok && nome.length > 0;
+  }
+  document.getElementById('s4-next').disabled = !ok;
+}
+
+document.getElementById('s4-esterno-nome').addEventListener('input', checkS4Ready);
+
+// ════════════════════════════════════════════════════════
+// NAVIGAZIONE
+// ════════════════════════════════════════════════════════
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(screenId).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goToS3() {
+  var nome = (document.getElementById('s2-nome').value||'').trim();
+  if (!nome) { toast('Inserisci il nominativo del destinatario', 'err'); return; }
+  var indirizzo = (document.getElementById('s2-indirizzo').value||'').trim();
+  var citta     = (document.getElementById('s2-citta').value||'').trim();
+  if (!stato.paziente || !stato.paziente.esistente) {
+    stato.paziente = {
+      id: null,
+      nome: nome,
+      indirizzo: indirizzo,
+      citta: citta,
+      esistente: false
+    };
+  }
+  stato.salvaPaziente = document.getElementById('s2-save-check').checked;
+  document.getElementById('s3-dest-label').textContent = nome;
+  goTo('s3');
+  checkS3Ready();
+}
+
+function goToS4() {
+  // Rileggi stato.frigo per sicurezza
+  stato.frigo = document.getElementById('s3-frigo').checked;
+  stato.avvisoFrigo = document.getElementById('s3-avviso').checked;
+  stato.note = (document.getElementById('s3-note').value||'').trim();
+  // Reset controllore
+  pinStato['s4'] = { digits: '', op: null };
+  stato.controllore = null;
+  consegnanteSelezionato = null;
+  document.getElementById('s4-pin-card').style.display = 'none';
+  document.getElementById('s4-consegnante-card').style.display = 'none';
+  document.getElementById('s4-next').disabled = true;
+  renderOpGrid('s4-op-grid', 's4');
+  goTo('s4');
+}
+
+async function goToS5() {
+  // Leggi consegnante esterno se necessario
+  if (consegnanteSelezionato === 'esterno') {
+    var nome = (document.getElementById('s4-esterno-nome').value||'').trim();
+    if (!nome) { toast('Inserisci il nome del consegnante', 'err'); return; }
+    stato.consegnante = { nome: nome, esterno: true };
+  }
+
+  showLoading('Salvataggio in corso...');
+
+  // Salva nuovo paziente se richiesto
+  if (stato.salvaPaziente && !stato.paziente.esistente && db) {
+    try {
+      var parts = stato.paziente.nome.split(' ');
+      var cognome = parts[0]||'';
+      var nome_p  = parts.slice(1).join(' ')||'';
+      var ref = await db.collection('pazienti').add({
+        cognome: cognome, nome: nome_p,
+        indirizzo: stato.paziente.indirizzo,
+        citta: stato.paziente.citta
+      });
+      stato.paziente.id = ref.id;
+      PAZIENTI.push({ id: ref.id, nome: stato.paziente.nome,
+        indirizzo: stato.paziente.indirizzo, citta: stato.paziente.citta });
+    } catch(e) { toast('Errore salvataggio paziente: '+e.message, 'err'); }
+  }
+
+  // Salva record su Firestore (senza foto)
+  if (db) {
+    try {
+      await db.collection('qms_consegne').add({
+        tsPreparazione: stato.tsPreparazione,
+        tsControllo: stato.tsControllo || new Date(),
+        preparatore: stato.preparatore,
+        controllore: stato.controllore,
+        paziente: {
+          id: stato.paziente.id || null,
+          nome: stato.paziente.nome,
+          indirizzo: stato.paziente.indirizzo,
+          citta: stato.paziente.citta
+        },
+        frigo: stato.frigo,
+        avvisoFrigo: stato.avvisoFrigo,
+        consegnante: stato.consegnante,
+        note: stato.note
+      });
+    } catch(e) { toast('Errore Firestore: '+e.message, 'err'); }
+  }
+
+  hideLoading();
+  renderS5();
+  goTo('s5');
+}
+
+// ════════════════════════════════════════════════════════
+// SCREEN 5 — RIEPILOGO
+// ════════════════════════════════════════════════════════
+function renderS5() {
+  var p = stato.paziente;
+  var addr = [p.indirizzo, p.citta].filter(Boolean).join(', ') || '—';
+  document.getElementById('s5-dest-label').textContent = p.nome;
+  var frigo_badge = stato.frigo
+    ? '<span class="badge-frigo">🌡️ Frigo</span>'
+    : '<span class="badge-ok">Ambiente</span>';
+  document.getElementById('s5-riepilogo').innerHTML = [
+    row('Destinatario',   escH(p.nome)),
+    row('Indirizzo',      escH(addr)),
+    row('Preparatore',    escH(stato.preparatore.nome)),
+    row('Preparato alle', fmtTime(stato.tsPreparazione)),
+    row('Controllore',    escH(stato.controllore ? stato.controllore.nome : '—')),
+    row('Controllato alle', fmtTime(stato.tsControllo)),
+    row('Consegnante',    escH(stato.consegnante ? stato.consegnante.nome : '—')),
+    row('Prodotti frigo', frigo_badge),
+    stato.note ? row('Note', escH(stato.note)) : ''
+  ].join('');
+}
+
+function row(label, val) {
+  return '<div class="riepilogo-row"><div class="riepilogo-label">'+label+'</div><div class="riepilogo-val">'+val+'</div></div>';
+}
+
+function fmtTime(d) {
+  if (!d) return '—';
+  return d.toLocaleDateString('it-CH') + ' ' + d.toLocaleTimeString('it-CH', {hour:'2-digit',minute:'2-digit'});
+}
+
+// ════════════════════════════════════════════════════════
+// PDF
+// ════════════════════════════════════════════════════════
+function downloadPdf() {
+  var btn = document.getElementById('s5-pdf-btn');
+  btn.textContent = 'Generazione...';
+  btn.disabled = true;
+  setTimeout(function() {
+    generaPdf();
+    btn.textContent = '⬇ Scarica PDF';
+    btn.disabled = false;
+  }, 100);
+}
+
+function generaPdf() {
+  var jsPDF = window.jspdf ? window.jspdf.jsPDF : jspdf.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  var W = 210, margin = 15;
+  var cw = W - margin*2;
+  var y = 0;
+
+  function yt(yy) { return yy; }
+  var C = {
+    greenDark: [27,94,32], greenMed: [46,125,50], greenLight: [232,245,233],
+    blue:  [21,101,192],   blueL:   [227,242,253],
+    red:   [198,40,40],    redL:    [255,235,238],
+    amber: [245,127,23],   amberL:  [255,248,225],
+    grayD: [55,71,79],     grayM:   [84,104,122], grayL:  [236,239,241],
+    white: [255,255,255],  black:   [26,26,26]
+  };
+
+  // Header verde
+  doc.setFillColor.apply(doc, C.greenDark);
+  doc.rect(0, 0, W, 22, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold'); doc.setFontSize(14);
+  doc.text('Consegna Domicilio', margin, 9);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Farmacia Ascona SA  |  FA-SQ-CD-01', margin, 15);
+  doc.setFontSize(8);
+  var now = new Date();
+  doc.text('Generato: '+fmtTime(now), W-margin, 15, {align:'right'});
+  y = 28;
+
+  // Barra verde chiara titolo
+  doc.setFillColor.apply(doc, C.greenLight);
+  doc.rect(margin, y, cw, 9, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.setTextColor.apply(doc, C.greenDark);
+  doc.text('DATI CONSEGNA', margin+4, y+6);
+  y += 13;
+
+  // Tabella dati principali
+  var p = stato.paziente;
+  var addr = [p.indirizzo, p.citta].filter(Boolean).join(', ') || '—';
+  var rows = [
+    ['Destinatario', p.nome],
+    ['Indirizzo', addr],
+    ['Preparatore', stato.preparatore.nome + ' ('+stato.preparatore.id+')'],
+    ['Data/ora preparazione', fmtTime(stato.tsPreparazione)],
+    ['Controllore', stato.controllore ? stato.controllore.nome+' ('+stato.controllore.id+')' : '—'],
+    ['Data/ora controllo', fmtTime(stato.tsControllo)],
+    ['Consegnante', stato.consegnante ? stato.consegnante.nome + (stato.consegnante.esterno?' (esterno)':'') : '—'],
+    ['Prodotti frigo', stato.frigo ? 'SI\' — avviso consegnante: '+(stato.avvisoFrigo?'CONFERMATO':'NON CONFERMATO') : 'No'],
+  ];
+  if (stato.note) rows.push(['Note', stato.note]);
+
+  var rowH = 7.5, lw = 50;
+  rows.forEach(function(r, i) {
+    var bg = i%2===0 ? C.white : C.grayL;
+    doc.setFillColor.apply(doc, bg);
+    doc.rect(margin, y, cw, rowH, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.setTextColor.apply(doc, C.grayM);
+    doc.text(r[0], margin+3, y+5);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor.apply(doc, C.black);
+    var lines = doc.splitTextToSize(r[1], cw-lw-6);
+    doc.text(lines, margin+lw, y+5);
+    y += rowH * Math.max(1, lines.length);
+  });
+
+  // Badge frigo
+  if (stato.frigo) {
+    y += 4;
+    doc.setFillColor.apply(doc, C.blueL);
+    doc.rect(margin, y, cw, 9, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.setTextColor.apply(doc, C.blue);
+    doc.text('ATTENZIONE: prodotti termosensibili (2-8C) — conservare catena del freddo', margin+4, y+6);
+    y += 13;
+  } else {
+    y += 6;
+  }
+
+  // Funzione per inserire foto
+  function inserisciFoto(base64, titolo) {
+    if (!base64) return;
+    if (y > 230) { doc.addPage(); y = 20; }
+    doc.setFillColor.apply(doc, C.greenLight);
+    doc.rect(margin, y, cw, 9, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.setTextColor.apply(doc, C.greenDark);
+    doc.text(titolo, margin+4, y+6);
+    y += 12;
+    try {
+      // Calcola dimensioni proporzionali
+      var maxW = cw, maxH = 80;
+      var img = new Image();
+      img.src = base64;
+      var iw = img.naturalWidth || 800, ih = img.naturalHeight || 600;
+      var ratio = Math.min(maxW/iw, maxH/ih);
+      var fw = iw*ratio, fh = ih*ratio;
+      var fx = margin + (cw-fw)/2;
+      doc.addImage(base64, 'JPEG', fx, y, fw, fh);
+      y += fh + 6;
+    } catch(e) {
+      doc.setFont('helvetica','italic'); doc.setFontSize(9);
+      doc.setTextColor.apply(doc, C.grayM);
+      doc.text('(Foto non disponibile)', margin+4, y+6);
+      y += 10;
+    }
+  }
+
+  inserisciFoto(stato.fotoProdotti, 'FOTO PRODOTTI');
+  inserisciFoto(stato.fotoEtichetta, 'FOTO ETICHETTA / BUSTA');
+
+  // Footer
+  var pages = doc.getNumberOfPages();
+  for (var i=1; i<=pages; i++) {
+    doc.setPage(i);
+    doc.setFillColor.apply(doc, C.grayL);
+    doc.rect(0, 287, W, 10, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.setTextColor.apply(doc, C.grayM);
+    doc.text('Farmacia Ascona SA, Via Circonvallazione 6, 6612 Ascona  |  Conservare per 6 anni (art.28 LATer)', margin, 293);
+    doc.text('Pag. '+i+'/'+pages, W-margin, 293, {align:'right'});
+  }
+
+  // Filename
+  var ts = now.toLocaleDateString('it-CH').replace(/\//g,'-');
+  var dest = (stato.paziente.nome||'consegna').replace(/\s+/g,'_').substring(0,20);
+  doc.save('FA-SQ-CD-01_'+dest+'_'+ts+'.pdf');
+}
+
+// ════════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════════
+function nuovaConsegna() {
+  stato = {
+    preparatore:null, paziente:null, salvaPaziente:false,
+    fotoEtichetta:null, fotoProdotti:null,
+    frigo:false, avvisoFrigo:false, note:'',
+    controllore:null, consegnante:null,
+    tsPreparazione:null, tsControllo:null
+  };
+  pinStato = { s1:{ digits:'', op:null }, s4:{ digits:'', op:null } };
+  consegnanteSelezionato = null;
+  // Reset campi
+  ['s2-nome','s2-indirizzo','s2-citta','s2-search','s3-note','s4-esterno-nome']
+    .forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('s3-frigo').checked = false;
+  document.getElementById('s3-avviso').checked = false;
+  document.getElementById('s3-avviso-row').style.display = 'none';
+  document.getElementById('s2-save-row').style.display = 'none';
+  document.getElementById('s2-save-check').checked = false;
+  // Reset foto
+  ['s2','s3'].forEach(function(p) {
+    var prev = document.getElementById(p+'-foto-preview');
+    var area = document.getElementById(p+'-foto-area');
+    var change = document.getElementById(p+'-foto-change');
+    if (prev)   { prev.src=''; prev.style.display='none'; }
+    if (area)   area.classList.remove('has-foto');
+    if (change) change.style.display='none';
+    var icon = area && area.querySelector('.foto-icon');
+    var lbl  = area && area.querySelector('.foto-label');
+    if (icon) icon.style.display='block';
+    if (lbl)  lbl.style.display='block';
+  });
+  renderOpGrid('s1-op-grid', 's1');
+  document.getElementById('s1-pin-card').style.display = 'none';
+  document.getElementById('s3-next').disabled = true;
+  document.getElementById('s4-next').disabled = true;
+  goTo('s1');
+}
+
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg||'...';
+  document.getElementById('loading-overlay').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.remove('show');
+}
+
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type==='ok'?' ok':type==='err'?' err':'');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.className=''; }, 2800);
+}
+
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// s4-consegnante visibile dopo login controllore
+// (mostrato da renderConsegnante, nascosto inizialmente)
+document.getElementById('s4-consegnante-card').style.display = 'none';
+// Override: dopo renderConsegnante mostrarlo
+var _origRender = renderConsegnante;
+renderConsegnante = function() {
+  document.getElementById('s4-consegnante-card').style.display = 'block';
+  _origRender();
+};
+</script>
+</body>
+</html>
