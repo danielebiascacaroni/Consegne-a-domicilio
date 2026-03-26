@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <title>Consegne Domicilio — Farmacia Ascona</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --green-dark:#1B5E20;--green-med:#2E7D32;--green-light:#E8F5E9;--green-accent:#69F0AE;
-  --red-dark:#C62828;--red-light:#FFEBEE;
-  --amber:#F57F17;--amber-light:#FFF8E1;
-  --blue:#1565C0;--blue-light:#E3F2FD;
-  --gray-d:#37474F;--gray-m:#546E7A;--gray-l:#ECEFF1;--gray-ll:#F5F5F5;
-  --text:#1A1A1A;--white:#ffffff;
-  --radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+  /* Palette Dosettes */
+  --green-dark:#2D6A4F;--green-med:#40916C;--green-light:#D8EDDF;--green-accent:#D8EDDF;
+  --red-dark:#C0392B;--red-light:#FDECEA;
+  --amber:#E67E22;--amber-light:#FEF3E2;
+  --blue:#2980B9;--blue-light:#EBF5FB;
+  --gray-d:#6B6760;--gray-m:#6B6760;--gray-l:#D8D4CC;--gray-ll:#F4F2EE;
+  --text:#1A1916;--white:#FFFFFF;--surface:#FFFFFF;--surface2:#EDEAE4;
+  --radius:14px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+  --mono:'DM Mono',monospace;
 }
-html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-ll);color:var(--text);font-size:15px;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll);color:var(--text);font-size:15px;}
 .screen{background:var(--gray-ll);}
 
 /* ── LAYOUT ── */
@@ -32,7 +35,7 @@ html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif;background:var(--g
 /* ── PROGRESS ── */
 .progress-bar{background:var(--green-med);padding:8px 18px;display:flex;gap:6px;align-items:center;}
 .step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.35);transition:all .2s;}
-.step-dot.done{background:var(--green-accent);}
+.step-dot.done{background:rgba(255,255,255,0.75);}
 .step-dot.active{background:white;width:22px;border-radius:4px;}
 .step-label{color:rgba(255,255,255,0.85);font-size:11px;margin-left:6px;}
 
@@ -76,8 +79,8 @@ html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif;background:var(--g
 .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--gray-l);background:white;transition:all .2s;}
 .pin-dot.filled{background:var(--green-dark);border-color:var(--green-dark);}
 .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto;}
-.pin-btn{background:white;border:1.5px solid var(--gray-l);border-radius:10px;padding:14px;font-size:20px;font-weight:600;cursor:pointer;transition:all .1s;text-align:center;}
-.pin-btn:active{background:var(--green-light);border-color:var(--green-med);}
+.pin-btn{background:white;border:2px solid var(--gray-l);border-radius:50%;width:64px;height:64px;font-size:20px;font-weight:600;cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;}
+.pin-btn:active{background:var(--green-light);border-color:var(--green-med);transform:scale(0.93);}
 .pin-btn.del{font-size:16px;color:var(--gray-m);}
 .pin-btn.empty{visibility:hidden;}
 .pin-error{color:var(--red-dark);font-size:13px;text-align:center;margin-top:8px;display:none;}
@@ -172,7 +175,7 @@ input[type=file]{display:none;}
   <div class="topbar">
     <div class="topbar-info">
       <div class="topbar-title">Consegna Domicilio</div>
-      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-01</div>
+      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-02</div>
     </div>
     <span id="s1-status" style="font-size:11px;opacity:0.7;">Connessione...</span>
   </div>
@@ -409,7 +412,7 @@ input[type=file]{display:none;}
   <div class="topbar">
     <div class="topbar-info">
       <div class="topbar-title">Completato</div>
-      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-01</div>
+      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-02</div>
     </div>
   </div>
   <div class="progress-bar">
@@ -446,8 +449,9 @@ input[type=file]{display:none;}
 <div id="toast"></div>
 
 <!-- ── FIREBASE ── -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <!-- ── jsPDF ── -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -468,6 +472,7 @@ var FIREBASE_ENABLED = true;
       projectId: 'dosettes-farmacia'
     });
     db = firebase.firestore();
+    firebase.auth().signInAnonymously().catch(function(e){ console.warn('Auth anonima fallita:', e.code); });
     document.getElementById('s1-status').textContent = 'Connesso';
     caricaOperatori();
     caricaPazienti();
@@ -977,7 +982,7 @@ function generaPdf() {
   doc.setFont('helvetica','bold'); doc.setFontSize(14);
   doc.text('Consegna Domicilio', margin, 9);
   doc.setFont('helvetica','normal'); doc.setFontSize(8);
-  doc.text('Farmacia Ascona SA  |  FA-SQ-CD-01', margin, 15);
+  doc.text('Farmacia Ascona SA  |  FA-SQ-CD-02', margin, 15);
   doc.setFontSize(8);
   var now = new Date();
   doc.text('Generato: '+fmtTime(now), W-margin, 15, {align:'right'});
@@ -1081,7 +1086,7 @@ function generaPdf() {
   // Filename
   var ts = now.toLocaleDateString('it-CH').replace(/\//g,'-');
   var dest = (stato.paziente.nome||'consegna').replace(/\s+/g,'_').substring(0,20);
-  doc.save('FA-SQ-CD-01_'+dest+'_'+ts+'.pdf');
+  doc.save('FA-SQ-CD-02_'+dest+'_'+ts+'.pdf');
 }
 
 // ════════════════════════════════════════════════════════
