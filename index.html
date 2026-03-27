@@ -8,8 +8,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  /* Palette Dosettes */
-  --green-dark:#2D6A4F;--green-med:#40916C;--green-light:#D8EDDF;--green-accent:#D8EDDF;
+  --green-dark:#2D6A4F;--green-med:#40916C;--green-light:#D8EDDF;
   --red-dark:#C0392B;--red-light:#FDECEA;
   --amber:#E67E22;--amber-light:#FEF3E2;
   --blue:#2980B9;--blue-light:#EBF5FB;
@@ -20,61 +19,41 @@
 }
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll);color:var(--text);font-size:15px;}
 .screen{background:var(--gray-ll);}
-
-/* ── LAYOUT ── */
 .screen{display:none;flex-direction:column;min-height:100vh;}
 .screen.active{display:flex;}
-
-/* ── TOPBAR ── */
 .topbar{background:var(--green-dark);color:white;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
 .topbar-back{background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .topbar-info{flex:1;}
 .topbar-title{font-size:16px;font-weight:700;}
 .topbar-sub{font-size:11px;opacity:0.75;margin-top:1px;}
-
-/* ── PROGRESS ── */
 .progress-bar{background:var(--green-med);padding:8px 18px;display:flex;gap:6px;align-items:center;}
 .step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.35);transition:all .2s;}
 .step-dot.done{background:rgba(255,255,255,0.75);}
 .step-dot.active{background:white;width:22px;border-radius:4px;}
 .step-label{color:rgba(255,255,255,0.85);font-size:11px;margin-left:6px;}
-
-/* ── SCROLLABLE BODY ── */
 .scroll-body{flex:1;overflow-y:auto;padding:16px 16px 100px;background:var(--gray-ll);}
 .scroll-body > *{max-width:560px;margin-left:auto;margin-right:auto;}
-
-/* ── CARDS ── */
 .card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px;width:100%;}
 .card-title{font-size:13px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .card-title .icon{font-size:16px;}
-
-/* ── FORM FIELDS ── */
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--gray-m);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.3px;}
 .field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--gray-l);border-radius:9px;font-size:15px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green-med);}
 .field textarea{min-height:70px;resize:vertical;}
-.field-hint{font-size:11px;color:var(--gray-m);margin-top:4px;}
-
-/* ── SEARCH PAZIENTE ── */
 .search-wrap{position:relative;}
 .search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--green-med);border-top:none;border-radius:0 0 9px 9px;z-index:100;max-height:200px;overflow-y:auto;display:none;}
 .search-result-item{padding:11px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--gray-l);}
 .search-result-item:hover,.search-result-item:active{background:var(--green-light);}
 .search-result-item .item-nome{font-weight:600;}
 .search-result-item .item-addr{font-size:12px;color:var(--gray-m);}
-.search-result-item:last-child{border-bottom:none;}
-
-/* ── OPERATOR GRID ── */
 .op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
 .op-card{background:var(--gray-ll);border:2px solid var(--gray-l);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;}
 .op-card:hover,.op-card:active{border-color:var(--green-med);background:var(--green-light);}
 .op-card.selected{border-color:var(--green-med);background:var(--green-light);}
 .op-card .op-sigla{font-size:26px;font-weight:800;color:var(--green-dark);}
 .op-card .op-nome{font-size:11px;color:var(--gray-m);margin-top:4px;}
-.op-card .op-ruolo{font-size:10px;color:var(--gray-m);margin-top:2px;text-transform:capitalize;}
-
-/* ── PIN ── */
+.op-card .op-ruolo{font-size:10px;color:var(--gray-m);margin-top:2px;}
 .pin-display{display:flex;justify-content:center;gap:10px;margin:16px 0 8px;}
 .pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--gray-l);background:white;transition:all .2s;}
 .pin-dot.filled{background:var(--green-dark);border-color:var(--green-dark);}
@@ -84,8 +63,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 .pin-btn.del{font-size:16px;color:var(--gray-m);}
 .pin-btn.empty{visibility:hidden;}
 .pin-error{color:var(--red-dark);font-size:13px;text-align:center;margin-top:8px;display:none;}
-
-/* ── FRIGO TOGGLE ── */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--gray-l);}
 .toggle-row:last-child{border-bottom:none;}
 .toggle-label{font-size:14px;font-weight:600;}
@@ -96,8 +73,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 .toggle-slider:before{content:'';position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
 input:checked+.toggle-slider{background:var(--green-med);}
 input:checked+.toggle-slider:before{transform:translateX(22px);}
-
-/* ── FOTO ── */
 .foto-area{border:2px dashed var(--gray-l);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--gray-ll);}
 .foto-area:hover,.foto-area:active{border-color:var(--green-med);background:var(--green-light);}
 .foto-area.has-foto{border-style:solid;border-color:var(--green-med);background:white;padding:8px;}
@@ -106,13 +81,6 @@ input:checked+.toggle-slider:before{transform:translateX(22px);}
 .foto-preview{width:100%;max-height:200px;object-fit:contain;border-radius:8px;display:none;}
 .foto-change{font-size:12px;color:var(--green-med);margin-top:6px;cursor:pointer;font-weight:600;}
 input[type=file]{display:none;}
-
-/* ── CHECKBOX AVVISO ── */
-.checkbox-row{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--amber-light);border:1.5px solid var(--amber);border-radius:10px;margin-top:12px;}
-.checkbox-row input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:var(--green-med);}
-.checkbox-row label{font-size:13px;font-weight:600;color:var(--amber);line-height:1.4;cursor:pointer;}
-
-/* ── CONSEGNANTE ── */
 .consegnante-list{display:flex;flex-direction:column;gap:8px;}
 .consegnante-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;}
 .consegnante-item:hover,.consegnante-item:active{border-color:var(--green-med);background:var(--green-light);}
@@ -123,21 +91,16 @@ input[type=file]{display:none;}
 .consegnante-item .c-check{margin-left:auto;color:var(--green-med);font-size:20px;display:none;}
 .consegnante-item.selected .c-check{display:block;}
 .consegnante-esterno{border-style:dashed;}
-
-/* ── RIEPILOGO ── */
 .riepilogo-row{display:flex;padding:9px 0;border-bottom:1px solid var(--gray-l);font-size:13px;}
 .riepilogo-row:last-child{border-bottom:none;}
 .riepilogo-label{color:var(--gray-m);width:120px;flex-shrink:0;font-weight:600;}
 .riepilogo-val{flex:1;color:var(--text);}
 .badge-frigo{background:var(--blue-light);color:var(--blue);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;}
 .badge-ok{background:var(--green-light);color:var(--green-dark);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;}
-
-/* ── SUCCESS ── */
+.badge-num{background:var(--gray-l);color:var(--gray-d);padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;font-family:var(--mono);display:inline-block;}
 .success-icon{font-size:64px;text-align:center;margin:24px 0 10px;}
 .success-title{font-size:22px;font-weight:800;color:var(--green-dark);text-align:center;}
 .success-sub{font-size:14px;color:var(--gray-m);text-align:center;margin-top:6px;}
-
-/* ── BOTTOM CTA ── */
 .bottom-cta{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:white;border-top:1px solid var(--gray-l);z-index:40;}
 .bottom-cta .btn{max-width:560px;margin-left:auto;margin-right:auto;display:block;}
 .btn{width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;}
@@ -147,30 +110,31 @@ input[type=file]{display:none;}
 .btn-outline{background:white;color:var(--green-med);border:2px solid var(--green-med);}
 .btn-download{background:var(--green-dark);color:white;}
 .btn-sm{padding:10px 18px;font-size:14px;width:auto;border-radius:8px;}
-
-/* ── SALVA PAZIENTE ── */
 .save-paziente-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--blue-light);border-radius:8px;margin-top:8px;}
 .save-paziente-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);}
 .save-paziente-row label{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;}
-
-/* ── TOAST ── */
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;}
 #toast.ok{background:var(--green-med);}
 #toast.err{background:var(--red-dark);}
-
-/* ── LOADING ── */
 .loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.85);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 .loading-overlay.show{display:flex;}
 .spinner{width:36px;height:36px;border:3px solid var(--gray-l);border-top:3px solid var(--green-med);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
+.storico-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.storico-tab{flex:1;padding:10px;border:none;background:var(--gray-l);border-radius:8px;font-weight:600;cursor:pointer;transition:all .15s;}
+.storico-tab.active{background:var(--green-med);color:white;}
+.storico-list{display:flex;flex-direction:column;gap:10px;}
+.storico-item{padding:12px;background:white;border:1px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;}
+.storico-item:hover{border-color:var(--green-med);background:var(--green-light);}
+.storico-nome{font-weight:600;font-size:14px;}
+.storico-dettagli{font-size:12px;color:var(--gray-m);margin-top:4px;}
+.storico-data{font-size:11px;color:var(--gray-d);margin-top:2px;font-family:var(--mono);}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════ -->
-<!-- SCREEN 1 — LOGIN PREPARATORE      -->
-<!-- ══════════════════════════════════ -->
+<!-- SCREEN 1 — PREPARATORE -->
 <div id="s1" class="screen active">
   <div class="topbar">
     <div class="topbar-info">
@@ -180,14 +144,14 @@ input[type=file]{display:none;}
     <span id="s1-status" style="font-size:11px;opacity:0.7;">Connessione...</span>
   </div>
   <div class="progress-bar">
-    <div class="step-dot active"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
+    <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
+    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
     <span class="step-label">Preparatore</span>
   </div>
   <div class="scroll-body">
+    <div style="display:flex;gap:8px;margin-bottom:16px;max-width:560px;margin-left:auto;margin-right:auto;">
+      <button class="btn btn-sm" onclick="goToStorico()" style="flex:1;margin-bottom:0;background:white;color:var(--green-med);border:2px solid var(--green-med);">📋 Storico</button>
+    </div>
     <div class="card">
       <div class="card-title"><span class="icon">👤</span>Chi prepara la fornitura?</div>
       <div class="op-grid" id="s1-op-grid">
@@ -201,27 +165,19 @@ input[type=file]{display:none;}
         <div class="pin-dot" id="s1d2"></div><div class="pin-dot" id="s1d3"></div>
       </div>
       <div class="pin-pad">
-        <button class="pin-btn" onclick="pinPress('s1',1)">1</button>
-        <button class="pin-btn" onclick="pinPress('s1',2)">2</button>
-        <button class="pin-btn" onclick="pinPress('s1',3)">3</button>
-        <button class="pin-btn" onclick="pinPress('s1',4)">4</button>
-        <button class="pin-btn" onclick="pinPress('s1',5)">5</button>
-        <button class="pin-btn" onclick="pinPress('s1',6)">6</button>
-        <button class="pin-btn" onclick="pinPress('s1',7)">7</button>
-        <button class="pin-btn" onclick="pinPress('s1',8)">8</button>
-        <button class="pin-btn" onclick="pinPress('s1',9)">9</button>
-        <button class="pin-btn empty"></button>
-        <button class="pin-btn" onclick="pinPress('s1',0)">0</button>
-        <button class="pin-btn del" onclick="pinDel('s1')">⌫</button>
+        <button class="pin-btn" onclick="pinPress('s1',1)">1</button><button class="pin-btn" onclick="pinPress('s1',2)">2</button>
+        <button class="pin-btn" onclick="pinPress('s1',3)">3</button><button class="pin-btn" onclick="pinPress('s1',4)">4</button>
+        <button class="pin-btn" onclick="pinPress('s1',5)">5</button><button class="pin-btn" onclick="pinPress('s1',6)">6</button>
+        <button class="pin-btn" onclick="pinPress('s1',7)">7</button><button class="pin-btn" onclick="pinPress('s1',8)">8</button>
+        <button class="pin-btn" onclick="pinPress('s1',9)">9</button><button class="pin-btn empty"></button>
+        <button class="pin-btn" onclick="pinPress('s1',0)">0</button><button class="pin-btn del" onclick="pinDel('s1')">⌫</button>
       </div>
       <div class="pin-error" id="s1-pin-error">PIN non corretto</div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- SCREEN 2 — DESTINATARIO           -->
-<!-- ══════════════════════════════════ -->
+<!-- SCREEN 2 — DESTINATARIO -->
 <div id="s2" class="screen">
   <div class="topbar">
     <button class="topbar-back" onclick="goTo('s1')">←</button>
@@ -231,11 +187,8 @@ input[type=file]{display:none;}
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div>
-    <div class="step-dot active"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
+    <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
+    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
     <span class="step-label">Destinatario</span>
   </div>
   <div class="scroll-body">
@@ -284,9 +237,7 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- SCREEN 3 — PRODOTTI + FRIGO       -->
-<!-- ══════════════════════════════════ -->
+<!-- SCREEN 3 — PRODOTTI + FRIGO -->
 <div id="s3" class="screen">
   <div class="topbar">
     <button class="topbar-back" onclick="goTo('s2')">←</button>
@@ -296,11 +247,8 @@ input[type=file]{display:none;}
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div>
-    <div class="step-dot done"></div>
-    <div class="step-dot active"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
+    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div>
+    <div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
     <span class="step-label">Prodotti</span>
   </div>
   <div class="scroll-body">
@@ -322,13 +270,9 @@ input[type=file]{display:none;}
           <div class="toggle-sub">Farmaci da conservare 2–8°C</div>
         </div>
         <label class="toggle">
-          <input type="checkbox" id="s3-frigo" onchange="toggleFrigo(this.checked)">
+          <input type="checkbox" id="s3-frigo">
           <span class="toggle-slider"></span>
         </label>
-      </div>
-      <div class="checkbox-row" id="s3-avviso-row" style="display:none;">
-        <input type="checkbox" id="s3-avviso" onchange="checkAvviso()">
-        <label for="s3-avviso">Ho avvisato il consegnante che la fornitura contiene prodotti termosensibili che richiedono trasporto refrigerato</label>
       </div>
     </div>
     <div class="card">
@@ -343,9 +287,7 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- SCREEN 4 — CONTROLLO              -->
-<!-- ══════════════════════════════════ -->
+<!-- SCREEN 4 — CONTROLLO -->
 <div id="s4" class="screen">
   <div class="topbar">
     <button class="topbar-back" onclick="goTo('s3')">←</button>
@@ -355,11 +297,8 @@ input[type=file]{display:none;}
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div>
-    <div class="step-dot done"></div>
-    <div class="step-dot done"></div>
-    <div class="step-dot active"></div>
-    <div class="step-dot"></div>
+    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div>
+    <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
     <span class="step-label">Controllo</span>
   </div>
   <div class="scroll-body">
@@ -374,22 +313,16 @@ input[type=file]{display:none;}
         <div class="pin-dot" id="s4d2"></div><div class="pin-dot" id="s4d3"></div>
       </div>
       <div class="pin-pad">
-        <button class="pin-btn" onclick="pinPress('s4',1)">1</button>
-        <button class="pin-btn" onclick="pinPress('s4',2)">2</button>
-        <button class="pin-btn" onclick="pinPress('s4',3)">3</button>
-        <button class="pin-btn" onclick="pinPress('s4',4)">4</button>
-        <button class="pin-btn" onclick="pinPress('s4',5)">5</button>
-        <button class="pin-btn" onclick="pinPress('s4',6)">6</button>
-        <button class="pin-btn" onclick="pinPress('s4',7)">7</button>
-        <button class="pin-btn" onclick="pinPress('s4',8)">8</button>
-        <button class="pin-btn" onclick="pinPress('s4',9)">9</button>
-        <button class="pin-btn empty"></button>
-        <button class="pin-btn" onclick="pinPress('s4',0)">0</button>
-        <button class="pin-btn del" onclick="pinDel('s4')">⌫</button>
+        <button class="pin-btn" onclick="pinPress('s4',1)">1</button><button class="pin-btn" onclick="pinPress('s4',2)">2</button>
+        <button class="pin-btn" onclick="pinPress('s4',3)">3</button><button class="pin-btn" onclick="pinPress('s4',4)">4</button>
+        <button class="pin-btn" onclick="pinPress('s4',5)">5</button><button class="pin-btn" onclick="pinPress('s4',6)">6</button>
+        <button class="pin-btn" onclick="pinPress('s4',7)">7</button><button class="pin-btn" onclick="pinPress('s4',8)">8</button>
+        <button class="pin-btn" onclick="pinPress('s4',9)">9</button><button class="pin-btn empty"></button>
+        <button class="pin-btn" onclick="pinPress('s4',0)">0</button><button class="pin-btn del" onclick="pinDel('s4')">⌫</button>
       </div>
       <div class="pin-error" id="s4-pin-error">PIN non corretto</div>
     </div>
-    <div class="card" id="s4-consegnante-card">
+    <div class="card" id="s4-consegnante-card" style="display:none;">
       <div class="card-title"><span class="icon">🚗</span>Chi fa la consegna?</div>
       <div class="consegnante-list" id="s4-consegnante-list"></div>
       <div id="s4-esterno-field" style="display:none;margin-top:12px;">
@@ -405,9 +338,7 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ══════════════════════════════════ -->
-<!-- SCREEN 5 — SUCCESSO               -->
-<!-- ══════════════════════════════════ -->
+<!-- SCREEN 5 — SUCCESSO -->
 <div id="s5" class="screen">
   <div class="topbar">
     <div class="topbar-info">
@@ -416,26 +347,44 @@ input[type=file]{display:none;}
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div>
-    <div class="step-dot done"></div>
-    <div class="step-dot done"></div>
-    <div class="step-dot done"></div>
-    <div class="step-dot active"></div>
+    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div>
+    <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
     <span class="step-label">Fine</span>
   </div>
   <div class="scroll-body">
     <div class="success-icon">✅</div>
     <div class="success-title">Consegna registrata</div>
     <div class="success-sub" id="s5-dest-label"></div>
-
     <div class="card" style="margin-top:20px;">
       <div class="card-title"><span class="icon">📋</span>Riepilogo</div>
       <div id="s5-riepilogo"></div>
     </div>
-
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
       <button class="btn btn-download" id="s5-pdf-btn" onclick="downloadPdf()">⬇ Scarica PDF</button>
       <button class="btn btn-outline" onclick="nuovaConsegna()">+ Nuova consegna</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6 — STORICO -->
+<div id="s6" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s1')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Storico Consegne</div>
+      <div class="topbar-sub">Farmacia Ascona</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="storico-tabs" style="max-width:560px;margin-left:auto;margin-right:auto;">
+      <button class="storico-tab active" onclick="cambiaStorico('paziente')">Per Paziente</button>
+      <button class="storico-tab" onclick="cambiaStorico('data')">Per Data</button>
+    </div>
+    <div id="storico-paziente" style="max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:14px;">
+      <div class="storico-list" id="storico-paziente-list"></div>
+    </div>
+    <div id="storico-data" style="display:none;max-width:560px;margin-left:auto;margin-right:auto;margin-bottom:14px;">
+      <div class="storico-list" id="storico-data-list"></div>
     </div>
   </div>
 </div>
@@ -446,36 +395,64 @@ input[type=file]{display:none;}
   <div style="font-size:14px;color:var(--gray-m);" id="loading-msg">Salvataggio in corso...</div>
 </div>
 
+<!-- MODAL DETTAGLI PAZIENTE -->
+<div id="modal-dettagli-paziente" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;overflow-y:auto;padding:20px;">
+  <div style="background:white;border-radius:14px;max-width:560px;margin:20px auto;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid var(--gray-l);padding-bottom:12px;">
+      <h2 style="font-size:18px;font-weight:700;color:var(--green-dark);margin:0;">Consegne a: <span id="modal-paziente-nome"></span></h2>
+      <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray-m);" onclick="chiudiModalDettagliPaziente()">✕</button>
+    </div>
+    <div id="modal-consegne-paziente" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+</div>
+
+<!-- MODAL DETTAGLI DATA -->
+<div id="modal-dettagli-data" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;overflow-y:auto;padding:20px;">
+  <div style="background:white;border-radius:14px;max-width:560px;margin:20px auto;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid var(--gray-l);padding-bottom:12px;">
+      <h2 style="font-size:18px;font-weight:700;color:var(--green-dark);margin:0;">Consegne del <span id="modal-data-data"></span></h2>
+      <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray-m);" onclick="chiudiModalDettagliData()">✕</button>
+    </div>
+    <div id="modal-consegne-data" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
-<!-- ── FIREBASE ── -->
+<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<!-- ── jsPDF ── -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 'use strict';
 
-// ════════════════════════════════════════════════════════
-// FIREBASE
-// ════════════════════════════════════════════════════════
-var db = null;
+var db = null, storage = null;
 var FIREBASE_ENABLED = true;
+var OPERATORI = [];
+var PAZIENTI = [];
+var CONSEGNE = [];
+var NUMERO_SEQUENZIALE = 0;
 
 (function initFirebase(){
   try {
     firebase.initializeApp({
       apiKey: 'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
       authDomain: 'dosettes-farmacia.firebaseapp.com',
-      projectId: 'dosettes-farmacia'
+      projectId: 'dosettes-farmacia',
+      storageBucket: 'dosettes-farmacia.appspot.com'
     });
     db = firebase.firestore();
+    storage = firebase.storage();
     firebase.auth().signInAnonymously().catch(function(e){ console.warn('Auth anonima fallita:', e.code); });
     document.getElementById('s1-status').textContent = 'Connesso';
     caricaOperatori();
     caricaPazienti();
+    caricaConsegne();
+    caricaNumeroSequenziale();
   } catch(e) {
     FIREBASE_ENABLED = false;
     document.getElementById('s1-status').textContent = 'Offline';
@@ -483,36 +460,17 @@ var FIREBASE_ENABLED = true;
   }
 })();
 
-// ════════════════════════════════════════════════════════
-// STATO GLOBALE
-// ════════════════════════════════════════════════════════
-var OPERATORI = [];
-var PAZIENTI  = [];
+function caricaNumeroSequenziale() {
+  if (!db) return;
+  db.collection('qms_consegne').orderBy('numero', 'desc').limit(1).get().then(function(snap) {
+    if (!snap.empty) {
+      NUMERO_SEQUENZIALE = (snap.docs[0].data().numero || 0) + 1;
+    } else {
+      NUMERO_SEQUENZIALE = 1;
+    }
+  });
+}
 
-var stato = {
-  preparatore: null,        // { id, nome, ruolo }
-  paziente: null,           // { id?, nome, indirizzo, citta, esistente }
-  salvaPaziente: false,
-  fotoEtichetta: null,      // base64
-  fotoProdotti: null,       // base64
-  frigo: false,
-  avvisoFrigo: false,
-  note: '',
-  controllore: null,        // { id, nome, ruolo }
-  consegnante: null,        // { nome, esterno }
-  tsPreparazione: null,
-  tsControllo: null
-};
-
-// PIN state per s1 e s4
-var pinStato = {
-  s1: { digits: '', op: null },
-  s4: { digits: '', op: null }
-};
-
-// ════════════════════════════════════════════════════════
-// CARICAMENTO DATI
-// ════════════════════════════════════════════════════════
 function caricaOperatori() {
   if (!db) return;
   db.collection('operatori').get().then(function(snap) {
@@ -542,22 +500,33 @@ function caricaPazienti() {
   });
 }
 
-// ════════════════════════════════════════════════════════
-// GRIGLIA OPERATORI
-// ════════════════════════════════════════════════════════
+function caricaConsegne() {
+  if (!db) return;
+  db.collection('qms_consegne').orderBy('tsPreparazione', 'desc').get().then(function(snap) {
+    CONSEGNE = [];
+    snap.forEach(function(doc) {
+      CONSEGNE.push({ id: doc.id, ...doc.data() });
+    });
+    renderStorico();
+  });
+}
+
+var stato = {
+  preparatore: null, paziente: null, salvaPaziente: false,
+  fotoEtichetta: null, fotoProdotti: null, frigo: false,
+  note: '', controllore: null, consegnante: null,
+  tsPreparazione: null, tsControllo: null, numero: null
+};
+
+var pinStato = { s1: { digits: '', op: null }, s4: { digits: '', op: null } };
+var consegnanteSelezionato = null;
+
 function renderOpGrid(containerId, screenPrefix) {
   var el = document.getElementById(containerId);
-  if (!el) return;
-  if (!OPERATORI.length) {
-    el.innerHTML = '<div style="color:var(--gray-m);font-size:13px;padding:10px;">Nessun operatore trovato</div>';
-    return;
-  }
+  if (!el || !OPERATORI.length) { if (el) el.innerHTML = '<div style="color:var(--gray-m);font-size:13px;padding:10px;">Nessun operatore trovato</div>'; return; }
   el.innerHTML = OPERATORI.map(function(op) {
     return '<div class="op-card" id="opcard-'+screenPrefix+'-'+op.id+'" onclick="selectOp(\''+screenPrefix+'\',\''+op.id+'\')">' +
-      '<div class="op-sigla">'+escH(op.id)+'</div>' +
-      '<div class="op-nome">'+escH(op.nome)+'</div>' +
-      '<div class="op-ruolo">'+escH(op.ruolo)+'</div>' +
-      '</div>';
+      '<div class="op-sigla">'+escH(op.id)+'</div><div class="op-nome">'+escH(op.nome)+'</div><div class="op-ruolo">'+escH(op.ruolo)+'</div></div>';
   }).join('');
 }
 
@@ -566,30 +535,20 @@ function selectOp(prefix, opId) {
   if (!op) return;
   pinStato[prefix].op = op;
   pinStato[prefix].digits = '';
-  // Evidenzia card selezionata
-  document.querySelectorAll('[id^="opcard-'+prefix+'-"]').forEach(function(c){
-    c.classList.remove('selected');
-  });
+  document.querySelectorAll('[id^="opcard-'+prefix+'-"]').forEach(function(c){ c.classList.remove('selected'); });
   document.getElementById('opcard-'+prefix+'-'+opId).classList.add('selected');
-  // Mostra PIN card
   var card = document.getElementById(prefix+'-pin-card');
   if (card) card.style.display = 'block';
   document.getElementById(prefix+'-op-nome-label').textContent = op.nome;
   updatePinDots(prefix);
-  // Scroll to pin
   setTimeout(function(){ card && card.scrollIntoView({behavior:'smooth', block:'center'}); }, 100);
 }
 
-// ════════════════════════════════════════════════════════
-// PIN
-// ════════════════════════════════════════════════════════
 function pinPress(prefix, digit) {
   if (pinStato[prefix].digits.length >= 4) return;
   pinStato[prefix].digits += String(digit);
   updatePinDots(prefix);
-  if (pinStato[prefix].digits.length === 4) {
-    verificaPin(prefix);
-  }
+  if (pinStato[prefix].digits.length === 4) verificaPin(prefix);
 }
 
 function pinDel(prefix) {
@@ -622,6 +581,7 @@ async function verificaPin(prefix) {
       stato.tsControllo = new Date();
       document.getElementById('s4-pin-card').style.display = 'none';
       renderConsegnante();
+      document.getElementById('s4-consegnante-card').style.display = 'block';
       document.getElementById('s4-consegnante-card').scrollIntoView({behavior:'smooth', block:'start'});
       checkS4Ready();
     }
@@ -639,21 +599,14 @@ async function sha256(str) {
   return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
 }
 
-// ════════════════════════════════════════════════════════
-// RICERCA PAZIENTE
-// ════════════════════════════════════════════════════════
 function cercaPaziente(val) {
   var res = document.getElementById('s2-results');
   if (!val || val.length < 2) { res.style.display='none'; return; }
-  var filtered = PAZIENTI.filter(function(p){
-    return p.nome.toLowerCase().includes(val.toLowerCase());
-  });
+  var filtered = PAZIENTI.filter(function(p){ return p.nome.toLowerCase().includes(val.toLowerCase()); });
   if (!filtered.length) { res.style.display='none'; return; }
   res.innerHTML = filtered.slice(0,8).map(function(p){
     return '<div class="search-result-item" onclick="selezionaPaziente(\''+p.id+'\')">' +
-      '<div class="item-nome">'+escH(p.nome)+'</div>' +
-      '<div class="item-addr">'+escH([p.indirizzo, p.citta].filter(Boolean).join(', ') || 'Indirizzo non registrato')+'</div>' +
-      '</div>';
+      '<div class="item-nome">'+escH(p.nome)+'</div><div class="item-addr">'+escH([p.indirizzo, p.citta].filter(Boolean).join(', ') || 'Indirizzo non registrato')+'</div></div>';
   }).join('');
   res.style.display = 'block';
 }
@@ -671,135 +624,124 @@ function selezionaPaziente(id) {
   toast('Paziente selezionato: '+p.nome, 'ok');
 }
 
-// Chiudi risultati se si clicca fuori
 document.addEventListener('click', function(e){
   if (!e.target.closest('.search-wrap'))
     document.getElementById('s2-results').style.display='none';
 });
 
-// Monitora input manuale
 document.getElementById('s2-nome').addEventListener('input', function(){
-  // Se l'utente digita manualmente, mostra opzione salvataggio
-  var isNew = !stato.paziente || !stato.paziente.esistente ||
-              this.value !== stato.paziente.nome;
+  var isNew = !stato.paziente || !stato.paziente.esistente || this.value !== stato.paziente.nome;
   if (isNew && this.value.length > 2) {
-    stato.paziente = null; // reset selezione esistente
+    stato.paziente = null;
     document.getElementById('s2-save-row').style.display = 'flex';
   }
 });
 
-// ════════════════════════════════════════════════════════
-// FOTO
-// ════════════════════════════════════════════════════════
 function loadFoto(prefix, input) {
   if (!input.files || !input.files[0]) return;
   var file = input.files[0];
   var reader = new FileReader();
   reader.onload = function(e) {
-    comprimiImmagine(e.target.result, 1000, 0.75, function(compressed) {
+    comprimiImmagine(e.target.result, 800, 0.20, function(compressed) {
       if (prefix === 's2') {
         stato.fotoEtichetta = compressed;
-        showFoto('s2', compressed);
       } else if (prefix === 's3') {
         stato.fotoProdotti = compressed;
-        showFoto('s3', compressed);
+        checkS3Ready();
       }
+      var preview = document.getElementById(prefix+'-foto-preview');
+      var area = document.getElementById(prefix+'-foto-area');
+      var change = document.getElementById(prefix+'-foto-change');
+      preview.src = compressed;
+      preview.style.display = 'block';
+      area.classList.add('has-foto');
+      change.style.display = 'block';
+      area.querySelector('.foto-icon').style.display = 'none';
+      area.querySelector('.foto-label').style.display = 'none';
     });
   };
   reader.readAsDataURL(file);
 }
 
-function showFoto(prefix, base64) {
-  var area = document.getElementById(prefix+'-foto-area');
-  var prev = document.getElementById(prefix+'-foto-preview');
-  var change = document.getElementById(prefix+'-foto-change');
-  prev.src = base64;
-  prev.style.display = 'block';
-  area.classList.add('has-foto');
-  area.querySelector('.foto-icon').style.display = 'none';
-  area.querySelector('.foto-label').style.display = 'none';
-  change.style.display = 'block';
-}
-
-function comprimiImmagine(src, maxPx, quality, cb) {
+function comprimiImmagine(src, maxW, quality, callback) {
   var img = new Image();
   img.onload = function() {
     var w = img.width, h = img.height;
-    if (w > maxPx || h > maxPx) {
-      if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
-      else       { w = Math.round(w * maxPx / h); h = maxPx; }
-    }
+    if (w > maxW) { h = h * maxW / w; w = maxW; }
     var canvas = document.createElement('canvas');
     canvas.width = w; canvas.height = h;
     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-    cb(canvas.toDataURL('image/jpeg', quality));
+    callback(canvas.toDataURL('image/jpeg', quality));
   };
   img.src = src;
 }
 
-// ════════════════════════════════════════════════════════
-// FRIGO
-// ════════════════════════════════════════════════════════
-function toggleFrigo(checked) {
-  stato.frigo = checked;
-  var row = document.getElementById('s3-avviso-row');
-  row.style.display = checked ? 'flex' : 'none';
-  if (!checked) {
-    document.getElementById('s3-avviso').checked = false;
-    stato.avvisoFrigo = false;
+function goToS3() {
+  var nome = (document.getElementById('s2-nome').value||'').trim();
+  if (!nome) { toast('Inserisci il nominativo del destinatario', 'err'); return; }
+  var indirizzo = (document.getElementById('s2-indirizzo').value||'').trim();
+  var citta = (document.getElementById('s2-citta').value||'').trim();
+  if (!stato.paziente || !stato.paziente.esistente) {
+    stato.paziente = { id: null, nome: nome, indirizzo: indirizzo, citta: citta, esistente: false };
   }
-  checkS3Ready();
-}
-
-function checkAvviso() {
-  stato.avvisoFrigo = document.getElementById('s3-avviso').checked;
+  stato.salvaPaziente = document.getElementById('s2-save-check').checked;
+  document.getElementById('s3-dest-label').textContent = nome;
+  goTo('s3');
   checkS3Ready();
 }
 
 function checkS3Ready() {
   var ok = stato.fotoProdotti !== null;
-  if (stato.frigo && !stato.avvisoFrigo) ok = false;
   document.getElementById('s3-next').disabled = !ok;
 }
 
-// ════════════════════════════════════════════════════════
-// CONSEGNANTE
-// ════════════════════════════════════════════════════════
-var consegnanteSelezionato = null;
-
-function renderConsegnante() {
-  var el = document.getElementById('s4-consegnante-list');
-  var items = OPERATORI.map(function(op) {
-    return '<div class="consegnante-item" id="cons-'+op.id+'" onclick="selezionaConsegnante(\''+op.id+'\',false)">' +
-      '<div class="c-sigla">'+escH(op.id)+'</div>' +
-      '<div><div class="c-nome">'+escH(op.nome)+'</div><div class="c-ruolo">'+escH(op.ruolo)+'</div></div>' +
-      '<div class="c-check">✓</div>' +
-      '</div>';
-  });
-  items.push(
-    '<div class="consegnante-item consegnante-esterno" id="cons-esterno" onclick="selezionaConsegnante(\'esterno\',true)">' +
-    '<div class="c-sigla" style="color:var(--gray-m);">+</div>' +
-    '<div><div class="c-nome">Esterno / Corriere</div><div class="c-ruolo">Inserisci nome manualmente</div></div>' +
-    '<div class="c-check">✓</div>' +
-    '</div>'
-  );
-  el.innerHTML = items.join('');
+function goToS4() {
+  stato.frigo = document.getElementById('s3-frigo').checked;
+  stato.note = (document.getElementById('s3-note').value||'').trim();
+  pinStato['s4'] = { digits: '', op: null };
+  stato.controllore = null;
+  consegnanteSelezionato = null;
+  document.getElementById('s4-pin-card').style.display = 'none';
+  document.getElementById('s4-consegnante-card').style.display = 'none';
+  document.getElementById('s4-next').disabled = true;
+  renderOpGrid('s4-op-grid', 's4');
+  goTo('s4');
 }
 
-function selezionaConsegnante(id, esterno) {
-  consegnanteSelezionato = id;
+function renderConsegnante() {
+  if (!db) return;
+  db.collection('operatori').get().then(function(snap) {
+    var list = document.getElementById('s4-consegnante-list');
+    list.innerHTML = '';
+    snap.forEach(function(doc) {
+      var d = doc.data();
+      var html = '<div class="consegnante-item" onclick="selectConsegnante(\'op-'+doc.id+'\')">' +
+        '<div class="c-sigla">'+escH(doc.id)+'</div>' +
+        '<div><div class="c-nome">'+escH(d.nome||doc.id)+'</div><div class="c-ruolo">'+escH(d.ruolo||'')+'</div></div>' +
+        '<div class="c-check">✓</div></div>';
+      list.innerHTML += html;
+    });
+    var html = '<div class="consegnante-item consegnante-esterno" onclick="selectConsegnante(\'esterno\')">' +
+      '<div class="c-sigla" style="font-size:24px;">👤</div>' +
+      '<div><div class="c-nome">Consegnante esterno</div><div class="c-ruolo">Non in sistema</div></div>' +
+      '<div class="c-check">✓</div></div>';
+    list.innerHTML += html;
+    document.getElementById('s4-esterno-field').style.display = 'none';
+    document.getElementById('s4-esterno-nome').value = '';
+  });
+}
+
+function selectConsegnante(val) {
+  consegnanteSelezionato = val;
   document.querySelectorAll('.consegnante-item').forEach(function(c){ c.classList.remove('selected'); });
-  var target = document.getElementById('cons-'+id);
-  if (target) target.classList.add('selected');
-  var externField = document.getElementById('s4-esterno-field');
-  externField.style.display = esterno ? 'block' : 'none';
-  if (!esterno) {
-    var op = OPERATORI.find(function(o){ return o.id===id; });
-    stato.consegnante = { nome: op ? op.nome : id, esterno: false };
+  document.querySelectorAll('[onclick*="selectConsegnante(\''+val+'\')"]').forEach(function(c){ c.classList.add('selected'); });
+  if (val === 'esterno') {
+    document.getElementById('s4-esterno-field').style.display = 'block';
   } else {
-    stato.consegnante = null; // sarà letto al momento della conferma
+    document.getElementById('s4-esterno-field').style.display = 'none';
   }
   checkS4Ready();
+  document.getElementById('s4-esterno-nome').addEventListener('input', checkS4Ready);
 }
 
 function checkS4Ready() {
@@ -811,84 +753,63 @@ function checkS4Ready() {
   document.getElementById('s4-next').disabled = !ok;
 }
 
-document.getElementById('s4-esterno-nome').addEventListener('input', checkS4Ready);
-
-// ════════════════════════════════════════════════════════
-// NAVIGAZIONE
-// ════════════════════════════════════════════════════════
-function goTo(screenId) {
-  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-  document.getElementById(screenId).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-function goToS3() {
-  var nome = (document.getElementById('s2-nome').value||'').trim();
-  if (!nome) { toast('Inserisci il nominativo del destinatario', 'err'); return; }
-  var indirizzo = (document.getElementById('s2-indirizzo').value||'').trim();
-  var citta     = (document.getElementById('s2-citta').value||'').trim();
-  if (!stato.paziente || !stato.paziente.esistente) {
-    stato.paziente = {
-      id: null,
-      nome: nome,
-      indirizzo: indirizzo,
-      citta: citta,
-      esistente: false
-    };
-  }
-  stato.salvaPaziente = document.getElementById('s2-save-check').checked;
-  document.getElementById('s3-dest-label').textContent = nome;
-  goTo('s3');
-  checkS3Ready();
-}
-
-function goToS4() {
-  // Rileggi stato.frigo per sicurezza
-  stato.frigo = document.getElementById('s3-frigo').checked;
-  stato.avvisoFrigo = document.getElementById('s3-avviso').checked;
-  stato.note = (document.getElementById('s3-note').value||'').trim();
-  // Reset controllore
-  pinStato['s4'] = { digits: '', op: null };
-  stato.controllore = null;
-  consegnanteSelezionato = null;
-  document.getElementById('s4-pin-card').style.display = 'none';
-  document.getElementById('s4-consegnante-card').style.display = 'none';
-  document.getElementById('s4-next').disabled = true;
-  renderOpGrid('s4-op-grid', 's4');
-  goTo('s4');
-}
-
 async function goToS5() {
-  // Leggi consegnante esterno se necessario
   if (consegnanteSelezionato === 'esterno') {
     var nome = (document.getElementById('s4-esterno-nome').value||'').trim();
     if (!nome) { toast('Inserisci il nome del consegnante', 'err'); return; }
     stato.consegnante = { nome: nome, esterno: true };
+  } else if (consegnanteSelezionato && consegnanteSelezionato.startsWith('op-')) {
+    var opId = consegnanteSelezionato.substring(3);
+    var op = OPERATORI.find(function(o){ return o.id === opId; });
+    if (op) stato.consegnante = { id: op.id, nome: op.nome, ruolo: op.ruolo, esterno: false };
   }
 
   showLoading('Salvataggio in corso...');
+  stato.numero = NUMERO_SEQUENZIALE++;
 
-  // Salva nuovo paziente se richiesto
   if (stato.salvaPaziente && !stato.paziente.esistente && db) {
     try {
       var parts = stato.paziente.nome.split(' ');
       var cognome = parts[0]||'';
-      var nome_p  = parts.slice(1).join(' ')||'';
+      var nome_p = parts.slice(1).join(' ')||'';
       var ref = await db.collection('pazienti').add({
-        cognome: cognome, nome: nome_p,
-        indirizzo: stato.paziente.indirizzo,
-        citta: stato.paziente.citta
+        cognome: cognome, nome: nome_p, indirizzo: stato.paziente.indirizzo, citta: stato.paziente.citta
       });
       stato.paziente.id = ref.id;
-      PAZIENTI.push({ id: ref.id, nome: stato.paziente.nome,
-        indirizzo: stato.paziente.indirizzo, citta: stato.paziente.citta });
+      PAZIENTI.push({ id: ref.id, nome: stato.paziente.nome, indirizzo: stato.paziente.indirizzo, citta: stato.paziente.citta });
     } catch(e) { toast('Errore salvataggio paziente: '+e.message, 'err'); }
   }
 
-  // Salva record su Firestore (senza foto)
   if (db) {
     try {
+      var fotoEtichettaUrl = null, fotoProdottiUrl = null;
+
+      if (stato.fotoEtichetta) {
+        var fotoEtichettaRef = storage.ref('consegne/' + stato.numero + '/etichetta.jpg');
+        var fotoEtichettaDataUrl = stato.fotoEtichetta;
+        var arr = fotoEtichettaDataUrl.split(',');
+        var bstr = atob(arr[1]);
+        var n = bstr.length;
+        var u8arr = new Uint8Array(n);
+        while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+        await fotoEtichettaRef.put(new Blob([u8arr], {type:'image/jpeg'}));
+        fotoEtichettaUrl = await fotoEtichettaRef.getDownloadURL();
+      }
+
+      if (stato.fotoProdotti) {
+        var fotoProdottiRef = storage.ref('consegne/' + stato.numero + '/prodotti.jpg');
+        var fotoProdottiDataUrl = stato.fotoProdotti;
+        var arr = fotoProdottiDataUrl.split(',');
+        var bstr = atob(arr[1]);
+        var n = bstr.length;
+        var u8arr = new Uint8Array(n);
+        while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+        await fotoProdottiRef.put(new Blob([u8arr], {type:'image/jpeg'}));
+        fotoProdottiUrl = await fotoProdottiRef.getDownloadURL();
+      }
+
       await db.collection('qms_consegne').add({
+        numero: stato.numero,
         tsPreparazione: stato.tsPreparazione,
         tsControllo: stato.tsControllo || new Date(),
         preparatore: stato.preparatore,
@@ -900,36 +821,45 @@ async function goToS5() {
           citta: stato.paziente.citta
         },
         frigo: stato.frigo,
-        avvisoFrigo: stato.avvisoFrigo,
         consegnante: stato.consegnante,
-        note: stato.note
+        note: stato.note,
+        fotoEtichettaUrl: fotoEtichettaUrl,
+        fotoProdottiUrl: fotoProdottiUrl
       });
+
+      await db.collection('log_protocollazione').add({
+        timestamp: new Date(),
+        numero_consegna: stato.numero,
+        operazione: 'CONSEGNA_REGISTRATA',
+        preparatore_id: stato.preparatore.id,
+        controllore_id: stato.controllore.id,
+        paziente: stato.paziente.nome
+      });
+
     } catch(e) { toast('Errore Firestore: '+e.message, 'err'); }
   }
 
   hideLoading();
   renderS5();
+  caricaConsegne();
   goTo('s5');
 }
 
-// ════════════════════════════════════════════════════════
-// SCREEN 5 — RIEPILOGO
-// ════════════════════════════════════════════════════════
 function renderS5() {
   var p = stato.paziente;
   var addr = [p.indirizzo, p.citta].filter(Boolean).join(', ') || '—';
   document.getElementById('s5-dest-label').textContent = p.nome;
-  var frigo_badge = stato.frigo
-    ? '<span class="badge-frigo">🌡️ Frigo</span>'
-    : '<span class="badge-ok">Ambiente</span>';
+  var frigo_badge = stato.frigo ? '<span class="badge-frigo">🌡️ Frigo</span>' : '<span class="badge-ok">Ambiente</span>';
+  var num_badge = '<span class="badge-num">CD-' + String(stato.numero).padStart(5, '0') + '</span>';
   document.getElementById('s5-riepilogo').innerHTML = [
-    row('Destinatario',   escH(p.nome)),
-    row('Indirizzo',      escH(addr)),
-    row('Preparatore',    escH(stato.preparatore.nome)),
+    row('Numero consegna', num_badge),
+    row('Destinatario', escH(p.nome)),
+    row('Indirizzo', escH(addr)),
+    row('Preparatore', escH(stato.preparatore.nome)),
     row('Preparato alle', fmtTime(stato.tsPreparazione)),
-    row('Controllore',    escH(stato.controllore ? stato.controllore.nome : '—')),
+    row('Controllore', escH(stato.controllore ? stato.controllore.nome : '—')),
     row('Controllato alle', fmtTime(stato.tsControllo)),
-    row('Consegnante',    escH(stato.consegnante ? stato.consegnante.nome : '—')),
+    row('Consegnante', escH(stato.consegnante ? stato.consegnante.nome : '—')),
     row('Prodotti frigo', frigo_badge),
     stato.note ? row('Note', escH(stato.note)) : ''
   ].join('');
@@ -944,9 +874,6 @@ function fmtTime(d) {
   return d.toLocaleDateString('it-CH') + ' ' + d.toLocaleTimeString('it-CH', {hour:'2-digit',minute:'2-digit'});
 }
 
-// ════════════════════════════════════════════════════════
-// PDF
-// ════════════════════════════════════════════════════════
 function downloadPdf() {
   var btn = document.getElementById('s5-pdf-btn');
   btn.textContent = 'Generazione...';
@@ -964,18 +891,14 @@ function generaPdf() {
   var W = 210, margin = 15;
   var cw = W - margin*2;
   var y = 0;
-
-  function yt(yy) { return yy; }
   var C = {
-    greenDark: [27,94,32], greenMed: [46,125,50], greenLight: [232,245,233],
-    blue:  [21,101,192],   blueL:   [227,242,253],
-    red:   [198,40,40],    redL:    [255,235,238],
-    amber: [245,127,23],   amberL:  [255,248,225],
-    grayD: [55,71,79],     grayM:   [84,104,122], grayL:  [236,239,241],
-    white: [255,255,255],  black:   [26,26,26]
+    greenDark: [45,106,79], greenMed: [64,145,108], greenLight: [216,237,223],
+    blue: [41,128,185], blueL: [235,245,251],
+    red: [192,57,43], redL: [253,245,235],
+    grayD: [55,71,79], grayM: [107,107,96], grayL: [216,212,204],
+    white: [255,255,255], black: [26,26,26]
   };
 
-  // Header verde
   doc.setFillColor.apply(doc, C.greenDark);
   doc.rect(0, 0, W, 22, 'F');
   doc.setTextColor(255,255,255);
@@ -988,146 +911,265 @@ function generaPdf() {
   doc.text('Generato: '+fmtTime(now), W-margin, 15, {align:'right'});
   y = 28;
 
-  // Barra verde chiara titolo
   doc.setFillColor.apply(doc, C.greenLight);
   doc.rect(margin, y, cw, 9, 'F');
   doc.setFont('helvetica','bold'); doc.setFontSize(10);
   doc.setTextColor.apply(doc, C.greenDark);
   doc.text('DATI CONSEGNA', margin+4, y+6);
-  y += 13;
+  y += 14;
 
-  // Tabella dati principali
   var p = stato.paziente;
   var addr = [p.indirizzo, p.citta].filter(Boolean).join(', ') || '—';
-  var rows = [
-    ['Destinatario', p.nome],
-    ['Indirizzo', addr],
-    ['Preparatore', stato.preparatore.nome + ' ('+stato.preparatore.id+')'],
-    ['Data/ora preparazione', fmtTime(stato.tsPreparazione)],
-    ['Controllore', stato.controllore ? stato.controllore.nome+' ('+stato.controllore.id+')' : '—'],
-    ['Data/ora controllo', fmtTime(stato.tsControllo)],
-    ['Consegnante', stato.consegnante ? stato.consegnante.nome + (stato.consegnante.esterno?' (esterno)':'') : '—'],
-    ['Prodotti frigo', stato.frigo ? 'SI\' — avviso consegnante: '+(stato.avvisoFrigo?'CONFERMATO':'NON CONFERMATO') : 'No'],
-  ];
-  if (stato.note) rows.push(['Note', stato.note]);
 
-  var rowH = 7.5, lw = 50;
-  rows.forEach(function(r, i) {
-    var bg = i%2===0 ? C.white : C.grayL;
-    doc.setFillColor.apply(doc, bg);
-    doc.rect(margin, y, cw, rowH, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
-    doc.setTextColor.apply(doc, C.grayM);
-    doc.text(r[0], margin+3, y+5);
-    doc.setFont('helvetica','normal');
-    doc.setTextColor.apply(doc, C.black);
-    var lines = doc.splitTextToSize(r[1], cw-lw-6);
-    doc.text(lines, margin+lw, y+5);
-    y += rowH * Math.max(1, lines.length);
-  });
+  doc.setTextColor.apply(doc, C.black); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Numero consegna:', margin, y);
+  doc.setFont('helvetica','bold');
+  doc.text('CD-' + String(stato.numero).padStart(5, '0'), margin + 50, y); y += 7;
 
-  // Badge frigo
-  if (stato.frigo) {
-    y += 4;
-    doc.setFillColor.apply(doc, C.blueL);
-    doc.rect(margin, y, cw, 9, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(9);
-    doc.setTextColor.apply(doc, C.blue);
-    doc.text('ATTENZIONE: prodotti termosensibili (2-8C) — conservare catena del freddo', margin+4, y+6);
-    y += 13;
-  } else {
-    y += 6;
+  doc.setFont('helvetica','normal');
+  doc.text('Destinatario:', margin, y);
+  doc.setFont('helvetica','bold');
+  doc.text(p.nome, margin + 50, y); y += 7;
+
+  doc.setFont('helvetica','normal');
+  doc.text('Indirizzo:', margin, y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text(addr, margin + 50, y); y += 7;
+
+  doc.setFontSize(9);
+  doc.text('Preparatore:', margin, y);
+  doc.setFont('helvetica','bold');
+  doc.text(stato.preparatore.nome, margin + 50, y); y += 7;
+
+  doc.setFont('helvetica','normal');
+  doc.text('Preparato: ' + fmtTime(stato.tsPreparazione), margin, y); y += 7;
+
+  doc.text('Controllore:', margin, y);
+  doc.setFont('helvetica','bold');
+  doc.text(stato.controllore ? stato.controllore.nome : '—', margin + 50, y); y += 7;
+
+  doc.setFont('helvetica','normal');
+  doc.text('Controllato: ' + fmtTime(stato.tsControllo), margin, y); y += 7;
+
+  doc.text('Consegnante:', margin, y);
+  doc.setFont('helvetica','bold');
+  doc.text(stato.consegnante ? stato.consegnante.nome : '—', margin + 50, y); y += 7;
+
+  doc.setFont('helvetica','normal');
+  doc.text('Prodotti frigo: ' + (stato.frigo ? 'Sì' : 'No'), margin, y); y += 10;
+
+  if (stato.note) {
+    doc.text('Note:', margin, y); y += 4;
+    doc.setFontSize(8);
+    var splitNote = doc.splitTextToSize(stato.note, cw - 4);
+    splitNote.forEach(function(line) {
+      doc.text(line, margin + 2, y); y += 4;
+    });
+    y += 2;
   }
 
-  // Funzione per inserire foto
-  function inserisciFoto(base64, titolo) {
-    if (!base64) return;
-    if (y > 230) { doc.addPage(); y = 20; }
-    doc.setFillColor.apply(doc, C.greenLight);
-    doc.rect(margin, y, cw, 9, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.setTextColor.apply(doc, C.greenDark);
-    doc.text(titolo, margin+4, y+6);
-    y += 12;
+  doc.setFontSize(10); doc.setTextColor.apply(doc, C.grayD);
+  doc.text('Farmacia Ascona SA | Via Muralto 5 | 6612 Ascona TI', margin, W - 10);
+
+  var filename = 'Consegna_' + String(stato.numero).padStart(5, '0') + '_' + stato.paziente.nome.replace(/\s+/g, '_') + '.pdf';
+  doc.save(filename);
+
+  if (storage && db) {
     try {
-      // Calcola dimensioni proporzionali
-      var maxW = cw, maxH = 80;
-      var img = new Image();
-      img.src = base64;
-      var iw = img.naturalWidth || 800, ih = img.naturalHeight || 600;
-      var ratio = Math.min(maxW/iw, maxH/ih);
-      var fw = iw*ratio, fh = ih*ratio;
-      var fx = margin + (cw-fw)/2;
-      doc.addImage(base64, 'JPEG', fx, y, fw, fh);
-      y += fh + 6;
-    } catch(e) {
-      doc.setFont('helvetica','italic'); doc.setFontSize(9);
-      doc.setTextColor.apply(doc, C.grayM);
-      doc.text('(Foto non disponibile)', margin+4, y+6);
-      y += 10;
-    }
+      var pdfData = doc.output('datauristring');
+      var arr = pdfData.split(',');
+      var bstr = atob(arr[1]);
+      var n = bstr.length;
+      var u8arr = new Uint8Array(n);
+      while(n--) { u8arr[n] = bstr.charCodeAt(n); }
+      var pdfRef = storage.ref('consegne/' + stato.numero + '/consegna.pdf');
+      pdfRef.put(new Blob([u8arr], {type:'application/pdf'})).then(function() {
+        db.collection('qms_consegne').where('numero', '==', stato.numero).limit(1).get().then(function(snap) {
+          if (!snap.empty) {
+            snap.docs[0].ref.update({ pdfUrl: 'saved' });
+          }
+        });
+      });
+    } catch(e) { console.error('Errore salvataggio PDF:', e); }
   }
-
-  inserisciFoto(stato.fotoProdotti, 'FOTO PRODOTTI');
-  inserisciFoto(stato.fotoEtichetta, 'FOTO ETICHETTA / BUSTA');
-
-  // Footer
-  var pages = doc.getNumberOfPages();
-  for (var i=1; i<=pages; i++) {
-    doc.setPage(i);
-    doc.setFillColor.apply(doc, C.grayL);
-    doc.rect(0, 287, W, 10, 'F');
-    doc.setFont('helvetica','normal'); doc.setFontSize(7);
-    doc.setTextColor.apply(doc, C.grayM);
-    doc.text('Farmacia Ascona SA, Via Circonvallazione 6, 6612 Ascona  |  Conservare per 6 anni (art.28 LATer)', margin, 293);
-    doc.text('Pag. '+i+'/'+pages, W-margin, 293, {align:'right'});
-  }
-
-  // Filename
-  var ts = now.toLocaleDateString('it-CH').replace(/\//g,'-');
-  var dest = (stato.paziente.nome||'consegna').replace(/\s+/g,'_').substring(0,20);
-  doc.save('FA-SQ-CD-02_'+dest+'_'+ts+'.pdf');
 }
 
-// ════════════════════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════════════════════
 function nuovaConsegna() {
   stato = {
-    preparatore:null, paziente:null, salvaPaziente:false,
-    fotoEtichetta:null, fotoProdotti:null,
-    frigo:false, avvisoFrigo:false, note:'',
-    controllore:null, consegnante:null,
-    tsPreparazione:null, tsControllo:null
+    preparatore: null, paziente: null, salvaPaziente: false,
+    fotoEtichetta: null, fotoProdotti: null, frigo: false,
+    note: '', controllore: null, consegnante: null,
+    tsPreparazione: null, tsControllo: null, numero: null
   };
-  pinStato = { s1:{ digits:'', op:null }, s4:{ digits:'', op:null } };
+  pinStato = { s1: { digits: '', op: null }, s4: { digits: '', op: null } };
   consegnanteSelezionato = null;
-  // Reset campi
   ['s2-nome','s2-indirizzo','s2-citta','s2-search','s3-note','s4-esterno-nome']
     .forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('s3-frigo').checked = false;
-  document.getElementById('s3-avviso').checked = false;
-  document.getElementById('s3-avviso-row').style.display = 'none';
   document.getElementById('s2-save-row').style.display = 'none';
   document.getElementById('s2-save-check').checked = false;
-  // Reset foto
   ['s2','s3'].forEach(function(p) {
     var prev = document.getElementById(p+'-foto-preview');
     var area = document.getElementById(p+'-foto-area');
     var change = document.getElementById(p+'-foto-change');
-    if (prev)   { prev.src=''; prev.style.display='none'; }
-    if (area)   area.classList.remove('has-foto');
+    if (prev) { prev.src=''; prev.style.display='none'; }
+    if (area) area.classList.remove('has-foto');
     if (change) change.style.display='none';
     var icon = area && area.querySelector('.foto-icon');
-    var lbl  = area && area.querySelector('.foto-label');
+    var lbl = area && area.querySelector('.foto-label');
     if (icon) icon.style.display='block';
-    if (lbl)  lbl.style.display='block';
+    if (lbl) lbl.style.display='block';
   });
   renderOpGrid('s1-op-grid', 's1');
   document.getElementById('s1-pin-card').style.display = 'none';
   document.getElementById('s3-next').disabled = true;
   document.getElementById('s4-next').disabled = true;
   goTo('s1');
+}
+
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(screenId).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goToStorico() {
+  renderStorico();
+  goTo('s6');
+}
+
+function renderStorico() {
+  var byPaziente = {};
+  var byData = {};
+
+  CONSEGNE.forEach(function(c) {
+    var nomeP = c.paziente ? c.paziente.nome : 'Sconosciuto';
+    if (!byPaziente[nomeP]) byPaziente[nomeP] = [];
+    byPaziente[nomeP].push(c);
+
+    var d = c.tsPreparazione ? new Date(c.tsPreparazione.toDate()).toLocaleDateString('it-CH') : '—';
+    if (!byData[d]) byData[d] = [];
+    byData[d].push(c);
+  });
+
+  var htmlPaziente = '';
+  Object.keys(byPaziente).sort().forEach(function(nomeP) {
+    var consegne = byPaziente[nomeP];
+    htmlPaziente += '<div class="storico-item" style="cursor:pointer;" onclick="mostraDettagliPaziente(\''+escH(nomeP)+'\')">' +
+      '<div class="storico-nome">'+escH(nomeP)+'</div>' +
+      '<div class="storico-dettagli">'+consegne.length+' consegna' + (consegne.length !== 1 ? 'e' : '') + '</div>' +
+      '<div class="storico-data">Ultima: '+fmtTime(consegne[consegne.length-1].tsPreparazione)+'</div></div>';
+  });
+  document.getElementById('storico-paziente-list').innerHTML = htmlPaziente || '<div style="padding:10px;color:var(--gray-m);">Nessuna consegna registrata</div>';
+
+  var htmlData = '';
+  Object.keys(byData).sort(function(a, b) { return new Date(b) - new Date(a); }).forEach(function(d) {
+    var consegne = byData[d];
+    var nomi = consegne.map(function(c) { return c.paziente ? c.paziente.nome : 'Sconosciuto'; }).join(', ');
+    htmlData += '<div class="storico-item" style="cursor:pointer;" onclick="mostraDettagliData(\''+escH(d)+'\')">' +
+      '<div class="storico-nome">'+d+'</div>' +
+      '<div class="storico-dettagli">'+consegne.length+' consegna' + (consegne.length !== 1 ? 'e' : '') + ': ' + nomi + '</div></div>';
+  });
+  document.getElementById('storico-data-list').innerHTML = htmlData || '<div style="padding:10px;color:var(--gray-m);">Nessuna consegna registrata</div>';
+}
+
+function cambiaStorico(tab) {
+  document.querySelectorAll('.storico-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('[onclick*="cambiaStorico(\''+tab+'\')"]')[0].classList.add('active');
+  document.getElementById('storico-paziente').style.display = tab === 'paziente' ? 'block' : 'none';
+  document.getElementById('storico-data').style.display = tab === 'data' ? 'block' : 'none';
+}
+
+function mostraDettagliPaziente(nomeP) {
+  var consegneP = CONSEGNE.filter(function(c) {
+    return (c.paziente && c.paziente.nome === nomeP);
+  });
+
+  document.getElementById('modal-paziente-nome').textContent = escH(nomeP);
+  var html = '';
+
+  consegneP.forEach(function(c) {
+    var ts = c.tsPreparazione ? new Date(c.tsPreparazione.toDate()) : null;
+    var dataStr = ts ? ts.toLocaleDateString('it-CH') : '—';
+    var oraStr = ts ? ts.toLocaleTimeString('it-CH', {hour:'2-digit', minute:'2-digit'}) : '—';
+    var numStr = 'CD-' + String(c.numero).padStart(5, '0');
+
+    var pdfLink = c.pdfUrl ?
+      '<a href="javascript:void(0);" style="color:var(--green-med);text-decoration:none;font-weight:600;" onclick="scaricaPdfModal(\''+escH(c.numero)+'\');">📄 Scarica PDF</a>' :
+      '<span style="color:var(--gray-m);font-size:12px;">PDF non disponibile</span>';
+
+    html += '<div style="padding:12px;background:var(--gray-ll);border-radius:10px;border-left:4px solid var(--green-med);">' +
+      '<div style="font-weight:600;font-size:13px;color:var(--green-dark);margin-bottom:4px;">'+escH(numStr)+'</div>' +
+      '<div style="font-size:12px;color:var(--gray-m);margin-bottom:2px;">Data: '+escH(dataStr)+' '+escH(oraStr)+'</div>' +
+      '<div style="font-size:12px;color:var(--gray-m);margin-bottom:8px;">Preparatore: '+escH(c.preparatore ? c.preparatore.nome : '—')+'</div>' +
+      (c.note ? '<div style="font-size:12px;color:var(--gray-m);margin-bottom:6px;font-style:italic;">Note: '+escH(c.note)+'</div>' : '') +
+      '<div style="font-size:13px;">'+pdfLink+'</div>' +
+      '</div>';
+  });
+
+  document.getElementById('modal-consegne-paziente').innerHTML = html || '<div style="padding:10px;color:var(--gray-m);">Nessuna consegna</div>';
+  document.getElementById('modal-dettagli-paziente').style.display = 'block';
+}
+
+function chiudiModalDettagliPaziente() {
+  document.getElementById('modal-dettagli-paziente').style.display = 'none';
+}
+
+function mostraDettagliData(d) {
+  var consegneD = CONSEGNE.filter(function(c) {
+    var ts = c.tsPreparazione ? new Date(c.tsPreparazione.toDate()).toLocaleDateString('it-CH') : '—';
+    return ts === d;
+  });
+
+  document.getElementById('modal-data-data').textContent = escH(d);
+  var html = '';
+
+  consegneD.forEach(function(c) {
+    var ts = c.tsPreparazione ? new Date(c.tsPreparazione.toDate()) : null;
+    var oraStr = ts ? ts.toLocaleTimeString('it-CH', {hour:'2-digit', minute:'2-digit'}) : '—';
+    var numStr = 'CD-' + String(c.numero).padStart(5, '0');
+    var nomeP = c.paziente ? c.paziente.nome : 'Sconosciuto';
+
+    var pdfLink = c.pdfUrl ?
+      '<a href="javascript:void(0);" style="color:var(--green-med);text-decoration:none;font-weight:600;" onclick="scaricaPdfModal(\''+escH(c.numero)+'\');">📄 PDF</a>' :
+      '<span style="color:var(--gray-m);font-size:12px;">PDF n.d.</span>';
+
+    html += '<div style="padding:12px;background:var(--gray-ll);border-radius:10px;border-left:4px solid var(--blue);">' +
+      '<div style="font-weight:600;font-size:13px;color:var(--green-dark);margin-bottom:4px;">'+escH(numStr)+' • '+escH(nomeP)+'</div>' +
+      '<div style="font-size:12px;color:var(--gray-m);margin-bottom:2px;">Ora: '+escH(oraStr)+'</div>' +
+      '<div style="font-size:12px;color:var(--gray-m);margin-bottom:2px;">Preparatore: '+escH(c.preparatore ? c.preparatore.nome : '—')+'</div>' +
+      (c.frigo ? '<div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:6px;">🌡️ Contiene prodotti frigo</div>' : '') +
+      '<div style="font-size:13px;">'+pdfLink+'</div>' +
+      '</div>';
+  });
+
+  document.getElementById('modal-consegne-data').innerHTML = html || '<div style="padding:10px;color:var(--gray-m);">Nessuna consegna per questa data</div>';
+  document.getElementById('modal-dettagli-data').style.display = 'block';
+}
+
+function chiudiModalDettagliData() {
+  document.getElementById('modal-dettagli-data').style.display = 'none';
+}
+
+function scaricaPdfModal(numero) {
+  if (!storage || !db) {
+    toast('Firebase non disponibile', 'err');
+    return;
+  }
+  showLoading('Scaricamento PDF...');
+  var pdfRef = storage.ref('consegne/' + numero + '/consegna.pdf');
+  pdfRef.getDownloadURL().then(function(url) {
+    hideLoading();
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'Consegna_' + String(numero).padStart(5, '0') + '.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }).catch(function(e) {
+    hideLoading();
+    toast('Errore nel download del PDF: ' + e.message, 'err');
+  });
 }
 
 function showLoading(msg) {
@@ -1150,15 +1192,7 @@ function escH(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// s4-consegnante visibile dopo login controllore
-// (mostrato da renderConsegnante, nascosto inizialmente)
 document.getElementById('s4-consegnante-card').style.display = 'none';
-// Override: dopo renderConsegnante mostrarlo
-var _origRender = renderConsegnante;
-renderConsegnante = function() {
-  document.getElementById('s4-consegnante-card').style.display = 'block';
-  _origRender();
-};
 </script>
 </body>
 </html>
