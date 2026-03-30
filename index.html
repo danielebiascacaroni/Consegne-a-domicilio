@@ -9,191 +9,233 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
   --green-dark:#2D6A4F;--green-med:#40916C;--green-light:#D8EDDF;
-  --red-dark:#C0392B;--blue:#2980B9;--blue-light:#EBF5FB;
+  --red-dark:#C0392B;--red-light:#FDEDEC;
+  --blue:#2980B9;--blue-light:#EBF5FB;
+  --amber:#856404;--amber-light:#FFF3CD;--amber-border:#FFC107;
   --gray-m:#6B6760;--gray-l:#D8D4CC;--gray-ll:#F4F2EE;
-  --text:#1A1916;--radius:14px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+  --text:#1A1916;--radius:12px;--shadow:0 2px 10px rgba(0,0,0,0.07);
   --mono:'DM Mono',monospace;
 }
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll);color:var(--text);font-size:15px;}
 .screen{display:none;flex-direction:column;min-height:100vh;background:var(--gray-ll);}
 .screen.active{display:flex;}
-.topbar{background:var(--green-dark);color:white;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
-.topbar-back{background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.topbar-info{flex:1;}
-.topbar-title{font-size:16px;font-weight:700;}
-.topbar-sub{font-size:11px;opacity:0.75;margin-top:1px;}
-.progress-bar{background:var(--green-med);padding:8px 18px;display:flex;gap:6px;align-items:center;}
-.step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.35);transition:all .2s;}
-.step-dot.done{background:rgba(255,255,255,0.75);}
-.step-dot.active{background:white;width:22px;border-radius:4px;}
-.step-label{color:rgba(255,255,255,0.85);font-size:11px;margin-left:6px;}
-.scroll-body{flex:1;overflow-y:auto;padding:16px 16px 100px;}
-.scroll-body>*{max-width:560px;margin-left:auto;margin-right:auto;}
-.card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px;width:100%;}
-.card-title{font-size:13px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.field{margin-bottom:14px;}
-.field label{display:block;font-size:12px;font-weight:600;color:var(--gray-m);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.3px;}
-.field input,.field textarea,.field select{width:100%;padding:11px 14px;border:1.5px solid var(--gray-l);border-radius:9px;font-size:15px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);}
-.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--green-med);}
-.field textarea{min-height:70px;resize:vertical;}
+/* TOPBAR */
+.topbar{background:var(--green-dark);color:white;padding:11px 15px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.topbar-back{background:rgba(255,255,255,0.15);border:none;color:white;width:34px;height:34px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.topbar-info{flex:1;min-width:0;}
+.topbar-title{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-sub{font-size:11px;opacity:0.75;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-status{font-size:11px;opacity:0.7;flex-shrink:0;}
+/* PROGRESS */
+.progress-bar{background:var(--green-med);padding:7px 15px;display:flex;gap:5px;align-items:center;}
+.step-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.3);transition:all .2s;}
+.step-dot.done{background:rgba(255,255,255,0.7);}
+.step-dot.active{background:white;width:20px;border-radius:3px;}
+.step-label{color:rgba(255,255,255,0.85);font-size:11px;margin-left:5px;}
+/* SCROLL */
+.scroll-body{flex:1;overflow-y:auto;padding:12px 14px 100px;}
+.scroll-body>*{max-width:580px;margin-left:auto;margin-right:auto;}
+/* CARDS */
+.card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:11px;width:100%;}
+.card-title{font-size:12px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+/* FIELDS */
+.field{margin-bottom:11px;}.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--gray-m);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;}
+.field input,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--gray-l);border-radius:8px;font-size:16px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);}
+.field input:focus,.field textarea:focus{border-color:var(--green-med);}
+.field textarea{min-height:58px;resize:vertical;font-size:15px;}
+/* SEARCH */
 .search-wrap{position:relative;}
-.search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--green-med);border-top:none;border-radius:0 0 9px 9px;z-index:100;max-height:200px;overflow-y:auto;display:none;}
-.search-result-item{padding:11px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--gray-l);}
+.search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--green-med);border-top:none;border-radius:0 0 8px 8px;z-index:100;max-height:220px;overflow-y:auto;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+.search-result-item{padding:10px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--gray-l);}
 .search-result-item:last-child{border-bottom:none;}
 .search-result-item:hover,.search-result-item:active{background:var(--green-light);}
-.item-nome{font-weight:600;}
-.item-addr{font-size:12px;color:var(--gray-m);}
-.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
-.op-card{background:var(--gray-ll);border:2px solid var(--gray-l);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;}
+.item-nome{font-weight:600;}.item-addr{font-size:11px;color:var(--gray-m);}
+/* OP GRID */
+.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;}
+.op-card{background:var(--gray-ll);border:2px solid var(--gray-l);border-radius:10px;padding:11px 8px;text-align:center;cursor:pointer;transition:all .15s;}
 .op-card:hover,.op-card:active,.op-card.selected{border-color:var(--green-med);background:var(--green-light);}
-.op-card .op-sigla{font-size:26px;font-weight:800;color:var(--green-dark);}
-.op-card .op-nome{font-size:11px;color:var(--gray-m);margin-top:4px;}
-.op-card .op-ruolo{font-size:10px;color:var(--gray-m);margin-top:2px;}
-.pin-display{display:flex;justify-content:center;gap:10px;margin:16px 0 8px;}
-.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--gray-l);background:white;transition:all .2s;}
+.op-sigla{font-size:22px;font-weight:800;color:var(--green-dark);}
+.op-nome{font-size:11px;color:var(--gray-m);margin-top:3px;}
+.op-ruolo{font-size:10px;color:var(--gray-m);margin-top:1px;}
+/* PIN */
+.pin-display{display:flex;justify-content:center;gap:10px;margin:12px 0 6px;}
+.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--gray-l);background:white;transition:all .2s;}
 .pin-dot.filled{background:var(--green-dark);border-color:var(--green-dark);}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto;}
-.pin-btn{background:white;border:2px solid var(--gray-l);border-radius:50%;width:64px;height:64px;font-size:20px;font-weight:600;cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:230px;margin:0 auto;}
+.pin-btn{background:white;border:2px solid var(--gray-l);border-radius:50%;width:58px;height:58px;font-size:18px;font-weight:600;cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;}
 .pin-btn:active{background:var(--green-light);border-color:var(--green-med);transform:scale(0.93);}
-.pin-btn.del{font-size:16px;color:var(--gray-m);}
+.pin-btn.del{font-size:15px;color:var(--gray-m);}
 .pin-btn.empty{visibility:hidden;}
-.pin-error{color:var(--red-dark);font-size:13px;text-align:center;margin-top:8px;display:none;}
-.frigo-scelta{display:flex;gap:10px;margin-top:8px;}
-.frigo-btn{flex:1;padding:14px;border:2px solid var(--gray-l);border-radius:10px;background:var(--gray-ll);font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
+.pin-error{color:var(--red-dark);font-size:13px;text-align:center;margin-top:7px;display:none;}
+/* FRIGO */
+.frigo-scelta{display:flex;gap:8px;margin-top:6px;}
+.frigo-btn{flex:1;padding:11px;border:2px solid var(--gray-l);border-radius:9px;background:var(--gray-ll);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
 .frigo-btn.si.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
 .frigo-btn.no.selected{border-color:var(--green-med);background:var(--green-light);color:var(--green-dark);}
-.foto-area{border:2px dashed var(--gray-l);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--gray-ll);}
-.foto-area:hover,.foto-area:active{border-color:var(--green-med);background:var(--green-light);}
-.foto-area.has-foto{border-style:solid;border-color:var(--green-med);background:white;padding:8px;}
-.foto-icon{font-size:32px;margin-bottom:6px;}
-.foto-label{font-size:13px;color:var(--gray-m);}
-.foto-preview{width:100%;max-height:200px;object-fit:contain;border-radius:8px;display:none;}
-.foto-change{font-size:12px;color:var(--green-med);margin-top:6px;cursor:pointer;font-weight:600;}
-.foto-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:40px;align-items:center;}
-.foto-thumb{position:relative;width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid var(--gray-l);background:white;}
-.foto-thumb img{width:100%;height:100%;object-fit:cover;}
-.foto-thumb-remove{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:var(--red-dark);color:white;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;}
-.foto-add-btn{display:flex;align-items:center;gap:6px;padding:12px 14px;background:var(--gray-ll);border:1.5px dashed var(--gray-l);border-radius:9px;color:var(--gray-m);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;width:100%;}
-.foto-add-btn:hover{background:var(--green-light);border-color:var(--green-med);color:var(--green-dark);}
-input[type=file]{display:none;}
-.consegnante-list{display:flex;flex-direction:column;gap:8px;}
-.consegnante-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;}
+.frigo-info-msg{background:var(--blue-light);border:1.5px solid var(--blue);border-radius:8px;padding:10px 12px;margin-top:9px;font-size:13px;color:var(--blue);line-height:1.4;display:none;}
+/* FRIGO WARN S5 */
+.frigo-warn-s5{background:var(--blue-light);border:2px solid var(--blue);border-radius:10px;padding:13px;margin-bottom:11px;}
+.frigo-warn-title{font-weight:700;color:var(--blue);font-size:14px;margin-bottom:6px;}
+.frigo-confirm-row{display:flex;gap:8px;margin-top:9px;}
+.frigo-confirm-btn{flex:1;padding:10px;border:2px solid var(--gray-l);border-radius:8px;background:white;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;}
+.frigo-confirm-btn.si.sel{border-color:var(--green-med);background:var(--green-light);color:var(--green-dark);}
+.frigo-confirm-btn.no.sel{border-color:var(--red-dark);background:var(--red-light);color:var(--red-dark);}
+/* FOTO */
+.foto-section{margin-bottom:11px;}
+.foto-section-label{font-size:12px;font-weight:700;color:var(--gray-m);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;}
+.foto-thumbs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:7px;}
+.foto-thumb{position:relative;width:74px;height:74px;}
+.foto-thumb img{width:74px;height:74px;object-fit:cover;border-radius:8px;border:1.5px solid var(--gray-l);}
+.foto-thumb-badge{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,0.55);color:white;font-size:9px;padding:1px 4px;border-radius:3px;font-weight:600;}
+.foto-thumb-remove{position:absolute;top:-5px;right:-5px;background:var(--red-dark);color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.foto-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 13px;border:1.5px dashed var(--gray-l);border-radius:8px;background:var(--gray-ll);font-size:13px;font-weight:600;color:var(--gray-m);cursor:pointer;transition:all .15s;width:100%;font-family:inherit;}
+.foto-add-btn:not(:disabled):hover,.foto-add-btn:not(:disabled):active{border-color:var(--green-med);background:var(--green-light);color:var(--green-dark);}
+.foto-add-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.foto-counter-total{font-size:12px;color:var(--gray-m);text-align:right;margin-top:4px;}
+/* RIEPILOGO */
+.rie-row{display:flex;padding:7px 0;border-bottom:1px solid var(--gray-l);font-size:13px;}
+.rie-row:last-child{border-bottom:none;}
+.rie-label{color:var(--gray-m);width:95px;flex-shrink:0;font-weight:600;font-size:11px;padding-top:1px;}
+.rie-val{flex:1;line-height:1.35;}
+/* BADGES */
+.badge{padding:2px 8px;border-radius:9px;font-size:11px;font-weight:700;display:inline-block;}
+.badge-frigo{background:var(--blue-light);color:var(--blue);}
+.badge-ok{background:var(--green-light);color:var(--green-dark);}
+.badge-num{background:var(--gray-l);color:#555;padding:3px 8px;border-radius:9px;font-size:12px;font-weight:700;font-family:var(--mono);}
+.badge-pronta{background:#FFF3CD;color:#856404;}
+.badge-consegna{background:var(--blue-light);color:var(--blue);}
+.badge-verificata{background:var(--green-light);color:var(--green-dark);}
+.badge-problema{background:var(--red-light);color:var(--red-dark);}
+/* CONSEGNANTE */
+.consegnante-list{display:flex;flex-direction:column;gap:7px;}
+.consegnante-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--gray-l);border-radius:9px;cursor:pointer;transition:all .15s;}
 .consegnante-item:hover,.consegnante-item:active,.consegnante-item.selected{border-color:var(--green-med);background:var(--green-light);}
-.c-sigla{font-size:20px;font-weight:800;color:var(--green-dark);width:40px;text-align:center;}
-.c-nome{font-size:14px;font-weight:600;}
-.c-ruolo{font-size:11px;color:var(--gray-m);}
-.c-check{margin-left:auto;color:var(--green-med);font-size:20px;display:none;}
+.c-sigla{font-size:17px;font-weight:800;color:var(--green-dark);width:34px;text-align:center;}
+.c-nome{font-size:13px;font-weight:600;}.c-ruolo{font-size:11px;color:var(--gray-m);}
+.c-check{margin-left:auto;color:var(--green-med);font-size:17px;display:none;}
 .consegnante-item.selected .c-check{display:block;}
 .consegnante-esterno{border-style:dashed;}
-.riepilogo-row{display:flex;padding:9px 0;border-bottom:1px solid var(--gray-l);font-size:13px;}
-.riepilogo-row:last-child{border-bottom:none;}
-.riepilogo-label{color:var(--gray-m);width:110px;flex-shrink:0;font-weight:600;}
-.riepilogo-val{flex:1;}
-.badge-frigo{background:var(--blue-light);color:var(--blue);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;}
-.badge-ok{background:var(--green-light);color:var(--green-dark);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block;}
-.badge-num{background:var(--gray-l);color:#555;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;font-family:var(--mono);display:inline-block;}
-.success-icon{font-size:64px;text-align:center;margin:24px 0 10px;}
-.success-title{font-size:22px;font-weight:800;color:var(--green-dark);text-align:center;}
-.success-sub{font-size:14px;color:var(--gray-m);text-align:center;margin-top:6px;}
-.bottom-cta{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:white;border-top:1px solid var(--gray-l);z-index:40;}
-.bottom-cta .inner{max-width:560px;margin:0 auto;}
-.btn{width:100%;padding:15px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;}
+/* STORICO */
+.storico-tabs{display:flex;gap:7px;margin-bottom:11px;}
+.storico-tab{flex:1;padding:9px;border:none;background:var(--gray-l);border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit;}
+.storico-tab.active{background:var(--green-med);color:white;}
+.storico-group{font-size:11px;font-weight:700;color:var(--gray-m);padding:8px 2px 4px;text-transform:uppercase;letter-spacing:0.5px;}
+.storico-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:white;border:1px solid var(--gray-l);border-radius:9px;cursor:pointer;transition:all .15s;margin-bottom:6px;}
+.storico-item:hover{border-color:var(--green-med);background:var(--green-light);}
+.storico-info{flex:1;min-width:0;}
+.storico-nome{font-weight:600;font-size:13px;}
+.storico-det{font-size:11px;color:var(--gray-m);margin-top:2px;}
+.storico-btns{display:flex;gap:5px;flex-shrink:0;}
+.verifica-toggle{background:none;border:1.5px solid var(--gray-l);border-radius:7px;padding:5px 7px;font-size:16px;cursor:pointer;transition:all .15s;line-height:1;}
+.verifica-toggle.verde{border-color:var(--green-med);background:var(--green-light);}
+.verifica-toggle.problema{border-color:var(--red-dark);background:var(--red-light);}
+/* PRONTE CARDS */
+.pronta-card{background:white;border-radius:var(--radius);padding:13px 14px;margin-bottom:9px;cursor:pointer;border:2px solid var(--gray-l);transition:all .15s;width:100%;display:block;text-align:left;}
+.pronta-card:hover,.pronta-card:active{border-color:var(--green-med);box-shadow:0 3px 12px rgba(64,145,108,0.15);}
+.pronta-paziente{font-size:18px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:5px;}
+.pronta-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--gray-m);}
+.pronta-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+/* BOTTOM CTA */
+.bottom-cta{position:fixed;bottom:0;left:0;right:0;padding:9px 13px;background:white;border-top:1px solid var(--gray-l);z-index:40;}
+.bottom-cta .inner{max-width:580px;margin:0 auto;}
+.action-2x2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+/* BUTTONS */
+.btn{width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.2;}
 .btn-green{background:var(--green-med);color:white;}
 .btn-green:hover{background:var(--green-dark);}
 .btn-green:disabled{background:var(--gray-l);color:var(--gray-m);cursor:not-allowed;}
 .btn-outline{background:white;color:var(--green-med);border:2px solid var(--green-med);}
 .btn-dark{background:var(--green-dark);color:white;}
-.btn-sm{padding:10px 18px;font-size:14px;width:auto;border-radius:8px;}
-.save-paziente-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--blue-light);border-radius:8px;margin-top:8px;}
-.save-paziente-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);}
-.save-paziente-row label{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;}
-.storico-tabs{display:flex;gap:8px;margin-bottom:14px;}
-.storico-tab{flex:1;padding:10px;border:none;background:var(--gray-l);border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;}
-.storico-tab.active{background:var(--green-med);color:white;}
-.storico-item{padding:12px;background:white;border:1px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-.storico-item:hover{border-color:var(--green-med);background:var(--green-light);}
-.storico-item-info{flex:1;}
-.storico-nome{font-weight:600;font-size:14px;}
-.storico-dettagli{font-size:12px;color:var(--gray-m);margin-top:3px;}
-.storico-flag{font-size:18px;cursor:pointer;opacity:0.6;transition:opacity .2s;}
-.storico-flag:hover{opacity:1;}
-.warn-box{background:#fff7ed;border:1.5px solid #fed7aa;border-radius:8px;padding:12px 14px;font-size:12px;color:#92400e;margin-bottom:12px;}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.btn-red{background:var(--red-dark);color:white;}
+.btn-amber{background:var(--amber-light);color:var(--amber);border:1.5px solid var(--amber-border);}
+.btn-ghost{background:transparent;color:var(--gray-m);border:1.5px solid var(--gray-l);}
+.btn-sm{padding:8px 14px;font-size:13px;width:auto;border-radius:8px;}
+/* SAVE ROW */
+.save-row{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--blue-light);border-radius:8px;margin-top:8px;}
+.save-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);}
+.save-row label{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;}
+/* WARN */
+.warn-box{background:var(--amber-light);border:1.5px solid var(--amber-border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--amber);line-height:1.4;}
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-end;justify-content:center;}
 .modal-overlay.show{display:flex;}
-.modal-box{background:white;border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-l);}
-.modal-header h2{font-size:16px;font-weight:700;color:var(--green-dark);margin:0;}
-.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-m);}
-.mc-card{padding:12px;background:var(--gray-ll);border-radius:10px;margin-bottom:8px;}
-.mc-card-row{display:flex;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:12px;}
-.mc-card-row:last-child{border-bottom:none;}
-.mc-card-label{font-weight:600;color:var(--gray-m);width:100px;flex-shrink:0;}
-.mc-card-val{flex:1;word-break:break-word;}
-.foto-gallery{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
-.foto-gallery-thumb{width:60px;height:60px;border-radius:6px;border:1px solid var(--gray-l);overflow:hidden;background:white;}
-.foto-gallery-thumb img{width:100%;height:100%;object-fit:cover;}
-.foto-gallery-link{font-size:11px;color:var(--blue);font-weight:600;padding:4px 8px;background:var(--blue-light);border-radius:6px;display:inline-block;margin:2px 0;}
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
-#toast.show{opacity:1;}
-#toast.ok{background:var(--green-med);}
-#toast.err{background:var(--red-dark);}
-.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.modal-box{background:white;border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:600px;max-height:82vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;padding-bottom:10px;border-bottom:1px solid var(--gray-l);}
+.modal-header h2{font-size:15px;font-weight:700;color:var(--green-dark);margin:0;}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-m);padding:4px;line-height:1;}
+.mc-card{padding:11px;background:var(--gray-ll);border-radius:9px;margin-bottom:8px;border-left:4px solid var(--green-med);}
+/* TOAST */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:9px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+#toast.show{opacity:1;}#toast.ok{background:var(--green-med);}#toast.err{background:var(--red-dark);}
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 .loading-overlay.show{display:flex;}
-.spinner{width:38px;height:38px;border:3px solid var(--gray-l);border-top:3px solid var(--green-med);border-radius:50%;animation:spin .7s linear infinite;}
+.spinner{width:36px;height:36px;border:3px solid var(--gray-l);border-top:3px solid var(--green-med);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.consegne-pronte-section{background:var(--green-light);border:2px solid var(--green-med);border-radius:14px;padding:18px;margin:16px 16px 0;max-width:560px;margin-left:auto;margin-right:auto;}
-.consegne-pronte-title{font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.consegne-pronte-grid{display:flex;flex-direction:column;gap:8px;}
-.consegna-pronta-card{background:white;border:1px solid var(--green-med);border-radius:10px;padding:14px;cursor:pointer;transition:all .15s;}
-.consegna-pronta-card:hover{background:var(--green-light);}
-.consegna-pronta-num{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--green-dark);margin-bottom:4px;}
-.consegna-pronta-nome{font-weight:600;font-size:13px;}
-.consegna-pronta-info{font-size:11px;color:var(--gray-m);margin-top:2px;}
+/* SEPARATORE */
+.sep{border:none;border-top:1px solid var(--gray-l);margin:11px 0;}
 </style>
 </head>
 <body>
 
-<!-- S0 LOGIN - OPERATORE + CONSEGNE PRONTE -->
+<!-- ═══════════════════════════════════════════
+     S0 — LOGIN / HOME OPERATIVA
+═══════════════════════════════════════════ -->
 <div id="s0" class="screen active">
   <div class="topbar">
     <div class="topbar-info">
       <div class="topbar-title">Consegna Domicilio</div>
-      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-02 V9</div>
+      <div class="topbar-sub" id="s0-sub">Farmacia Ascona · FA-SQ-CD-02</div>
     </div>
-    <span id="s0-status" style="font-size:11px;opacity:0.7;">Connessione...</span>
+    <span class="topbar-status" id="s0-status">●</span>
   </div>
   <div class="scroll-body">
-    <div style="max-width:560px;margin:0 auto 12px;width:100%;">
-      <button class="btn btn-outline btn-sm" onclick="goToStorico()" style="width:100%;">📋 Storico consegne</button>
+    <!-- Vista LOGIN -->
+    <div id="s0-login">
+      <div class="card">
+        <div class="card-title">👤 Chi sei?</div>
+        <div class="op-grid" id="s0-op-grid">
+          <div style="color:var(--gray-m);font-size:13px;padding:8px;">Caricamento...</div>
+        </div>
+      </div>
     </div>
-    <div class="card" style="max-width:560px;margin:0 auto 12px;">
-      <div class="card-title">👤 Chi prepara la fornitura?</div>
-      <div class="op-grid" id="s0-op-grid"><div style="color:var(--gray-m);font-size:13px;padding:10px;">Caricamento...</div></div>
-    </div>
-    <div id="s0-consegne-pronte" class="consegne-pronte-section" style="display:none;">
-      <div class="consegne-pronte-title">⚡ Consegne Pronte per Controllo</div>
-      <div class="consegne-pronte-grid" id="s0-consegne-pronte-list"></div>
+    <!-- Vista HOME (dopo login) -->
+    <div id="s0-home" style="display:none;">
+      <div style="max-width:580px;margin:0 auto 11px;">
+        <button class="btn btn-green" onclick="iniziaNuovaPrep()" style="font-size:15px;padding:14px;">＋ Nuova preparazione</button>
+      </div>
+      <div id="s0-pronte-wrap">
+        <div class="card" id="s0-pronte-card">
+          <div class="card-title">⏳ Da controllare</div>
+          <div id="s0-pronte-list"></div>
+        </div>
+      </div>
+      <div style="max-width:580px;margin:11px auto 0;">
+        <button class="btn btn-ghost" onclick="goToStorico()" style="width:100%;font-size:13px;padding:10px;">📋 Storico consegne</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- S1 PIN PREPARATORE -->
+<!-- ═══════════════════════════════════════════
+     S1 — PIN PREPARATORE
+═══════════════════════════════════════════ -->
 <div id="s1" class="screen">
   <div class="topbar">
-    <button class="topbar-back" onclick="goTo('s0')">←</button>
+    <button class="topbar-back" onclick="goTo('s0');resetPinS1()">←</button>
     <div class="topbar-info">
-      <div class="topbar-title">Preparatore</div>
-      <div class="topbar-sub" id="s1-op-nome-label"></div>
+      <div class="topbar-title">Identificazione</div>
+      <div class="topbar-sub" id="s1-nome-label">—</div>
     </div>
   </div>
-  <div class="progress-bar">
-    <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
-    <span class="step-label">PIN Verificazione</span>
-  </div>
   <div class="scroll-body">
-    <div class="card">
-      <div class="card-title">🔑 Inserisci PIN</div>
-      <div class="pin-display"><div class="pin-dot" id="s1d0"></div><div class="pin-dot" id="s1d1"></div><div class="pin-dot" id="s1d2"></div><div class="pin-dot" id="s1d3"></div></div>
+    <div class="card" style="max-width:320px;margin:16px auto 0;">
+      <div class="card-title" style="justify-content:center;">🔑 PIN</div>
+      <div class="pin-display">
+        <div class="pin-dot" id="s1d0"></div><div class="pin-dot" id="s1d1"></div>
+        <div class="pin-dot" id="s1d2"></div><div class="pin-dot" id="s1d3"></div>
+      </div>
       <div class="pin-pad">
         <button class="pin-btn" onclick="pinPress('s1',1)">1</button>
         <button class="pin-btn" onclick="pinPress('s1',2)">2</button>
@@ -213,206 +255,350 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- S2 DESTINATARIO -->
+<!-- ═══════════════════════════════════════════
+     S2 — DESTINATARIO
+═══════════════════════════════════════════ -->
 <div id="s2" class="screen">
   <div class="topbar">
     <button class="topbar-back" onclick="goTo('s0')">←</button>
     <div class="topbar-info">
       <div class="topbar-title">Destinatario</div>
-      <div class="topbar-sub" id="s2-prep-label"></div>
+      <div class="topbar-sub" id="s2-prep-label">—</div>
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
-    <span class="step-label">Paziente</span>
+    <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
+    <span class="step-label">1 · Destinatario</span>
   </div>
   <div class="scroll-body">
     <div class="card">
-      <div class="card-title">🔍 Ricerca paziente</div>
-      <div class="search-wrap">
-        <input type="text" id="s2-search" placeholder="Cognome o nome..." autocomplete="off" oninput="cercaPaziente(this.value)" onfocus="cercaPaziente(this.value)">
-        <div class="search-results" id="s2-results"></div>
+      <div class="card-title">📋 Dati destinatario</div>
+      <div class="field">
+        <label>Cerca paziente esistente</label>
+        <div class="search-wrap">
+          <input type="text" id="s2-search" placeholder="Digita cognome o nome..." autocomplete="off"
+            oninput="cercaPaziente(this.value)" onfocus="cercaPaziente(this.value)">
+          <div class="search-results" id="s2-results"></div>
+        </div>
       </div>
-      <div style="margin-top:12px;font-size:12px;color:var(--gray-m);">o compilare manualmente:</div>
-    </div>
-    <div class="card">
-      <div class="field"><label>Cognome e Nome *</label><input type="text" id="s2-nome" placeholder="Es. Rossi Mario" autocomplete="off"></div>
-      <div class="field"><label>Indirizzo</label><input type="text" id="s2-indirizzo" placeholder="Via, numero civico"></div>
-      <div class="field"><label>Comune / CAP</label><input type="text" id="s2-citta" placeholder="Es. Ascona 6612"></div>
-      <div class="save-paziente-row" id="s2-save-row" style="display:none;">
+      <hr class="sep">
+      <div class="field">
+        <label>Cognome e Nome *</label>
+        <input type="text" id="s2-nome" placeholder="Es. Rossi Mario" autocomplete="off" oninput="checkS2Ready()">
+      </div>
+      <div class="field">
+        <label>Indirizzo</label>
+        <input type="text" id="s2-indirizzo" placeholder="Via, numero civico">
+      </div>
+      <div class="field">
+        <label>Comune / CAP</label>
+        <input type="text" id="s2-citta" placeholder="Es. Ascona 6612">
+      </div>
+      <div class="save-row" id="s2-save-row" style="display:none;">
         <input type="checkbox" id="s2-save-check">
-        <label for="s2-save-check">💾 Salva come nuovo paziente</label>
+        <label for="s2-save-check">Salva come paziente per le prossime consegne</label>
       </div>
-      <div class="card-title" style="margin-top:16px;text-transform:none;font-size:12px;">📸 Foto Etichetta Prescrizione</div>
-      <div class="foto-area" id="s2-foto-area" onclick="document.getElementById('s2-foto-input').click()">
-        <div class="foto-icon">📷</div>
-        <div class="foto-label">Scatta o carica foto</div>
-        <img class="foto-preview" id="s2-foto-preview" alt="etichetta">
-        <div class="foto-change" id="s2-foto-change" style="display:none;">Cambia foto</div>
-      </div>
-      <input type="file" id="s2-foto-input" accept="image/*" capture="environment" onchange="loadFoto('s2',this)">
     </div>
   </div>
-  <div class="bottom-cta"><div class="inner"><button class="btn btn-green" id="s2-next" onclick="goToS3()" disabled>Avanti →</button></div></div>
+  <div class="bottom-cta">
+    <div class="inner">
+      <button class="btn btn-green" id="s2-next" onclick="goToS3()" disabled>Avanti →</button>
+    </div>
+  </div>
 </div>
 
-<!-- S3 PRODOTTI -->
+<!-- ═══════════════════════════════════════════
+     S3 — PRODOTTI / FOTO / FRIGO / NOTE
+═══════════════════════════════════════════ -->
 <div id="s3" class="screen">
   <div class="topbar">
-    <button class="topbar-back" onclick="goTo('s0')">←</button>
+    <button class="topbar-back" onclick="goTo('s2')">←</button>
     <div class="topbar-info">
       <div class="topbar-title">Prodotti</div>
-      <div class="topbar-sub" id="s3-dest-label"></div>
+      <div class="topbar-sub" id="s3-dest-label">—</div>
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div>
-    <span class="step-label">Prodotti</span>
+    <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
+    <span class="step-label">2 · Prodotti</span>
   </div>
   <div class="scroll-body">
+    <!-- FOTO -->
     <div class="card">
-      <div class="card-title">📸 Foto Prodotti</div>
-      <div class="foto-thumbs" id="s3-foto-thumbs"></div>
-      <button class="foto-add-btn" onclick="document.getElementById('s3-foto-input').click()">📷 Aggiungi foto</button>
-      <input type="file" id="s3-foto-input" accept="image/*" capture="environment" onchange="loadFoto('s3',this)">
-      <div class="field" style="margin-top:14px;margin-bottom:0;">
-        <label>Conservazione in frigo? <span id="s3-frigo-req" style="font-size:11px;color:var(--red-dark);font-weight:600;text-transform:none;margin-left:4px;">— obbligatorio</span></label>
+      <div class="card-title">
+        📷 Foto documentazione
+        <span id="s3-tot-label" style="margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--gray-m);font-weight:600;">0 / 4</span>
+      </div>
+      <!-- Etichetta -->
+      <div class="foto-section">
+        <div class="foto-section-label">
+          <span>📦 Etichetta / busta <span style="color:var(--red-dark);font-size:10px;">*</span></span>
+        </div>
+        <div class="foto-thumbs" id="s3-et-thumbs"></div>
+        <button class="foto-add-btn" id="s3-add-et" onclick="document.getElementById('s3-in-et').click()">
+          📷 Aggiungi foto etichetta
+        </button>
+        <input type="file" id="s3-in-et" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoPrep('etichetta',this)">
+      </div>
+      <hr class="sep">
+      <!-- Prodotti -->
+      <div class="foto-section" style="margin-bottom:0;">
+        <div class="foto-section-label">
+          <span>💊 Prodotti <span style="color:var(--red-dark);font-size:10px;">*</span></span>
+        </div>
+        <div class="foto-thumbs" id="s3-pr-thumbs"></div>
+        <button class="foto-add-btn" id="s3-add-pr" onclick="document.getElementById('s3-in-pr').click()">
+          📷 Aggiungi foto prodotti
+        </button>
+        <input type="file" id="s3-in-pr" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoPrep('prodotti',this)">
+      </div>
+      <div class="foto-counter-total" id="s3-foto-msg"></div>
+    </div>
+    <!-- FRIGO -->
+    <div class="card">
+      <div class="card-title">
+        🌡️ Prodotti termosensibili
+        <span id="s3-frigo-req" style="font-size:11px;color:var(--red-dark);font-weight:600;text-transform:none;margin-left:4px;">— obbligatorio</span>
       </div>
       <div class="frigo-scelta">
-        <button class="frigo-btn si" id="frigo-si" onclick="setFrigo(true)">❄️ Sì (Frigo)</button>
-        <button class="frigo-btn no" id="frigo-no" onclick="setFrigo(false)">🌡️ No (Ambiente)</button>
+        <button class="frigo-btn si" id="frigo-si" onclick="setFrigo(true)">🌡️ SÌ — Frigo</button>
+        <button class="frigo-btn no" id="frigo-no" onclick="setFrigo(false)">✓ NO — Ambiente</button>
       </div>
-      <div class="field"><label>Note e istruzioni</label><textarea id="s3-note" placeholder="Istruzioni particolari, orari preferiti, ecc."></textarea></div>
+      <div class="frigo-info-msg" id="frigo-info">
+        ⚠️ Prodotti frigo presenti. Il dispensatore/consegnante dovrà essere avvisato nella fase di controllo-consegna.
+      </div>
+    </div>
+    <!-- NOTE -->
+    <div class="card">
+      <div class="card-title">📝 Note <span style="font-size:11px;color:var(--gray-m);font-weight:400;text-transform:none;">(facoltative)</span></div>
+      <div class="field" style="margin-bottom:0;">
+        <textarea id="s3-note" placeholder="Istruzioni particolari, orari, ecc."></textarea>
+      </div>
     </div>
   </div>
-  <div class="bottom-cta"><div class="inner"><button class="btn btn-green" id="s3-next" onclick="goToS4()" disabled>Avanti →</button></div></div>
+  <div class="bottom-cta">
+    <div class="inner">
+      <button class="btn btn-green" id="s3-next" onclick="goToS4()" disabled>Avanti →</button>
+    </div>
+  </div>
 </div>
 
-<!-- S4 RIEPILOGO PREPARAZIONE -->
+<!-- ═══════════════════════════════════════════
+     S4 — RIEPILOGO + 4 AZIONI
+═══════════════════════════════════════════ -->
 <div id="s4" class="screen">
   <div class="topbar">
-    <button class="topbar-back" onclick="goTo('s0')">←</button>
+    <button class="topbar-back" onclick="goTo('s3')">←</button>
     <div class="topbar-info">
-      <div class="topbar-title">Riepilogo</div>
-      <div class="topbar-sub">Preparazione completata</div>
+      <div class="topbar-title" id="s4-title">Riepilogo</div>
+      <div class="topbar-sub" id="s4-sub">Verifica prima di salvare</div>
     </div>
   </div>
   <div class="progress-bar">
-    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
-    <span class="step-label">Riepilogo</span>
+    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div>
+    <span class="step-label">3 · Riepilogo</span>
   </div>
   <div class="scroll-body">
     <div class="card">
-      <div class="card-title">✓ Fornitura Pronta</div>
+      <div class="card-title">✓ Riepilogo preparazione</div>
       <div id="s4-riepilogo"></div>
     </div>
+    <div class="card" id="s4-foto-card">
+      <div class="card-title">📷 Foto allegate</div>
+      <div class="foto-thumbs" id="s4-foto-thumbs"></div>
+    </div>
+    <!-- AZIONI NORMALE -->
+    <div class="card" id="s4-azioni-normal">
+      <div class="card-title">↪ Cosa vuoi fare?</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost" onclick="goTo('s3')">← Torna indietro</button>
+        <button class="btn btn-outline" onclick="salvaEProssima()">✚ Salva e nuova preparazione</button>
+        <button class="btn btn-amber" onclick="salvaEdEsci('prep')">🚪 Salva ed esci</button>
+        <button class="btn btn-green" onclick="salvaEProsegui()">→ Salva e prosegui con la consegna</button>
+      </div>
+    </div>
+    <!-- AZIONI MODIFICA -->
+    <div class="card" id="s4-azioni-modifica" style="display:none;">
+      <div class="card-title">↪ Azioni modifica</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost" onclick="goTo('s3')">← Torna indietro</button>
+        <button class="btn btn-red" onclick="annullaModifica()">✕ Annulla modifiche</button>
+        <button class="btn btn-green" onclick="aggiornaFornitura()">💾 Aggiorna e torna al controllo</button>
+      </div>
+    </div>
   </div>
-  <div class="bottom-cta"><div class="inner"><button class="btn btn-green" id="s4-next" onclick="salvaFornitura()">Salva e Prosegui →</button></div></div>
 </div>
 
-<!-- S5 CONTROLLO-CONSEGNA -->
+<!-- ═══════════════════════════════════════════
+     S5 — CONTROLLO-CONSEGNA
+═══════════════════════════════════════════ -->
 <div id="s5" class="screen">
   <div class="topbar">
-    <button class="topbar-back" onclick="goTo('s0')">←</button>
+    <button class="topbar-back" onclick="tornaIndietroS5()">←</button>
     <div class="topbar-info">
       <div class="topbar-title">Controllo-Consegna</div>
-      <div class="topbar-sub" id="s5-fornitura-label"></div>
+      <div class="topbar-sub" id="s5-label">—</div>
     </div>
-  </div>
-  <div class="progress-bar">
-    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
-    <span class="step-label">Controllo</span>
   </div>
   <div class="scroll-body">
-    <div class="card">
-      <div class="card-title">🔍 Riepilogo Preparazione</div>
-      <div id="s5-prep-riepilogo"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">📸 Foto Etichetta</div>
-      <div class="foto-thumbs" id="s5-foto-thumbs-etichetta"></div>
-      <button class="foto-add-btn" onclick="document.getElementById('s5-foto-input-etichetta').click()">📷 Aggiungi/Sostituisci</button>
-      <input type="file" id="s5-foto-input-etichetta" accept="image/*" capture="environment" onchange="loadFotoControllo('etichetta',this)">
-    </div>
-    <div class="card">
-      <div class="card-title">📦 Foto Prodotti</div>
-      <div class="foto-thumbs" id="s5-foto-thumbs-prodotti"></div>
-      <button class="foto-add-btn" onclick="document.getElementById('s5-foto-input-prodotti').click()">📷 Aggiungi/Sostituisci</button>
-      <input type="file" id="s5-foto-input-prodotti" accept="image/*" capture="environment" onchange="loadFotoControllo('prodotti',this)">
-    </div>
-    <div class="card">
-      <div class="card-title">📝 Note Controllo</div>
-      <div class="field"><label>Modifiche o problemi rilevati</label><textarea id="s5-note-controllo" placeholder="Descrivere eventuali variazioni rispetto alla preparazione..."></textarea></div>
-    </div>
-    <div class="card" id="s5-warn-stesso" style="display:none;">
-      <div class="warn-box">⚠️ Stai controllando una fornitura che hai preparato tu. Questo viene registrato nel log.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">👤 Seleziona Controllore</div>
-      <div class="op-grid" id="s5-op-grid"></div>
-    </div>
-    <div class="card" id="s5-pin-card" style="display:none;">
-      <div class="card-title">🔑 PIN — <span id="s5-op-nome-label" style="color:var(--green-med);"></span></div>
-      <div class="pin-display"><div class="pin-dot" id="s5d0"></div><div class="pin-dot" id="s5d1"></div><div class="pin-dot" id="s5d2"></div><div class="pin-dot" id="s5d3"></div></div>
-      <div class="pin-pad">
-        <button class="pin-btn" onclick="pinPress('s5',1)">1</button>
-        <button class="pin-btn" onclick="pinPress('s5',2)">2</button>
-        <button class="pin-btn" onclick="pinPress('s5',3)">3</button>
-        <button class="pin-btn" onclick="pinPress('s5',4)">4</button>
-        <button class="pin-btn" onclick="pinPress('s5',5)">5</button>
-        <button class="pin-btn" onclick="pinPress('s5',6)">6</button>
-        <button class="pin-btn" onclick="pinPress('s5',7)">7</button>
-        <button class="pin-btn" onclick="pinPress('s5',8)">8</button>
-        <button class="pin-btn" onclick="pinPress('s5',9)">9</button>
-        <button class="pin-btn empty"></button>
-        <button class="pin-btn" onclick="pinPress('s5',0)">0</button>
-        <button class="pin-btn del" onclick="pinDel('s5')">⌫</button>
+    <!-- FRIGO WARN -->
+    <div class="frigo-warn-s5" id="s5-frigo-warn" style="display:none;">
+      <div class="frigo-warn-title">🌡️ ATTENZIONE — Prodotti frigo</div>
+      <div style="font-size:13px;color:var(--blue);margin-bottom:6px;">Verificare catena del freddo prima della consegna.</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Hai avvisato il dispensatore/consegnante?</div>
+      <div class="frigo-confirm-row">
+        <button class="frigo-confirm-btn si" id="frigo-avv-si" onclick="setFrigoAvvisato(true)">✓ Sì, avvisato</button>
+        <button class="frigo-confirm-btn no" id="frigo-avv-no" onclick="setFrigoAvvisato(false)">✗ Non ancora</button>
       </div>
-      <div class="pin-error" id="s5-pin-error">PIN non corretto</div>
     </div>
-    <div class="card" id="s5-consegnante-card" style="display:none;">
+    <!-- RIEPILOGO PREP -->
+    <div class="card">
+      <div class="card-title">🔍 Preparazione</div>
+      <div id="s5-prep-rie"></div>
+    </div>
+    <!-- FOTO -->
+    <div class="card">
+      <div class="card-title">
+        📷 Foto
+        <span id="s5-tot-label" style="margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--gray-m);font-weight:600;">0 / 4</span>
+      </div>
+      <div class="foto-section">
+        <div class="foto-section-label"><span>📦 Etichetta</span></div>
+        <div class="foto-thumbs" id="s5-et-thumbs"></div>
+        <button class="foto-add-btn" id="s5-add-et" onclick="document.getElementById('s5-in-et').click()">
+          📷 Aggiungi foto etichetta
+        </button>
+        <input type="file" id="s5-in-et" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoS5('etichetta',this)">
+      </div>
+      <hr class="sep">
+      <div class="foto-section" style="margin-bottom:0;">
+        <div class="foto-section-label"><span>💊 Prodotti</span></div>
+        <div class="foto-thumbs" id="s5-pr-thumbs"></div>
+        <button class="foto-add-btn" id="s5-add-pr" onclick="document.getElementById('s5-in-pr').click()">
+          📷 Aggiungi foto prodotti
+        </button>
+        <input type="file" id="s5-in-pr" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoS5('prodotti',this)">
+      </div>
+    </div>
+    <!-- NOTE CONTROLLO -->
+    <div class="card">
+      <div class="card-title">📝 Note controllo <span style="font-size:11px;color:var(--gray-m);font-weight:400;text-transform:none;">(facoltative)</span></div>
+      <div class="field" style="margin-bottom:0;">
+        <textarea id="s5-note" placeholder="Modifiche, problemi rilevati, ecc."></textarea>
+      </div>
+    </div>
+    <!-- STESSO PREP WARN -->
+    <div class="warn-box" id="s5-warn-stesso" style="display:none;margin-bottom:11px;">
+      ⚠️ Stai controllando una fornitura che hai preparato tu. Viene registrato nel log.
+    </div>
+    <!-- CONTROLLORE -->
+    <div class="card">
+      <div class="card-title">👤 Controllore</div>
+      <div class="op-grid" id="s5-op-grid"></div>
+      <div id="s5-pin-card" style="display:none;margin-top:13px;">
+        <div class="card-title" style="margin-bottom:9px;">🔑 PIN — <span id="s5-op-nome-label" style="color:var(--green-med);"></span></div>
+        <div class="pin-display">
+          <div class="pin-dot" id="s5d0"></div><div class="pin-dot" id="s5d1"></div>
+          <div class="pin-dot" id="s5d2"></div><div class="pin-dot" id="s5d3"></div>
+        </div>
+        <div class="pin-pad">
+          <button class="pin-btn" onclick="pinPress('s5',1)">1</button>
+          <button class="pin-btn" onclick="pinPress('s5',2)">2</button>
+          <button class="pin-btn" onclick="pinPress('s5',3)">3</button>
+          <button class="pin-btn" onclick="pinPress('s5',4)">4</button>
+          <button class="pin-btn" onclick="pinPress('s5',5)">5</button>
+          <button class="pin-btn" onclick="pinPress('s5',6)">6</button>
+          <button class="pin-btn" onclick="pinPress('s5',7)">7</button>
+          <button class="pin-btn" onclick="pinPress('s5',8)">8</button>
+          <button class="pin-btn" onclick="pinPress('s5',9)">9</button>
+          <button class="pin-btn empty"></button>
+          <button class="pin-btn" onclick="pinPress('s5',0)">0</button>
+          <button class="pin-btn del" onclick="pinDel('s5')">⌫</button>
+        </div>
+        <div class="pin-error" id="s5-pin-error">PIN non corretto</div>
+      </div>
+    </div>
+    <!-- CONSEGNANTE -->
+    <div class="card" id="s5-cons-card" style="display:none;">
       <div class="card-title">🚗 Consegnante</div>
-      <div class="consegnante-list" id="s5-consegnante-list"></div>
-      <div id="s5-esterno-field" style="display:none;margin-top:12px;">
-        <div class="field"><label>Nome consegnante esterno</label><input type="text" id="s5-esterno-nome" placeholder="Es. Mario Rossi (corriere)"></div>
+      <div class="consegnante-list" id="s5-cons-list"></div>
+      <div id="s5-esterno-field" style="display:none;margin-top:10px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Nome consegnante esterno</label>
+          <input type="text" id="s5-esterno-nome" placeholder="Es. Mario Rossi (corriere)" oninput="checkS5Ready()">
+        </div>
+      </div>
+    </div>
+    <!-- 4 AZIONI FINALI -->
+    <div class="card" id="s5-azioni-card" style="display:none;">
+      <div class="card-title">↪ Azioni finali</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost" onclick="tornaIndietroS5()">← Torna indietro</button>
+        <button class="btn btn-amber" onclick="modificaPreparazione()">✏️ Modifica preparazione</button>
+        <button class="btn btn-outline" onclick="salvaEdEsci('ctrl')">🚪 Salva ed esci</button>
+        <button class="btn btn-green" id="s5-btn-approva" onclick="approvaFornitura()" disabled>✓ Salva — In consegna</button>
       </div>
     </div>
   </div>
-  <div class="bottom-cta"><div class="inner"><button class="btn btn-green" id="s5-next" onclick="approvaFornitura()" disabled>✓ Approva e Consegna →</button></div></div>
 </div>
 
-<!-- S6 STORICO -->
+<!-- ═══════════════════════════════════════════
+     S6 — STORICO
+═══════════════════════════════════════════ -->
 <div id="s6" class="screen">
   <div class="topbar">
     <button class="topbar-back" onclick="goTo('s0')">←</button>
-    <div class="topbar-info">
-      <div class="topbar-title">Storico Consegne</div>
-    </div>
+    <div class="topbar-info"><div class="topbar-title">Storico Consegne</div></div>
   </div>
   <div class="scroll-body">
     <div class="card">
       <div class="storico-tabs">
-        <button class="storico-tab active" id="tab-paziente" onclick="cambiaTab('paziente')">👤 Per Paziente</button>
+        <button class="storico-tab active" id="tab-paz" onclick="cambiaTab('paz')">👤 Per Paziente</button>
         <button class="storico-tab" id="tab-data" onclick="cambiaTab('data')">📅 Per Data</button>
       </div>
-      <div id="storico-paziente-view">
-        <div id="storico-paziente-list"></div>
-      </div>
-      <div id="storico-data-view" style="display:none;">
-        <div id="storico-data-list"></div>
+      <div id="view-paz"><div id="list-paz"></div></div>
+      <div id="view-data" style="display:none;"><div id="list-data"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S7 — USCITA
+═══════════════════════════════════════════ -->
+<div id="s7" class="screen">
+  <div class="topbar">
+    <div class="topbar-info">
+      <div class="topbar-title">Fornitura salvata</div>
+      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-02</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div style="text-align:center;padding:32px 20px;max-width:380px;margin:0 auto;">
+      <div style="font-size:52px;margin-bottom:14px;">✅</div>
+      <div style="font-size:19px;font-weight:800;color:var(--green-dark);margin-bottom:8px;" id="s7-title">Fornitura salvata correttamente</div>
+      <div style="font-size:13px;color:var(--gray-m);margin-bottom:24px;line-height:1.5;" id="s7-sub">Record salvato in Firebase.</div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <button class="btn btn-ghost" onclick="chiudiApp()">× Chiudi scheda</button>
+        <button class="btn btn-green" onclick="tornaHome()">⌂ Torna alla home</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODALI -->
-<div class="modal-overlay" id="modal-paziente">
+<!-- ═══════════════════════════════════════════
+     MODALI
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-paz">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="modal-paziente-nome">Paziente</h2>
-      <button class="modal-close" onclick="chiudiModal('modal-paziente')">✕</button>
+      <h2 id="modal-paz-titolo">Paziente</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-paz')">✕</button>
     </div>
-    <div id="modal-paziente-body"></div>
+    <div id="modal-paz-body"></div>
   </div>
 </div>
 
@@ -426,56 +612,106 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<div id="toast"></div>
-<div class="loading-overlay" id="loading"><div class="spinner"></div><div id="loading-msg">Caricamento...</div></div>
+<div class="modal-overlay" id="modal-problema">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>⚠️ Segnala problema</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-problema')">✕</button>
+    </div>
+    <input type="hidden" id="modal-prob-id">
+    <div class="field" style="margin-bottom:12px;">
+      <label>Descrizione problema *</label>
+      <textarea id="modal-prob-nota" placeholder="Descrivi il problema riscontrato..." style="min-height:80px;"></textarea>
+    </div>
+    <button class="btn btn-red" onclick="salvaProblema()">Segnala problema</button>
+  </div>
+</div>
 
-<!-- FIREBASE -->
+<div id="toast"></div>
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div style="font-size:13px;color:var(--gray-m);" id="loading-msg">Attendere...</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FIREBASE + JSPDF
+═══════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 'use strict';
+/* ─── COSTANTI STATI ──────────────────────── */
+var STATO_PRONTA    = 'PRONTA PER CONTROLLO';
+var STATO_CONSEGNA  = 'IN CONSEGNA';
+var STATO_VERIFICA  = 'CONSEGNA VERIFICATA';
+var STATO_PROBLEMA  = 'PROBLEMA SEGNALATO';
+var MAX_FOTO = 4;
+var FOTO_PX = 900, FOTO_Q = 0.22;
+
+/* ─── GLOBALS ─────────────────────────────── */
 var db=null, storage=null;
 var OPERATORI=[], PAZIENTI=[], CONSEGNE=[];
-var stato={};
-var pinStato={s0:{op:null,digits:''},s1:{op:null,digits:''},s5:{op:null,digits:''}};
-var MAX_FOTO=5, FOTO_PX=800, FOTO_Q=0.20;
 var NUMERO_SEQ=1;
-var FORNITURA_CONTROLLO=null;
+var FORN=null; // fornitura in controllo
+var stato=mkStato();
+var pinStato={s1:{digits:'',op:null}, s5:{digits:'',op:null}};
+var consSelezionato=null; // id consegnante selezionato
 
-// Firebase init
-try{
-  firebase.initializeApp({
-    apiKey:'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
-    authDomain:'dosettes-farmacia.firebaseapp.com',
-    projectId:'dosettes-farmacia',
-    storageBucket:'dosettes-farmacia.firebasestorage.app'
-  });
-  db=firebase.firestore();
-  storage=firebase.storage();
-  firebase.auth().signInAnonymously().catch(function(e){console.warn(e);});
-  init();
-}catch(e){
-  console.warn('Firebase init error:', e);
-  setTimeout(function(){init();},1000);
+function mkStato(){
+  return {
+    preparatore:null, tsPreparazione:null,
+    paziente:null, salvaPaziente:false,
+    foto:[], // [{tipo:'etichetta'|'prodotti', data:base64|null, url:string|null}]
+    presenzaFrigo:false, frigoCompilato:false,
+    note:'',
+    controllore:null, tsControllo:null,
+    consegnante:null, dispensatoreAvvisatoFrigo:null,
+    numero:null, firestoreId:null,
+    modalitaModifica:false,
+    fotoS5:[] // pool foto per fase controllo
+  };
 }
 
-function init(){
+/* ─── INIT FIREBASE ───────────────────────── */
+(function(){
+  try{
+    firebase.initializeApp({
+      apiKey:'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
+      authDomain:'dosettes-farmacia.firebaseapp.com',
+      projectId:'dosettes-farmacia',
+      storageBucket:'dosettes-farmacia.firebasestorage.app'
+    });
+    db=firebase.firestore();
+    storage=firebase.storage();
+    firebase.auth().signInAnonymously().catch(function(e){console.warn(e);});
+    document.getElementById('s0-status').textContent='● Online';
+    caricaDati();
+  }catch(e){
+    document.getElementById('s0-status').textContent='● Offline';
+    toast('Firebase offline — modalità solo lettura','err');
+  }
+})();
+
+function caricaDati(){
   caricaOperatori();
   caricaPazienti();
   caricaConsegne();
-  document.getElementById('s0-status').textContent=db?'Online':'Offline';
+  caricaNumSeq();
 }
 
 function caricaOperatori(){
   if(!db)return;
   db.collection('operatori').get().then(function(s){
     OPERATORI=[];
-    s.forEach(function(d){var x=d.data();OPERATORI.push({id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||''});});
+    s.forEach(function(d){
+      var x=d.data();
+      OPERATORI.push({id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||''});
+    });
     renderOpGrid('s0-op-grid','s0');
-    renderOpGrid('s5-op-grid','s5');
   }).catch(function(){toast('Errore caricamento operatori','err');});
 }
 
@@ -483,598 +719,1090 @@ function caricaPazienti(){
   if(!db)return;
   db.collection('pazienti').get().then(function(s){
     PAZIENTI=[];
-    s.forEach(function(d){var x=d.data();PAZIENTI.push({id:d.id,nome:((x.cognome||'')+' '+(x.nome||'')).trim()||(x.nome||d.id),indirizzo:x.indirizzo||'',citta:x.citta||''});});
+    s.forEach(function(d){
+      var x=d.data();
+      PAZIENTI.push({
+        id:d.id,
+        nome:((x.cognome||'')+' '+(x.nome||'')).trim()||(x.nome||d.id),
+        indirizzo:x.indirizzo||x.address||'',
+        citta:x.citta||x.city||''
+      });
+    });
   }).catch(function(){});
 }
 
 function caricaConsegne(){
   if(!db)return;
-  db.collection('qms_consegne').orderBy('tsPreparazione','desc').limit(200).get()
+  db.collection('qms_consegne').orderBy('tsPreparazione','desc').limit(300).get()
     .then(function(s){
       CONSEGNE=[];
       s.forEach(function(d){CONSEGNE.push(Object.assign({_id:d.id},d.data()));});
-      mostraConsegnePronte();
-    }).catch(function(){});
+      if(stato.preparatore) mostraPronte();
+    }).catch(function(e){console.warn('consegne:',e);});
 }
 
-function mostraConsegnePronte(){
-  var pronte=CONSEGNE.filter(function(c){return c.stato==='PRONTA';});
-  var sec=document.getElementById('s0-consegne-pronte');
-  if(!pronte.length){sec.style.display='none';return;}
-  sec.style.display='block';
-  var html=pronte.map(function(c){
-    var numStr=formatNumero(c.numero);
-    var nome=c.paziente?c.paziente.nome:'—';
-    return '<div class="consegna-pronta-card" onclick="caricaFornituraPrimaControllo(\''+c._id+'\')"><div class="consegna-pronta-num">'+escH(numStr)+'</div><div class="consegna-pronta-nome">'+escH(nome)+'</div><div class="consegna-pronta-info">👤 '+escH(c.preparatore?c.preparatore.nome:'—')+' — Pronta</div></div>';
-  }).join('');
-  document.getElementById('s0-consegne-pronte-list').innerHTML=html;
-}
-
-function renderOpGrid(cid,pfx){
-  var el=document.getElementById(cid);if(!el)return;
-  if(!OPERATORI.length){el.innerHTML='<div style="color:var(--gray-m);font-size:13px;padding:10px;">Nessun operatore trovato</div>';return;}
-  el.innerHTML=OPERATORI.map(function(op){
-    return '<div class="op-card" id="oc-'+pfx+'-'+op.id+'" onclick="selectOp(\''+pfx+'\',\''+op.id+'\')"><div class="op-sigla">'+escH(op.id)+'</div><div class="op-nome">'+escH(op.nome)+'</div><div class="op-ruolo">'+escH(op.ruolo)+'</div></div>';
-  }).join('');
-}
-
-function selectOp(pfx,opId){
-  var op=OPERATORI.find(function(o){return o.id===opId;});if(!op)return;
-  pinStato[pfx].op=op;pinStato[pfx].digits='';
-  document.querySelectorAll('[id^="oc-'+pfx+'-"]').forEach(function(c){c.classList.remove('selected');});
-  var opCard=document.getElementById('oc-'+pfx+'-'+opId);if(opCard)opCard.classList.add('selected');
-  // s0: nessun pin-card in schermata, naviga a s1 che è la schermata PIN
-  if(pfx==='s0'){
-    pinStato['s1'].op=op;pinStato['s1'].digits='';
-    document.getElementById('s1-op-nome-label').textContent=op.nome;
-    updatePinDots('s1');
-    goTo('s1');
-    return;
-  }
-  var pc=document.getElementById(pfx+'-pin-card');if(pc)pc.style.display='block';
-  var lbl=document.getElementById(pfx+'-op-nome-label');if(lbl)lbl.textContent=op.nome;
-  updatePinDots(pfx);
-  setTimeout(function(){pc&&pc.scrollIntoView({behavior:'smooth',block:'center'});},100);
-}
-
-function goTo(screenId){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  document.getElementById(screenId).classList.add('active');
-  window.scrollTo(0,0);
-}
-
-function cercaPaziente(val){
-  var res=document.getElementById('s2-results');
-  if(!val||val.length<2){res.style.display='none';return;}
-  var f=PAZIENTI.filter(function(p){return p.nome.toLowerCase().includes(val.toLowerCase());});
-  if(!f.length){res.style.display='none';return;}
-  res.innerHTML=f.slice(0,8).map(function(p){
-    return '<div class="search-result-item" onclick="selezionaPaziente(\''+p.id+'\')"><div class="item-nome">'+escH(p.nome)+'</div><div class="item-addr">'+escH([p.indirizzo,p.citta].filter(Boolean).join(', ')||'Indirizzo non registrato')+'</div></div>';
-  }).join('');
-  res.style.display='block';
-}
-
-function selezionaPaziente(id){
-  var p=PAZIENTI.find(function(x){return x.id===id;});if(!p)return;
-  document.getElementById('s2-search').value=p.nome;
-  document.getElementById('s2-nome').value=p.nome;
-  document.getElementById('s2-indirizzo').value=p.indirizzo||'';
-  document.getElementById('s2-citta').value=p.citta||'';
-  document.getElementById('s2-results').style.display='none';
-  checkS2Ready();
-}
-
-function pinPress(pfx,d){
-  if(pinStato[pfx].digits.length>=4)return;
-  pinStato[pfx].digits+=String(d);updatePinDots(pfx);
-  if(pinStato[pfx].digits.length===4)verificaPin(pfx);
-}
-
-function pinDel(pfx){
-  pinStato[pfx].digits=pinStato[pfx].digits.slice(0,-1);updatePinDots(pfx);
-  document.getElementById(pfx+'-pin-error').style.display='none';
-}
-
-function updatePinDots(pfx){
-  var n=pinStato[pfx].digits.length;
-  for(var i=0;i<4;i++){var dot=document.getElementById(pfx+'d'+i);if(dot)dot.classList.toggle('filled',i<n);}
-}
-
-async function verificaPin(pfx){
-  var op=pinStato[pfx].op;
-  var hash=await sha256(pinStato[pfx].digits);
-  if(hash===op.pinHash){
-    document.getElementById(pfx+'-pin-error').style.display='none';
-    if(pfx==='s0'||pfx==='s1'){
-      stato.preparatore={id:op.id,nome:op.nome,ruolo:op.ruolo};
-      stato.tsPreparazione=new Date();
-      stato.frigo=false;stato.frigoCompilato=false;stato.fotoProdotti=[];stato.fotoEtichetta=null;stato.note='';
-      document.getElementById('s2-prep-label').textContent='Preparatore: '+op.nome;
-      goTo('s2');
-    }else if(pfx==='s5'){
-      stato.controllore={id:op.id,nome:op.nome,ruolo:op.ruolo};
-      stato.tsControllo=new Date();
-      if(stato.preparatore&&stato.preparatore.id===op.id){
-        document.getElementById('s5-warn-stesso').style.display='block';
-      }
-      document.getElementById('s5-pin-card').style.display='none';
-      document.getElementById('s5-consegnante-card').style.display='block';
-      renderConsegnante();
-      setTimeout(function(){document.getElementById('s5-consegnante-card').scrollIntoView({behavior:'smooth',block:'start'});},100);
-      checkS5Ready();
-    }
-  }else{
-    pinStato[pfx].digits='';updatePinDots(pfx);
-    var e=document.getElementById(pfx+'-pin-error');e.style.display='block';
-    setTimeout(function(){e.style.display='none';},2000);
-  }
-}
-
-async function sha256(str){
-  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-}
-
-function loadFoto(pfx,input){
-  if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    comprimiImmagine(e.target.result,FOTO_PX,FOTO_Q,function(c){
-      if(pfx==='s2')stato.fotoEtichetta=c;
-      else if(pfx==='s3'){
-        if(!stato.fotoProdotti)stato.fotoProdotti=[];
-        if(stato.fotoProdotti.length>=MAX_FOTO){toast('Massimo '+MAX_FOTO+' foto','err');return;}
-        stato.fotoProdotti.push(c);
-        renderFotoS3();checkS3Ready();
-        return;
-      }
-      var area=document.getElementById(pfx+'-foto-area');
-      var prev=document.getElementById(pfx+'-foto-preview');
-      var chg=document.getElementById(pfx+'-foto-change');
-      prev.src=c;prev.style.display='block';
-      area.classList.add('has-foto');
-      area.querySelector('.foto-icon').style.display='none';
-      area.querySelector('.foto-label').style.display='none';
-      chg.style.display='block';
-      if(pfx==='s2')checkS2Ready();
-    });
-  };
-  reader.readAsDataURL(input.files[0]);
-  input.value='';
-}
-
-function renderFotoS3(){
-  var html='';
-  if(stato.fotoProdotti&&stato.fotoProdotti.length){
-    html=stato.fotoProdotti.map(function(f,i){
-      return '<div class="foto-thumb"><img src="'+f+'" alt="prod'+i+'"><button class="foto-thumb-remove" onclick="removeFotoS3('+i+')">✕</button></div>';
-    }).join('');
-  }
-  document.getElementById('s3-foto-thumbs').innerHTML=html;
-}
-
-function removeFotoS3(i){
-  stato.fotoProdotti.splice(i,1);
-  renderFotoS3();checkS3Ready();
-}
-
-function comprimiImmagine(src,maxPx,quality,cb){
-  var img=new Image();
-  img.onload=function(){
-    var w=img.width,h=img.height;
-    if(w>maxPx||h>maxPx){if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}else{w=Math.round(w*maxPx/h);h=maxPx;}}
-    var canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-    canvas.getContext('2d').drawImage(img,0,0,w,h);
-    cb(canvas.toDataURL('image/jpeg',quality));
-  };
-  img.src=src;
-}
-
-function setFrigo(val){
-  stato.frigo=val;stato.frigoCompilato=true;
-  document.getElementById('frigo-si').classList.toggle('selected',val===true);
-  document.getElementById('frigo-no').classList.toggle('selected',val===false);
-  document.getElementById('s3-frigo-req').style.display='none';
-  checkS3Ready();
-}
-
-function checkS2Ready(){
-  var nome=document.getElementById('s2-nome').value.trim();
-  var foto=!!stato.fotoEtichetta;
-  document.getElementById('s2-next').disabled=!nome||!foto;
-  if(nome&&!PAZIENTI.find(function(p){return p.nome===nome;})){
-    document.getElementById('s2-save-row').style.display='flex';
-  }else{
-    document.getElementById('s2-save-row').style.display='none';
-  }
-}
-
-function checkS3Ready(){
-  var foto=stato.fotoProdotti&&stato.fotoProdotti.length>0;
-  var frigo=stato.frigoCompilato;
-  document.getElementById('s3-next').disabled=!foto||!frigo;
-}
-
-function goToS3(){
-  stato.paziente={
-    nome:document.getElementById('s2-nome').value.trim(),
-    indirizzo:document.getElementById('s2-indirizzo').value.trim(),
-    citta:document.getElementById('s2-citta').value.trim()
-  };
-  if(document.getElementById('s2-save-check').checked&&db){
-    db.collection('pazienti').add({nome:stato.paziente.nome,indirizzo:stato.paziente.indirizzo,citta:stato.paziente.citta}).catch(function(){});
-  }
-  document.getElementById('s3-dest-label').textContent='Paziente: '+stato.paziente.nome;
-  goTo('s3');
-}
-
-function goToS4(){
-  document.getElementById('s4-riepilogo').innerHTML=buildRiepilogoPrep(stato);
-  goTo('s4');
-}
-
-function buildRiepilogoPrep(s){
-  var h='<div class="riepilogo-row"><div class="riepilogo-label">Preparatore</div><div class="riepilogo-val">'+escH(s.preparatore.nome)+'</div></div>';
-  h+='<div class="riepilogo-row"><div class="riepilogo-label">Paziente</div><div class="riepilogo-val">'+escH(s.paziente.nome)+'</div></div>';
-  h+='<div class="riepilogo-row"><div class="riepilogo-label">Indirizzo</div><div class="riepilogo-val">'+escH(s.paziente.indirizzo)+'<br>'+escH(s.paziente.citta)+'</div></div>';
-  h+='<div class="riepilogo-row"><div class="riepilogo-label">Frigo</div><div class="riepilogo-val">'+( s.frigo?'<span class="badge-frigo">❄️ Sì</span>':'<span class="badge-ok">✓ Ambiente</span>')+'</div></div>';
-  if(s.note)h+='<div class="riepilogo-row"><div class="riepilogo-label">Note</div><div class="riepilogo-val">'+escH(s.note)+'</div></div>';
-  return h;
-}
-
-function salvaFornitura(){
-  if(!db)return toast('Offline - non salvabile','err');
-  showLoading('Salvataggio fornitura...');
-  stato.numero=NUMERO_SEQ++;
-  stato.tsPreparazione=new Date();
-  stato.stato='PRONTA';
-  stato.log=stato.log||[];
-  stato.log.push({ts:new Date(),azione:'creazione',operatore:stato.preparatore.nome});
-  
-  var promises=[];
-  if(stato.fotoEtichetta){
-    var blob=dataURLtoBlob(stato.fotoEtichetta);
-    var ref=storage.ref('foto/etichetta/'+Date.now()+'.jpg');
-    promises.push(ref.put(blob).then(function(snap){return snap.ref.getDownloadURL();}).then(function(url){stato.fotoEtichettaUrl=url;}));
-  }
-  if(stato.fotoProdotti&&stato.fotoProdotti.length){
-    stato.fotoProdottiUrl=[];
-    stato.fotoProdotti.forEach(function(f,i){
-      var blob=dataURLtoBlob(f);
-      var ref=storage.ref('foto/prodotti/'+Date.now()+'_'+i+'.jpg');
-      promises.push(ref.put(blob).then(function(snap){return snap.ref.getDownloadURL();}).then(function(url){stato.fotoProdottiUrl.push(url);}));
-    });
-  }
-  
-  Promise.all(promises).then(function(){
-    return db.collection('qms_consegne').add(stato);
-  }).then(function(docRef){
-    stato._id=docRef.id;
-    hideLoading();
-    toast('Fornitura salvata','ok');
-    caricaConsegne();
-    caricaFornituraPrimaControllo(stato._id);
-  }).catch(function(e){
-    hideLoading();
-    toast('Errore salvataggio: '+e.message,'err');
-  });
-}
-
-function caricaFornituraPrimaControllo(fornId){
-  FORNITURA_CONTROLLO=CONSEGNE.find(function(c){return c._id===fornId;});
-  if(!FORNITURA_CONTROLLO){
-    // Prova a ricaricare da Firestore se non trovato in cache
-    if(db){
-      showLoading('Caricamento fornitura...');
-      db.collection('qms_consegne').doc(fornId).get().then(function(d){
-        hideLoading();
-        if(!d.exists){toast('Fornitura non trovata','err');return;}
-        FORNITURA_CONTROLLO=Object.assign({_id:d.id},d.data());
-        CONSEGNE.push(FORNITURA_CONTROLLO);
-        caricaFornituraPrimaControllo(fornId);
-      }).catch(function(){hideLoading();toast('Errore caricamento fornitura','err');});
-    }else{toast('Fornitura non trovata','err');}
-    return;
-  }
-  // Imposta preparatore dallo stato della fornitura (flusso da "pronte per controllo")
-  if(!stato.preparatore)stato.preparatore=FORNITURA_CONTROLLO.preparatore||null;
-  stato.fotoProdottiControllo=[];
-  stato.noteControllo='';
-  stato.fotoProdottiURL_Controllo=[];
-  stato.logModifiche=[];
-  
-  document.getElementById('s5-fornitura-label').textContent=formatNumero(FORNITURA_CONTROLLO.numero);
-  document.getElementById('s5-prep-riepilogo').innerHTML=buildRiepilogoControllo(FORNITURA_CONTROLLO);
-  renderFotoControllo();
-  
-  goTo('s5');
-}
-
-function buildRiepilogoControllo(f){
-  var prep=f.preparatore?f.preparatore.nome:'—';
-  var paz=f.paziente?f.paziente.nome:'—';
-  var addr=f.paziente?escH(f.paziente.indirizzo||'')+'<br>'+escH(f.paziente.citta||''):'—';
-  var h='<div class="riepilogo-row"><div class="riepilogo-label">Preparatore</div><div class="riepilogo-val">'+escH(prep)+'</div></div>';
-  h+='<div class="riepilogo-row"><div class="riepilogo-label">Paziente</div><div class="riepilogo-val">'+escH(paz)+'</div></div>';
-  h+='<div class="riepilogo-row"><div class="riepilogo-label">Indirizzo</div><div class="riepilogo-val">'+addr+'</div></div>';
-  h+='<div class="riepilogo-row"><div class="riepilogo-label">Frigo</div><div class="riepilogo-val">'+(f.frigo?'<span class="badge-frigo">❄️ Sì</span>':'<span class="badge-ok">✓ Ambiente</span>')+'</div></div>';
-  if(f.note)h+='<div class="riepilogo-row"><div class="riepilogo-label">Note Prep.</div><div class="riepilogo-val">'+escH(f.note)+'</div></div>';
-  return h;
-}
-
-function loadFotoControllo(tipo,input){
-  if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    comprimiImmagine(e.target.result,FOTO_PX,FOTO_Q,function(c){
-      if(!stato.fotoProdottiControllo)stato.fotoProdottiControllo=[];
-      if(tipo==='etichetta'&&stato.fotoProdottiControllo.length<MAX_FOTO){
-        stato.fotoProdottiControllo.push({tipo:'etichetta',data:c});
-        stato.logModifiche.push({ts:new Date(),azione:'aggiunta_foto',tipo:'etichetta'});
-      }else if(tipo==='prodotti'&&stato.fotoProdottiControllo.filter(function(f){return f.tipo==='prodotti';}).length<MAX_FOTO){
-        stato.fotoProdottiControllo.push({tipo:'prodotti',data:c});
-        stato.logModifiche.push({ts:new Date(),azione:'aggiunta_foto',tipo:'prodotti'});
-      }else{
-        toast('Massimo '+MAX_FOTO+' foto per tipo','err');
-        return;
-      }
-      renderFotoControllo();
-    });
-  };
-  reader.readAsDataURL(input.files[0]);
-  input.value='';
-}
-
-function renderFotoControllo(){
-  var etichette=stato.fotoProdottiControllo.filter(function(f){return f.tipo==='etichetta';});
-  var prodotti=stato.fotoProdottiControllo.filter(function(f){return f.tipo==='prodotti';});
-  
-  var hEt='';
-  if(FORNITURA_CONTROLLO.fotoEtichettaUrl){
-    hEt+='<div class="foto-thumb"><img src="'+FORNITURA_CONTROLLO.fotoEtichettaUrl+'" alt="orig-et"><div style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.5);color:white;font-size:10px;padding:2px 4px;border-radius:4px;">Originale</div></div>';
-  }
-  etichette.forEach(function(f,i){
-    hEt+='<div class="foto-thumb"><img src="'+f.data+'" alt="et'+i+'"><button class="foto-thumb-remove" onclick="removeFotoControllo(\'etichetta\','+i+')">✕</button></div>';
-  });
-  document.getElementById('s5-foto-thumbs-etichetta').innerHTML=hEt||'Nessuna foto';
-  
-  var hPr='';
-  if(FORNITURA_CONTROLLO.fotoProdottiUrl&&FORNITURA_CONTROLLO.fotoProdottiUrl.length){
-    FORNITURA_CONTROLLO.fotoProdottiUrl.forEach(function(url){
-      hPr+='<div class="foto-thumb"><img src="'+url+'" alt="orig-pr"><div style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.5);color:white;font-size:10px;padding:2px 4px;border-radius:4px;">Orig.</div></div>';
-    });
-  }
-  prodotti.forEach(function(f,i){
-    hPr+='<div class="foto-thumb"><img src="'+f.data+'" alt="pr'+i+'"><button class="foto-thumb-remove" onclick="removeFotoControllo(\'prodotti\','+i+')">✕</button></div>';
-  });
-  document.getElementById('s5-foto-thumbs-prodotti').innerHTML=hPr||'Nessuna foto';
-}
-
-function removeFotoControllo(tipo,i){
-  stato.fotoProdottiControllo=stato.fotoProdottiControllo.filter(function(f,idx){return !(f.tipo===tipo&&stato.fotoProdottiControllo.filter(function(x){return x.tipo===tipo;}).indexOf(f)===i);});
-  renderFotoControllo();
-}
-
-function renderConsegnante(){
-  var html=OPERATORI.map(function(op){
-    return '<div class="consegnante-item" id="cons-'+op.id+'" onclick="selectConsegnante(\''+op.id+'\')">\n      <div class="c-sigla">'+escH(op.id)+'</div>\n      <div style="flex:1;"><div class="c-nome">'+escH(op.nome)+'</div><div class="c-ruolo">'+escH(op.ruolo)+'</div></div>\n      <div class="c-check">✓</div>\n    </div>';
-  }).join('');
-  html+='<div class="consegnante-item consegnante-esterno" onclick="toggleEsterno()">\n    <div style="flex:1;"><div class="c-nome">👤 Esterno (corriere, ecc.)</div></div>\n    <div class="c-check" id="check-esterno">✓</div>\n  </div>';
-  document.getElementById('s5-consegnante-list').innerHTML=html;
-}
-
-function selectConsegnante(opId){
-  document.querySelectorAll('.consegnante-item').forEach(function(c){c.classList.remove('selected');});
-  document.getElementById('cons-'+opId).classList.add('selected');
-  var op=OPERATORI.find(function(o){return o.id===opId;});
-  stato.consegnante={id:opId,nome:op.nome,ruolo:op.ruolo};
-  document.getElementById('s5-esterno-field').style.display='none';
-  document.getElementById('check-esterno').style.display='none';
-  checkS5Ready();
-}
-
-function toggleEsterno(){
-  var btn=event.target.closest('.consegnante-item');
-  var shown=document.getElementById('s5-esterno-field').style.display!=='none';
-  if(shown){
-    document.getElementById('s5-esterno-field').style.display='none';
-    document.getElementById('check-esterno').style.display='none';
-    stato.consegnante=null;
-  }else{
-    document.getElementById('s5-esterno-field').style.display='block';
-    document.getElementById('check-esterno').style.display='block';
-    document.querySelectorAll('.consegnante-item').forEach(function(c){c.classList.remove('selected');});
-  }
-  checkS5Ready();
-}
-
-function checkS5Ready(){
-  var consegnante=!!stato.consegnante||(document.getElementById('s5-esterno-field').style.display!=='none'&&document.getElementById('s5-esterno-nome').value.trim());
-  var controllore=!!stato.controllore;
-  document.getElementById('s5-next').disabled=!consegnante||!controllore;
-}
-
-function approvaFornitura(){
-  stato.noteControllo=document.getElementById('s5-note-controllo').value.trim();
-  if(!stato.consegnante&&document.getElementById('s5-esterno-field').style.display!=='none'){
-    var nome=document.getElementById('s5-esterno-nome').value.trim();
-    if(!nome){toast('Inserire nome consegnante','err');return;}
-    stato.consegnante={nome:nome};
-  }
-  if(!db)return toast('Offline - non salvabile','err');
-  showLoading('Approvazione fornitura...');
-  
-  var updateData={
-    stato:'CONSEGNATA',
-    controllore:stato.controllore,
-    consegnante:stato.consegnante,
-    tsControllo:new Date(),
-    noteControllo:stato.noteControllo,
-    logModifiche:stato.logModifiche||[]
-  };
-  
-  var promises=[];
-  if(stato.fotoProdottiControllo&&stato.fotoProdottiControllo.length){
-    updateData.fotoProdottiControlloUrl=[];
-    stato.fotoProdottiControllo.forEach(function(f,i){
-      var blob=dataURLtoBlob(f.data);
-      var ref=storage.ref('foto/controllo/'+FORNITURA_CONTROLLO._id+'_'+i+'.jpg');
-      promises.push(ref.put(blob).then(function(snap){return snap.ref.getDownloadURL();}).then(function(url){updateData.fotoProdottiControlloUrl.push(url);}));
-    });
-  }
-  
-  Promise.all(promises).then(function(){
-    return db.collection('qms_consegne').doc(FORNITURA_CONTROLLO._id).update(updateData);
-  }).then(function(){
-    hideLoading();
-    toast('Fornitura approvata e consegnata','ok');
-    caricaConsegne();
-    goTo('s0');
-  }).catch(function(e){
-    hideLoading();
-    toast('Errore approvazione: '+e.message,'err');
-  });
-}
-
-function goToStorico(){
-  if(db){
-    showLoading('Caricamento storico...');
-    db.collection('qms_consegne').orderBy('tsPreparazione','desc').limit(200).get()
-      .then(function(s){
-        CONSEGNE=[];s.forEach(function(d){CONSEGNE.push(Object.assign({_id:d.id},d.data()));});
-        hideLoading();renderStorico();goTo('s6');
-      }).catch(function(){hideLoading();renderStorico();goTo('s6');});
-  }else{renderStorico();goTo('s6');}
-}
-
-function renderStorico(){
-  var byP={},byD={};
-  CONSEGNE.forEach(function(c){
-    var nome=c.paziente?c.paziente.nome:'Sconosciuto';
-    if(!byP[nome])byP[nome]=[];byP[nome].push(c);
-    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
-    var d=ts?ts.toLocaleDateString('it-CH'):'—';
-    if(!byD[d])byD[d]=[];byD[d].push(c);
-  });
-  var hP='';
-  Object.keys(byP).sort().forEach(function(nome){
-    var cc=byP[nome];
-    var ts=cc[0].tsPreparazione?(cc[0].tsPreparazione.toDate?cc[0].tsPreparazione.toDate():new Date(cc[0].tsPreparazione)):null;
-    hP+='<div class="storico-item" onclick="mostraDettagliPaziente(\''+escAttr(nome)+'\')"><div class="storico-item-info"><div class="storico-nome">'+escH(nome)+'</div><div class="storico-dettagli">'+cc.length+' consegn'+(cc.length===1?'a':'e')+' — ultima: '+(ts?ts.toLocaleDateString('it-CH'):'—')+'</div></div></div>';
-  });
-  document.getElementById('storico-paziente-list').innerHTML=hP||'<div style="padding:12px;color:var(--gray-m);">Nessuna consegna registrata</div>';
-  var hD='';
-  Object.keys(byD).sort(function(a,b){var da=a.split('/').reverse().join('-'),db2=b.split('/').reverse().join('-');return da>db2?-1:1;}).forEach(function(d){
-    var cc=byD[d];
-    hD+='<div style="font-size:12px;font-weight:700;color:var(--gray-m);padding:8px 2px 4px;text-transform:uppercase;letter-spacing:0.5px;">📅 '+escH(d)+'</div>';
-    cc.forEach(function(c){
-      var consegnata=c.stato==='CONSEGNATA';
-      var badge=consegnata?'<span style="background:var(--green-light);color:var(--green-dark);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">✓ Consegnata</span>':'<span style="background:#fff3cd;color:#856404;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">⏳ In attesa</span>';
-      var toggleBtn='<button onclick="event.stopPropagation();toggleFlagConsegna(\''+c._id+'\')" style="background:none;border:1.5px solid '+(consegnata?'var(--green-med)':'var(--gray-l)')+';border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer;color:'+(consegnata?'var(--green-dark)':'var(--gray-m)')+';">'+(consegnata?'✓':'○')+'</button>';
-      hD+='<div class="storico-item" onclick="mostraDettagliData(\''+escAttr(d)+'\')"><div class="storico-item-info"><div class="storico-nome">'+escH(formatNumero(c.numero))+' — '+escH(c.paziente?c.paziente.nome:'—')+'</div><div class="storico-dettagli">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+' → 👀 '+escH(c.controllore?c.controllore.nome:'—')+' 🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+'</div><div style="margin-top:4px;">'+badge+'</div></div>'+toggleBtn+'</div>';
-    });
-  });
-  document.getElementById('storico-data-list').innerHTML=hD||'<div style="padding:12px;color:var(--gray-m);">Nessuna consegna registrata</div>';
-}
-
-function cambiaTab(tab){
-  document.getElementById('tab-paziente').classList.toggle('active',tab==='paziente');
-  document.getElementById('tab-data').classList.toggle('active',tab==='data');
-  document.getElementById('storico-paziente-view').style.display=tab==='paziente'?'block':'none';
-  document.getElementById('storico-data-view').style.display=tab==='data'?'block':'none';
-}
-
-function mostraDettagliPaziente(nome){
-  var cc=CONSEGNE.filter(function(c){return c.paziente&&c.paziente.nome===nome;});
-  document.getElementById('modal-paziente-nome').textContent=nome;
-  document.getElementById('modal-paziente-body').innerHTML=cc.map(function(c){return buildCard(c,'var(--green-med)');}).join('')||'<p style="color:var(--gray-m);">Nessun dato</p>';
-  document.getElementById('modal-paziente').classList.add('show');
-}
-
-function mostraDettagliData(d){
-  var cc=CONSEGNE.filter(function(c){var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;return ts&&ts.toLocaleDateString('it-CH')===d;});
-  document.getElementById('modal-data-titolo').textContent=d;
-  document.getElementById('modal-data-body').innerHTML=cc.map(function(c){return buildCard(c,'var(--blue)');}).join('')||'<p style="color:var(--gray-m);">Nessun dato</p>';
-  document.getElementById('modal-data').classList.add('show');
-}
-
-function buildCard(c,bc){
-  var numStr=formatNumero(c.numero);
-  var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
-  var dataOra=ts?ts.toLocaleDateString('it-CH')+' '+ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—';
-  var fb=c.frigo?'<span style="color:var(--blue);font-weight:700;">🌡️ Frigo</span>':'<span style="color:var(--green-dark);">✓ Ambiente</span>';
-  var fotoHtml='';
-  if(c.fotoEtichettaUrl)fotoHtml+='<a href="'+c.fotoEtichettaUrl+'" target="_blank" style="color:var(--blue);font-size:12px;font-weight:600;margin-right:10px;">📦 Etichetta</a>';
-  if(c.fotoProdottiUrl){
-    if(Array.isArray(c.fotoProdottiUrl)){
-      c.fotoProdottiUrl.forEach(function(url,i){fotoHtml+='<a href="'+url+'" target="_blank" style="color:var(--blue);font-size:12px;font-weight:600;margin-right:4px;">💊 Prod '+i+'</a>';});
-    }else{
-      fotoHtml+='<a href="'+c.fotoProdottiUrl+'" target="_blank" style="color:var(--blue);font-size:12px;font-weight:600;">💊 Prodotti</a>';
-    }
-  }
-  var flag=c.stato==='CONSEGNATA'?'<span style="color:var(--green-dark);font-size:16px;cursor:pointer;" onclick="toggleFlagConsegna(\''+c._id+'\')">✓</span>':'<span style="color:#ddd;font-size:16px;cursor:pointer;" onclick="toggleFlagConsegna(\''+c._id+'\')">✗</span>';
-  return '<div class="mc-card" style="border-left:4px solid '+bc+'">' +
-    '<div style="font-weight:700;font-size:13px;color:var(--green-dark);font-family:var(--mono);">'+escH(numStr)+'</div>' +
-    '<div style="font-size:12px;color:var(--gray-m);margin-top:3px;">📅 '+escH(dataOra)+'</div>' +
-    '<div style="font-size:12px;color:var(--gray-m);">👤 '+escH(c.paziente?c.paziente.nome:'—')+'</div>' +
-    '<div style="font-size:12px;color:var(--gray-m);">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+' → 👀 '+escH(c.controllore?c.controllore.nome:'—')+'</div>' +
-    '<div style="font-size:12px;color:var(--gray-m);">🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+' — '+fb+'</div>' +
-    '<div style="font-size:11px;color:var(--gray-m);margin-top:6px;">'+fotoHtml+'</div>' +
-    '<div style="margin-top:8px;text-align:right;">'+flag+'</div>' +
-    '</div>';
-}
-
-function toggleFlagConsegna(fornId){
-  var forn=CONSEGNE.find(function(c){return c._id===fornId;});
-  if(!forn)return;
-  var newStato=forn.stato==='CONSEGNATA'?'PRONTA':'CONSEGNATA';
-  if(!db)return toast('Offline','err');
-  db.collection('qms_consegne').doc(fornId).update({stato:newStato}).then(function(){
-    forn.stato=newStato;
-    caricaConsegne();
-    if(forn.paziente&&forn.paziente.nome){mostraDettagliPaziente(forn.paziente.nome);}
-    else{chiudiModal('modal-paziente');chiudiModal('modal-data');}
-  }).catch(function(e){toast('Errore: '+e.message,'err');});
-}
-
-function chiudiModal(modalId){
-  document.getElementById(modalId).classList.remove('show');
-}
-
-function showLoading(msg){
-  document.getElementById('loading-msg').textContent=msg;
-  document.getElementById('loading').classList.add('show');
-}
-
-function hideLoading(){
-  document.getElementById('loading').classList.remove('show');
-}
-
-function toast(msg,type){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.className='show '+type;
-  setTimeout(function(){el.classList.remove('show');},3000);
-}
-
-function formatNumero(n){if(!n&&n!==0)return'CD-?????';var s=String(n);return s.indexOf('CD-')===0?s:'CD-'+s.padStart(5,'0');}
-function escH(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function escAttr(s){return escH(s).replace(/"/g,'&quot;');}
-
-function dataURLtoBlob(dataURL){
-  var arr=dataURL.split(','),mime=arr[0].match(/:(.*?);/)[1],bstr=atob(arr[1]),n=bstr.length,u8=new Uint8Array(n);
-  while(n--)u8[n]=bstr.charCodeAt(n);
-  return new Blob([u8],{type:mime});
-}
-
-// Carica numero sequenza al primo avvio
-function caricaNumeroSequenza(){
+function caricaNumSeq(){
   if(!db)return;
   db.collection('qms_consegne').orderBy('numero','desc').limit(1).get()
     .then(function(s){NUMERO_SEQ=s.empty?1:((s.docs[0].data().numero||0)+1);})
     .catch(function(){NUMERO_SEQ=1;});
 }
 
-caricaNumeroSequenza();
+/* ─── S0: LOGIN / HOME ────────────────────── */
+function renderOpGrid(cid, pfx){
+  var el=document.getElementById(cid); if(!el)return;
+  if(!OPERATORI.length){
+    el.innerHTML='<div style="color:var(--gray-m);font-size:13px;padding:8px;">Nessun operatore trovato</div>';
+    return;
+  }
+  el.innerHTML=OPERATORI.map(function(op){
+    return '<div class="op-card" id="oc-'+pfx+'-'+op.id+'" onclick="selectOp(\''+pfx+'\',\''+op.id+'\')">'
+      +'<div class="op-sigla">'+escH(op.id)+'</div>'
+      +'<div class="op-nome">'+escH(op.nome)+'</div>'
+      +'<div class="op-ruolo">'+escH(op.ruolo)+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function selectOp(pfx, opId){
+  var op=OPERATORI.find(function(o){return o.id===opId;}); if(!op)return;
+  document.querySelectorAll('[id^="oc-'+pfx+'-"]').forEach(function(c){c.classList.remove('selected');});
+  var card=document.getElementById('oc-'+pfx+'-'+opId);
+  if(card) card.classList.add('selected');
+
+  if(pfx==='s0'){
+    // porta a schermata PIN
+    pinStato.s1={digits:'',op:op};
+    document.getElementById('s1-nome-label').textContent=op.nome;
+    updatePinDots('s1');
+    goTo('s1');
+    return;
+  }
+  if(pfx==='s5'){
+    // se stesso operatore che ha preparato la fornitura: skip PIN, mostra avviso
+    if(FORN && FORN.preparatore && FORN.preparatore.id===op.id){
+      document.getElementById('s5-warn-stesso').style.display='block';
+      pinStato.s5={digits:'',op:op};
+      autenticaControllore(op);
+      return;
+    }
+    pinStato.s5={digits:'',op:op};
+    var pc=document.getElementById('s5-pin-card');
+    pc.style.display='block';
+    document.getElementById('s5-op-nome-label').textContent=op.nome;
+    updatePinDots('s5');
+    setTimeout(function(){pc.scrollIntoView({behavior:'smooth',block:'center'});},100);
+  }
+}
+
+function autenticaControllore(op){
+  stato.controllore={id:op.id,nome:op.nome,ruolo:op.ruolo};
+  stato.tsControllo=new Date();
+  document.getElementById('s5-pin-card').style.display='none';
+  document.getElementById('s5-cons-card').style.display='block';
+  document.getElementById('s5-azioni-card').style.display='block';
+  renderConsegnante();
+  checkS5Ready();
+  setTimeout(function(){document.getElementById('s5-cons-card').scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+
+function mostraPronte(){
+  var pronte=CONSEGNE.filter(function(c){return c.stato===STATO_PRONTA;});
+  // ordine: più vecchie in alto
+  pronte.sort(function(a,b){
+    var ta=a.tsPreparazione?(a.tsPreparazione.toDate?a.tsPreparazione.toDate():new Date(a.tsPreparazione)):new Date(0);
+    var tb=b.tsPreparazione?(b.tsPreparazione.toDate?b.tsPreparazione.toDate():new Date(b.tsPreparazione)):new Date(0);
+    return ta-tb;
+  });
+  var wrap=document.getElementById('s0-pronte-wrap');
+  if(!pronte.length){
+    wrap.innerHTML='<div style="text-align:center;padding:16px;color:var(--gray-m);font-size:13px;max-width:580px;margin:0 auto;">Nessuna fornitura in attesa</div>';
+    return;
+  }
+  var html=pronte.map(function(c){
+    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+    var dataStr=ts?ts.toLocaleDateString('it-CH'):'—';
+    var oraStr=ts?ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—';
+    var nFoto=(c.foto&&Array.isArray(c.foto))?c.foto.length:0;
+    var badges='';
+    if(c.presenzaFrigo||c.frigo) badges+='<span class="badge badge-frigo">🌡️ Frigo</span>';
+    if(c.note) badges+='<span class="badge" style="background:#f8f4ee;color:var(--gray-m);">📝 Note</span>';
+    if(nFoto>0) badges+='<span class="badge" style="background:#f8f4ee;color:var(--gray-m);">📷 '+nFoto+'</span>';
+    return '<button class="pronta-card" onclick="apriControllo(\''+c._id+'\')">'
+      +'<div class="pronta-paziente">'+escH(c.paziente?c.paziente.nome:'—')+'</div>'
+      +'<div class="pronta-meta">'
+      +'<span>🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+'</span>'
+      +'<span>📅 '+escH(dataStr)+'</span>'
+      +'<span>🕐 '+escH(oraStr)+'</span>'
+      +'<span style="font-family:var(--mono);font-size:11px;">'+escH(fmt(c.numero))+'</span>'
+      +'</div>'
+      +(badges?'<div class="pronta-badges">'+badges+'</div>':'')
+      +'</button>';
+  }).join('');
+  wrap.innerHTML='<div class="card" style="max-width:580px;margin:0 auto;">'
+    +'<div class="card-title">⏳ Da controllare ('+pronte.length+')</div>'
+    +html+'</div>';
+}
+
+function iniziaNuovaPrep(){
+  // reset flusso preparazione (mantieni preparatore)
+  var prep=stato.preparatore;
+  stato=mkStato();
+  stato.preparatore=prep;
+  stato.tsPreparazione=new Date();
+  // reset form S2
+  ['s2-nome','s2-indirizzo','s2-citta','s2-search'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('s2-save-row').style.display='none';
+  document.getElementById('s2-save-check').checked=false;
+  document.getElementById('s2-next').disabled=true;
+  // reset S3
+  document.getElementById('s3-note').value='';
+  document.getElementById('frigo-si').classList.remove('selected');
+  document.getElementById('frigo-no').classList.remove('selected');
+  document.getElementById('frigo-info').style.display='none';
+  document.getElementById('s3-frigo-req').style.display='';
+  renderFotoPrep();
+  checkS3Ready();
+  document.getElementById('s2-prep-label').textContent='Preparatore: '+prep.nome;
+  goTo('s2');
+}
+
+function apriControllo(id){
+  caricaFornPrimaControllo(id);
+}
+
+function resetPinS1(){
+  pinStato.s1={digits:'',op:null};
+  updatePinDots('s1');
+  document.getElementById('s1-pin-error').style.display='none';
+}
+
+/* ─── PIN ─────────────────────────────────── */
+function pinPress(pfx, d){
+  if(pinStato[pfx].digits.length>=4)return;
+  pinStato[pfx].digits+=String(d);
+  updatePinDots(pfx);
+  if(pinStato[pfx].digits.length===4) verificaPin(pfx);
+}
+function pinDel(pfx){
+  pinStato[pfx].digits=pinStato[pfx].digits.slice(0,-1);
+  updatePinDots(pfx);
+  document.getElementById(pfx+'-pin-error').style.display='none';
+}
+function updatePinDots(pfx){
+  var n=pinStato[pfx].digits.length;
+  for(var i=0;i<4;i++){
+    var d=document.getElementById(pfx+'d'+i);
+    if(d) d.classList.toggle('filled',i<n);
+  }
+}
+async function verificaPin(pfx){
+  var op=pinStato[pfx].op;
+  var hash=await sha256(pinStato[pfx].digits);
+  if(hash===op.pinHash){
+    document.getElementById(pfx+'-pin-error').style.display='none';
+    if(pfx==='s1'){
+      stato.preparatore={id:op.id,nome:op.nome,ruolo:op.ruolo};
+      stato.tsPreparazione=new Date();
+      // mostra home operativa
+      document.getElementById('s0-sub').textContent='👤 '+op.nome+' · Farmacia Ascona';
+      document.getElementById('s0-login').style.display='none';
+      document.getElementById('s0-home').style.display='block';
+      mostraPronte();
+      goTo('s0');
+    } else if(pfx==='s5'){
+      autenticaControllore(op);
+    }
+  } else {
+    pinStato[pfx].digits='';
+    updatePinDots(pfx);
+    var e=document.getElementById(pfx+'-pin-error');
+    e.style.display='block';
+    setTimeout(function(){e.style.display='none';},2000);
+  }
+}
+async function sha256(str){
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+
+/* ─── S2: DESTINATARIO ────────────────────── */
+function cercaPaziente(val){
+  var res=document.getElementById('s2-results');
+  if(!val||val.length<2){res.style.display='none';return;}
+  var f=PAZIENTI.filter(function(p){return p.nome.toLowerCase().includes(val.toLowerCase());});
+  if(!f.length){res.style.display='none';return;}
+  res.innerHTML=f.slice(0,8).map(function(p){
+    return '<div class="search-result-item" onclick="selezionaPaziente(\''+p.id+'\')">'
+      +'<div class="item-nome">'+escH(p.nome)+'</div>'
+      +'<div class="item-addr">'+escH([p.indirizzo,p.citta].filter(Boolean).join(', ')||'Indirizzo non registrato')+'</div>'
+      +'</div>';
+  }).join('');
+  res.style.display='block';
+}
+function selezionaPaziente(id){
+  var p=PAZIENTI.find(function(x){return x.id===id;}); if(!p)return;
+  document.getElementById('s2-search').value=p.nome;
+  document.getElementById('s2-nome').value=p.nome;
+  document.getElementById('s2-indirizzo').value=p.indirizzo||'';
+  document.getElementById('s2-citta').value=p.citta||'';
+  document.getElementById('s2-results').style.display='none';
+  document.getElementById('s2-save-row').style.display='none';
+  stato.paziente={id:p.id,nome:p.nome,indirizzo:p.indirizzo,citta:p.citta,esistente:true};
+  checkS2Ready();
+  toast(p.nome+' selezionato','ok');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.search-wrap')) document.getElementById('s2-results').style.display='none';
+});
+function checkS2Ready(){
+  var nome=(document.getElementById('s2-nome').value||'').trim();
+  document.getElementById('s2-next').disabled=!nome;
+  var esiste=PAZIENTI.find(function(p){return p.nome.toLowerCase()===nome.toLowerCase();});
+  document.getElementById('s2-save-row').style.display=(nome&&!esiste)?'flex':'none';
+}
+function goToS3(){
+  var nome=(document.getElementById('s2-nome').value||'').trim();
+  if(!nome){toast('Inserisci il destinatario','err');return;}
+  if(!stato.paziente||stato.paziente.nome!==nome){
+    stato.paziente={
+      id:null,
+      nome:nome,
+      indirizzo:(document.getElementById('s2-indirizzo').value||'').trim(),
+      citta:(document.getElementById('s2-citta').value||'').trim(),
+      esistente:false
+    };
+  } else {
+    stato.paziente.indirizzo=(document.getElementById('s2-indirizzo').value||'').trim();
+    stato.paziente.citta=(document.getElementById('s2-citta').value||'').trim();
+  }
+  stato.salvaPaziente=document.getElementById('s2-save-check').checked;
+  document.getElementById('s3-dest-label').textContent=nome;
+  goTo('s3');
+}
+
+/* ─── S3: FOTO + FRIGO ────────────────────── */
+function addFotoPrep(tipo, input){
+  if(!input.files||!input.files[0])return;
+  if(stato.foto.length>=MAX_FOTO){toast('Massimo '+MAX_FOTO+' foto totali','err');input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    comprimi(e.target.result,FOTO_PX,FOTO_Q,function(c){
+      stato.foto.push({tipo:tipo,data:c,url:null});
+      renderFotoPrep();
+      checkS3Ready();
+    });
+  };
+  reader.readAsDataURL(input.files[0]);
+  input.value='';
+}
+function removeFotoPrep(idx){
+  stato.foto.splice(idx,1);
+  renderFotoPrep();
+  checkS3Ready();
+}
+function renderFotoPrep(){
+  var et=stato.foto.filter(function(f){return f.tipo==='etichetta';});
+  var pr=stato.foto.filter(function(f){return f.tipo==='prodotti';});
+  var tot=stato.foto.length;
+
+  function thumb(f, globalIdx){
+    var src=f.data||f.url||'';
+    return '<div class="foto-thumb">'
+      +'<img src="'+src+'" alt="'+f.tipo+'">'
+      +'<button class="foto-thumb-remove" onclick="removeFotoPrep('+globalIdx+')">✕</button>'
+      +'</div>';
+  }
+
+  // etichetta
+  var etHtml='';
+  stato.foto.forEach(function(f,i){if(f.tipo==='etichetta')etHtml+=thumb(f,i);});
+  document.getElementById('s3-et-thumbs').innerHTML=etHtml;
+
+  // prodotti
+  var prHtml='';
+  stato.foto.forEach(function(f,i){if(f.tipo==='prodotti')prHtml+=thumb(f,i);});
+  document.getElementById('s3-pr-thumbs').innerHTML=prHtml;
+
+  // counter e bottoni
+  document.getElementById('s3-tot-label').textContent=tot+' / '+MAX_FOTO;
+  var pieno=tot>=MAX_FOTO;
+  document.getElementById('s3-add-et').disabled=pieno;
+  document.getElementById('s3-add-pr').disabled=pieno;
+  document.getElementById('s3-foto-msg').textContent=pieno?'Limite foto raggiunto ('+MAX_FOTO+')':'';
+}
+function setFrigo(val){
+  stato.presenzaFrigo=val;
+  stato.frigoCompilato=true;
+  document.getElementById('frigo-si').classList.toggle('selected',val===true);
+  document.getElementById('frigo-no').classList.toggle('selected',val===false);
+  document.getElementById('s3-frigo-req').style.display='none';
+  document.getElementById('frigo-info').style.display=val?'block':'none';
+  checkS3Ready();
+}
+function checkS3Ready(){
+  var etOk=stato.foto.some(function(f){return f.tipo==='etichetta';});
+  var prOk=stato.foto.some(function(f){return f.tipo==='prodotti';});
+  var frigoOk=stato.frigoCompilato;
+  document.getElementById('s3-next').disabled=!(etOk&&prOk&&frigoOk);
+}
+function goToS4(){
+  stato.note=(document.getElementById('s3-note').value||'').trim();
+  renderS4();
+  goTo('s4');
+}
+
+/* ─── S4: RIEPILOGO ───────────────────────── */
+function renderS4(){
+  var modifica=stato.modalitaModifica;
+  document.getElementById('s4-title').textContent=modifica?'Modifica preparazione':'Riepilogo';
+  document.getElementById('s4-sub').textContent=modifica?'Revisione prima di aggiornare':'Verifica prima di salvare';
+  document.getElementById('s4-azioni-normal').style.display=modifica?'none':'block';
+  document.getElementById('s4-azioni-modifica').style.display=modifica?'block':'none';
+
+  var p=stato.paziente;
+  var h='';
+  h+=rie('Preparatore',escH(stato.preparatore?stato.preparatore.nome:'—'));
+  h+=rie('Paziente',escH(p?p.nome:'—'));
+  h+=rie('Indirizzo',escH(p?[p.indirizzo,p.citta].filter(Boolean).join(', ')||'—':'—'));
+  h+=rie('Frigo',stato.presenzaFrigo?'<span class="badge badge-frigo">🌡️ Sì</span>':'<span class="badge badge-ok">✓ Ambiente</span>');
+  if(stato.note) h+=rie('Note',escH(stato.note));
+  document.getElementById('s4-riepilogo').innerHTML=h;
+
+  // miniature foto
+  var thumbs=stato.foto.map(function(f){
+    var src=f.data||f.url||'';
+    return '<div class="foto-thumb"><img src="'+src+'" alt="'+f.tipo+'">'
+      +'<div class="foto-thumb-badge">'+escH(f.tipo==='etichetta'?'ET':'PR')+'</div></div>';
+  }).join('');
+  document.getElementById('s4-foto-thumbs').innerHTML=thumbs;
+  document.getElementById('s4-foto-card').style.display=stato.foto.length?'block':'none';
+}
+function rie(l,v){
+  return '<div class="rie-row"><div class="rie-label">'+escH(l)+'</div><div class="rie-val">'+v+'</div></div>';
+}
+
+/* ─── SALVA FORNITURA ─────────────────────── */
+async function salvaFornitura(callback){
+  if(!db){toast('Offline — impossibile salvare','err');return;}
+  showLoading('Salvataggio fornitura...');
+  stato.numero=NUMERO_SEQ++;
+  // salva paziente nuovo se richiesto
+  if(stato.salvaPaziente&&stato.paziente&&!stato.paziente.esistente){
+    try{
+      var pts=stato.paziente.nome.split(' ');
+      var ref=await db.collection('pazienti').add({
+        cognome:pts[0]||'',nome:pts.slice(1).join(' ')||'',
+        indirizzo:stato.paziente.indirizzo,citta:stato.paziente.citta
+      });
+      stato.paziente.id=ref.id;
+      PAZIENTI.push({id:ref.id,nome:stato.paziente.nome,indirizzo:stato.paziente.indirizzo,citta:stato.paziente.citta});
+    }catch(e){console.warn('salva paziente:',e);}
+  }
+  // upload foto
+  var fotoSalvate=[];
+  for(var i=0;i<stato.foto.length;i++){
+    var f=stato.foto[i];
+    if(f.url&&!f.data){fotoSalvate.push({tipo:f.tipo,url:f.url});continue;}
+    if(f.data){
+      try{
+        var blob=dataURLtoBlob(f.data);
+        var r=storage.ref('foto/'+Date.now()+'_'+i+'.jpg');
+        var snap=await r.put(blob,{contentType:'image/jpeg'});
+        var url=await snap.ref.getDownloadURL();
+        fotoSalvate.push({tipo:f.tipo,url:url});
+      }catch(e){console.warn('upload foto:',e);fotoSalvate.push({tipo:f.tipo,url:null});}
+    }
+  }
+  try{
+    var docRef=await db.collection('qms_consegne').add({
+      numero:stato.numero,
+      stato:STATO_PRONTA,
+      tsPreparazione:stato.tsPreparazione||new Date(),
+      preparatore:stato.preparatore,
+      paziente:stato.paziente,
+      foto:fotoSalvate,
+      presenzaFrigo:stato.presenzaFrigo,
+      note:stato.note||''
+    });
+    stato.firestoreId=docRef.id;
+    var rec=Object.assign({_id:docRef.id},{numero:stato.numero,stato:STATO_PRONTA,
+      tsPreparazione:stato.tsPreparazione||new Date(),
+      preparatore:stato.preparatore,paziente:stato.paziente,
+      foto:fotoSalvate,presenzaFrigo:stato.presenzaFrigo,note:stato.note||''});
+    CONSEGNE.unshift(rec);
+    hideLoading();
+    toast('Fornitura salvata — '+fmt(stato.numero),'ok');
+    if(callback) callback(docRef.id, rec);
+  }catch(e){
+    hideLoading();
+    toast('Errore salvataggio: '+e.message,'err');
+  }
+}
+
+async function aggiornaFornitura(){
+  if(!db||!stato.firestoreId){toast('Impossibile aggiornare','err');return;}
+  showLoading('Aggiornamento preparazione...');
+  // upload nuove foto
+  var fotoSalvate=[];
+  for(var i=0;i<stato.foto.length;i++){
+    var f=stato.foto[i];
+    if(f.url&&!f.data){fotoSalvate.push({tipo:f.tipo,url:f.url});continue;}
+    if(f.data){
+      try{
+        var blob=dataURLtoBlob(f.data);
+        var r=storage.ref('foto/'+Date.now()+'_'+i+'.jpg');
+        var snap=await r.put(blob,{contentType:'image/jpeg'});
+        var url=await snap.ref.getDownloadURL();
+        fotoSalvate.push({tipo:f.tipo,url:url});
+      }catch(e){fotoSalvate.push({tipo:f.tipo,url:null});}
+    }
+  }
+  try{
+    await db.collection('qms_consegne').doc(stato.firestoreId).update({
+      paziente:stato.paziente,
+      foto:fotoSalvate,
+      presenzaFrigo:stato.presenzaFrigo,
+      note:stato.note||'',
+      tsUltimaModifica:new Date(),
+      modificatoDa:stato.preparatore
+    });
+    // aggiorna cache locale
+    var cached=CONSEGNE.find(function(c){return c._id===stato.firestoreId;});
+    if(cached){
+      Object.assign(cached,{paziente:stato.paziente,foto:fotoSalvate,presenzaFrigo:stato.presenzaFrigo,note:stato.note||''});
+      FORN=cached;
+    }
+    hideLoading();
+    toast('Preparazione aggiornata','ok');
+    stato.modalitaModifica=false;
+    // aggiorna S5 e torna
+    if(FORN) caricaFornPrimaControllo(stato.firestoreId);
+  }catch(e){
+    hideLoading();
+    toast('Errore aggiornamento: '+e.message,'err');
+  }
+}
+
+function salvaEProssima(){
+  salvaFornitura(function(){
+    mostraPronte();
+    iniziaNuovaPrep();
+  });
+}
+function salvaEProsegui(){
+  salvaFornitura(function(id){
+    caricaFornPrimaControllo(id);
+  });
+}
+function salvaEdEsci(fase){
+  if(fase==='prep'){
+    salvaFornitura(function(id){
+      document.getElementById('s7-title').textContent='Fornitura salvata';
+      document.getElementById('s7-sub').textContent='Stato: PRONTA PER CONTROLLO. Il record è salvato in Firebase.';
+      goTo('s7');
+    });
+  } else {
+    // ctrl: approva prima, poi esci
+    approvaFornitura(function(){
+      document.getElementById('s7-title').textContent='Controllo completato';
+      document.getElementById('s7-sub').textContent='Stato: IN CONSEGNA. Il record è salvato in Firebase.';
+      goTo('s7');
+    });
+  }
+}
+function annullaModifica(){
+  stato.modalitaModifica=false;
+  // ricarica FORN da cache e torna a S5
+  if(FORN) caricaFornPrimaControllo(FORN._id);
+  else goTo('s0');
+}
+
+/* ─── S5: CONTROLLO ───────────────────────── */
+function caricaFornPrimaControllo(id){
+  FORN=CONSEGNE.find(function(c){return c._id===id;});
+  if(!FORN){
+    if(db){
+      showLoading('Caricamento fornitura...');
+      db.collection('qms_consegne').doc(id).get().then(function(d){
+        hideLoading();
+        if(!d.exists){toast('Fornitura non trovata','err');return;}
+        FORN=Object.assign({_id:d.id},d.data());
+        CONSEGNE.push(FORN);
+        initS5();
+      }).catch(function(){hideLoading();toast('Errore caricamento','err');});
+    }else{toast('Fornitura non trovata','err');}
+    return;
+  }
+  initS5();
+}
+
+function initS5(){
+  // reset S5 state
+  stato.controllore=null;
+  stato.consegnante=null;
+  stato.dispensatoreAvvisatoFrigo=null;
+  stato.firestoreId=FORN._id;
+  consSelezionato=null;
+
+  // init pool foto S5 da URL esistenti
+  stato.fotoS5=normFoto(FORN).map(function(f){return {tipo:f.tipo,url:f.url,data:null};});
+
+  // label
+  document.getElementById('s5-label').textContent=fmt(FORN.numero);
+
+  // riepilogo preparazione
+  var p=FORN.paziente||{};
+  var h='';
+  h+=rie('Preparatore',escH(FORN.preparatore?FORN.preparatore.nome:'—'));
+  h+=rie('Paziente',escH(p.nome||'—'));
+  h+=rie('Indirizzo',escH([p.indirizzo,p.citta].filter(Boolean).join(', ')||'—'));
+  h+=rie('Frigo',(FORN.presenzaFrigo||FORN.frigo)?'<span class="badge badge-frigo">🌡️ Sì</span>':'<span class="badge badge-ok">✓ Ambiente</span>');
+  if(FORN.note) h+=rie('Note',escH(FORN.note));
+  document.getElementById('s5-prep-rie').innerHTML=h;
+
+  // frigo warning
+  var hasFrigo=!!(FORN.presenzaFrigo||FORN.frigo);
+  document.getElementById('s5-frigo-warn').style.display=hasFrigo?'block':'none';
+  if(hasFrigo){
+    document.getElementById('frigo-avv-si').classList.remove('sel');
+    document.getElementById('frigo-avv-no').classList.remove('sel');
+  }
+
+  // reset pin e controllore
+  pinStato.s5={digits:'',op:null};
+  document.getElementById('s5-pin-card').style.display='none';
+  document.getElementById('s5-cons-card').style.display='none';
+  document.getElementById('s5-azioni-card').style.display='none';
+  document.getElementById('s5-warn-stesso').style.display='none';
+  document.getElementById('s5-note').value='';
+  document.getElementById('s5-esterno-field').style.display='none';
+  document.getElementById('s5-btn-approva').disabled=true;
+
+  // render op grid
+  renderOpGrid('s5-op-grid','s5');
+
+  // render foto
+  renderFotoS5();
+
+  goTo('s5');
+}
+
+/* normalizza foto da record (gestisce formati vecchi e nuovi) */
+function normFoto(rec){
+  if(rec.foto&&Array.isArray(rec.foto)) return rec.foto;
+  var out=[];
+  if(rec.fotoEtichettaUrl) out.push({tipo:'etichetta',url:rec.fotoEtichettaUrl});
+  if(rec.fotoProdottiUrl){
+    if(Array.isArray(rec.fotoProdottiUrl)) rec.fotoProdottiUrl.forEach(function(u){out.push({tipo:'prodotti',url:u});});
+    else out.push({tipo:'prodotti',url:rec.fotoProdottiUrl});
+  }
+  return out;
+}
+
+function addFotoS5(tipo, input){
+  if(!input.files||!input.files[0])return;
+  if(stato.fotoS5.length>=MAX_FOTO){toast('Massimo '+MAX_FOTO+' foto totali','err');input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    comprimi(e.target.result,FOTO_PX,FOTO_Q,function(c){
+      stato.fotoS5.push({tipo:tipo,data:c,url:null});
+      renderFotoS5();
+    });
+  };
+  reader.readAsDataURL(input.files[0]);
+  input.value='';
+}
+function removeFotoS5(idx){
+  stato.fotoS5.splice(idx,1);
+  renderFotoS5();
+}
+function renderFotoS5(){
+  var tot=stato.fotoS5.length;
+  document.getElementById('s5-tot-label').textContent=tot+' / '+MAX_FOTO;
+  var pieno=tot>=MAX_FOTO;
+  document.getElementById('s5-add-et').disabled=pieno;
+  document.getElementById('s5-add-pr').disabled=pieno;
+
+  function thumb(f, i){
+    var src=f.data||f.url||'';
+    var badge=f.url&&!f.data?'<div class="foto-thumb-badge">Orig</div>':'';
+    return '<div class="foto-thumb"><img src="'+src+'" alt="'+f.tipo+'">'
+      +badge
+      +'<button class="foto-thumb-remove" onclick="removeFotoS5('+i+')">✕</button>'
+      +'</div>';
+  }
+
+  var etH='',prH='';
+  stato.fotoS5.forEach(function(f,i){
+    if(f.tipo==='etichetta') etH+=thumb(f,i);
+    else prH+=thumb(f,i);
+  });
+  document.getElementById('s5-et-thumbs').innerHTML=etH;
+  document.getElementById('s5-pr-thumbs').innerHTML=prH;
+}
+
+function setFrigoAvvisato(val){
+  stato.dispensatoreAvvisatoFrigo=val;
+  document.getElementById('frigo-avv-si').classList.toggle('sel',val===true);
+  document.getElementById('frigo-avv-no').classList.toggle('sel',val===false);
+  checkS5Ready();
+}
+
+function renderConsegnante(){
+  var el=document.getElementById('s5-cons-list');
+  var html=OPERATORI.map(function(op){
+    return '<div class="consegnante-item" id="cons-'+op.id+'" onclick="selCons(\''+op.id+'\',false)">'
+      +'<div class="c-sigla">'+escH(op.id)+'</div>'
+      +'<div><div class="c-nome">'+escH(op.nome)+'</div><div class="c-ruolo">'+escH(op.ruolo)+'</div></div>'
+      +'<div class="c-check">✓</div></div>';
+  });
+  html.push('<div class="consegnante-item consegnante-esterno" id="cons-esterno" onclick="selCons(\'esterno\',true)">'
+    +'<div class="c-sigla" style="color:var(--gray-m);">+</div>'
+    +'<div><div class="c-nome">Esterno / Corriere</div><div class="c-ruolo">Inserisci nome manualmente</div></div>'
+    +'<div class="c-check">✓</div></div>');
+  el.innerHTML=html.join('');
+}
+function selCons(id, esterno){
+  consSelezionato=id;
+  document.querySelectorAll('.consegnante-item').forEach(function(c){c.classList.remove('selected');});
+  var t=document.getElementById('cons-'+id); if(t) t.classList.add('selected');
+  var ext=document.getElementById('s5-esterno-field');
+  ext.style.display=esterno?'block':'none';
+  if(!esterno){
+    var op=OPERATORI.find(function(o){return o.id===id;});
+    stato.consegnante={nome:op?op.nome:id,esterno:false};
+  } else {
+    stato.consegnante=null;
+  }
+  checkS5Ready();
+}
+function checkS5Ready(){
+  var hasFrigo=!!(FORN&&(FORN.presenzaFrigo||FORN.frigo));
+  var frigoOk=!hasFrigo||stato.dispensatoreAvvisatoFrigo===true;
+  var contOk=!!stato.controllore;
+  var consOk=false;
+  if(consSelezionato&&consSelezionato!=='esterno') consOk=true;
+  if(consSelezionato==='esterno'){
+    var nome=(document.getElementById('s5-esterno-nome').value||'').trim();
+    consOk=nome.length>0;
+  }
+  document.getElementById('s5-btn-approva').disabled=!(frigoOk&&contOk&&consOk);
+}
+function tornaIndietroS5(){
+  mostraPronte();
+  goTo('s0');
+}
+function modificaPreparazione(){
+  if(!FORN){toast('Fornitura non disponibile','err');return;}
+  stato.modalitaModifica=true;
+  stato.firestoreId=FORN._id;
+  // precompila stato da FORN
+  stato.preparatore=FORN.preparatore||stato.preparatore;
+  var p=FORN.paziente||{};
+  stato.paziente={id:p.id||null,nome:p.nome||'',indirizzo:p.indirizzo||'',citta:p.citta||'',esistente:!!p.id};
+  stato.foto=normFoto(FORN).map(function(f){return {tipo:f.tipo,url:f.url,data:null};});
+  stato.presenzaFrigo=!!(FORN.presenzaFrigo||FORN.frigo);
+  stato.frigoCompilato=true;
+  stato.note=FORN.note||'';
+  // precompila form S2
+  document.getElementById('s2-nome').value=stato.paziente.nome;
+  document.getElementById('s2-indirizzo').value=stato.paziente.indirizzo;
+  document.getElementById('s2-citta').value=stato.paziente.citta;
+  document.getElementById('s2-search').value='';
+  document.getElementById('s2-save-row').style.display='none';
+  document.getElementById('s2-next').disabled=false;
+  document.getElementById('s2-prep-label').textContent='Preparatore: '+(stato.preparatore?stato.preparatore.nome:'—');
+  // precompila form S3
+  document.getElementById('s3-note').value=stato.note;
+  document.getElementById('frigo-si').classList.toggle('selected',stato.presenzaFrigo===true);
+  document.getElementById('frigo-no').classList.toggle('selected',stato.presenzaFrigo===false);
+  document.getElementById('frigo-info').style.display=stato.presenzaFrigo?'block':'none';
+  document.getElementById('s3-frigo-req').style.display='none';
+  renderFotoPrep();
+  checkS3Ready();
+  document.getElementById('s3-dest-label').textContent=stato.paziente.nome;
+  goTo('s2');
+}
+
+async function approvaFornitura(callback){
+  if(!stato.controllore){toast('Seleziona il controllore','err');return;}
+  if(!consSelezionato){toast('Seleziona il consegnante','err');return;}
+  if(consSelezionato==='esterno'){
+    var ne=(document.getElementById('s5-esterno-nome').value||'').trim();
+    if(!ne){toast('Inserisci nome consegnante','err');return;}
+    stato.consegnante={nome:ne,esterno:true};
+  }
+  var hasFrigo=!!(FORN&&(FORN.presenzaFrigo||FORN.frigo));
+  if(hasFrigo&&stato.dispensatoreAvvisatoFrigo!==true){
+    toast('Conferma di aver avvisato il consegnante (frigo)','err');return;
+  }
+  if(!db){toast('Offline — impossibile salvare','err');return;}
+  showLoading('Approvazione in corso...');
+  // upload nuove foto S5
+  var fotoFinali=[];
+  for(var i=0;i<stato.fotoS5.length;i++){
+    var f=stato.fotoS5[i];
+    if(f.url&&!f.data){fotoFinali.push({tipo:f.tipo,url:f.url});continue;}
+    if(f.data){
+      try{
+        var blob=dataURLtoBlob(f.data);
+        var r=storage.ref('foto/ctrl_'+Date.now()+'_'+i+'.jpg');
+        var snap=await r.put(blob,{contentType:'image/jpeg'});
+        var url=await snap.ref.getDownloadURL();
+        fotoFinali.push({tipo:f.tipo,url:url});
+      }catch(e){fotoFinali.push({tipo:f.tipo,url:null});}
+    }
+  }
+  try{
+    var update={
+      stato:STATO_CONSEGNA,
+      tsControllo:new Date(),
+      controllore:stato.controllore,
+      consegnante:stato.consegnante,
+      dispensatoreAvvisatoFrigo:stato.dispensatoreAvvisatoFrigo,
+      noteControllo:(document.getElementById('s5-note').value||'').trim(),
+      fotoControllo:fotoFinali
+    };
+    await db.collection('qms_consegne').doc(FORN._id).update(update);
+    var cached=CONSEGNE.find(function(c){return c._id===FORN._id;});
+    if(cached) Object.assign(cached,update);
+    hideLoading();
+    toast('✓ In consegna — '+fmt(FORN.numero),'ok');
+    if(callback){ callback(); }
+    else { mostraPronte(); goTo('s0'); }
+  }catch(e){
+    hideLoading();
+    toast('Errore: '+e.message,'err');
+  }
+}
+
+/* ─── S6: STORICO ─────────────────────────── */
+function goToStorico(){
+  if(db){
+    showLoading('Caricamento storico...');
+    db.collection('qms_consegne').orderBy('tsPreparazione','desc').limit(300).get()
+      .then(function(s){
+        CONSEGNE=[];
+        s.forEach(function(d){CONSEGNE.push(Object.assign({_id:d.id},d.data()));});
+        hideLoading(); renderStorico(); goTo('s6');
+      }).catch(function(){hideLoading(); renderStorico(); goTo('s6');});
+  } else { renderStorico(); goTo('s6'); }
+}
+function renderStorico(){
+  var byP={}, byD={};
+  CONSEGNE.forEach(function(c){
+    var nome=c.paziente?c.paziente.nome:'Sconosciuto';
+    if(!byP[nome]) byP[nome]=[];
+    byP[nome].push(c);
+    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+    var d=ts?ts.toLocaleDateString('it-CH'):'—';
+    if(!byD[d]) byD[d]=[];
+    byD[d].push(c);
+  });
+
+  function statoBadge(c){
+    if(c.stato===STATO_PRONTA) return '<span class="badge badge-pronta">⏳ Pronta</span>';
+    if(c.stato===STATO_CONSEGNA) return '<span class="badge badge-consegna">🚗 In consegna</span>';
+    if(c.stato===STATO_VERIFICA) return '<span class="badge badge-verificata">✓ Verificata</span>';
+    if(c.stato===STATO_PROBLEMA) return '<span class="badge badge-problema">⚠️ Problema</span>';
+    return '<span class="badge" style="background:var(--gray-l);color:#555;">'+escH(c.stato||'—')+'</span>';
+  }
+  function btnsStorico(c){
+    var html='';
+    var mostraVerifica=(c.stato===STATO_CONSEGNA||c.stato===STATO_VERIFICA);
+    var mostraProblema=(c.stato===STATO_CONSEGNA||c.stato===STATO_VERIFICA);
+    var mostraRimuoviProb=(c.stato===STATO_PROBLEMA);
+    if(mostraVerifica){
+      var v=c.verificaEsitoOk;
+      html+='<button class="verifica-toggle '+(v?'verde':'')+'" title="Verifica esito" '
+        +'onclick="toggleVerifica(\''+c._id+'\',event)">'+(v?'✅':'⬜')+'</button>';
+    }
+    if(mostraProblema&&!c.verificaEsitoOk){
+      html+='<button class="verifica-toggle problema" title="Segnala problema" '
+        +'onclick="apriProblema(\''+c._id+'\',event)">⚠️</button>';
+    }
+    if(mostraRimuoviProb){
+      html+='<button class="verifica-toggle problema" title="Rimuovi problema" '
+        +'onclick="rimuoviProblema(\''+c._id+'\',event)">🔄</button>';
+    }
+    return html;
+  }
+
+  // per paziente
+  var hP='';
+  Object.keys(byP).sort().forEach(function(nome){
+    var cc=byP[nome];
+    hP+='<div class="storico-group">👤 '+escH(nome)+' ('+cc.length+')</div>';
+    cc.forEach(function(c){
+      var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+      hP+='<div class="storico-item" onclick="mostraPaz(\''+escAttr(nome)+'\')">'
+        +'<div class="storico-info">'
+        +'<div class="storico-nome">'+escH(fmt(c.numero))+'</div>'
+        +'<div class="storico-det">📅 '+(ts?ts.toLocaleDateString('it-CH'):'—')+' · 🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+'</div>'
+        +'<div style="margin-top:3px;">'+statoBadge(c)+'</div>'
+        +'</div>'
+        +'<div class="storico-btns">'+btnsStorico(c)+'</div>'
+        +'</div>';
+    });
+  });
+  document.getElementById('list-paz').innerHTML=hP||'<div style="padding:12px;color:var(--gray-m);font-size:13px;">Nessuna consegna</div>';
+
+  // per data
+  var hD='';
+  Object.keys(byD).sort(function(a,b){
+    var da=a.split('/').reverse().join('-'),db2=b.split('/').reverse().join('-');
+    return da>db2?-1:1;
+  }).forEach(function(d){
+    var cc=byD[d];
+    hD+='<div class="storico-group">📅 '+escH(d)+'</div>';
+    cc.forEach(function(c){
+      hD+='<div class="storico-item" onclick="mostraData(\''+escAttr(d)+'\')">'
+        +'<div class="storico-info">'
+        +'<div class="storico-nome">'+escH(fmt(c.numero))+' — '+escH(c.paziente?c.paziente.nome:'—')+'</div>'
+        +'<div class="storico-det">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+'→ 🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+'</div>'
+        +'<div style="margin-top:3px;">'+statoBadge(c)+'</div>'
+        +'</div>'
+        +'<div class="storico-btns">'+btnsStorico(c)+'</div>'
+        +'</div>';
+    });
+  });
+  document.getElementById('list-data').innerHTML=hD||'<div style="padding:12px;color:var(--gray-m);font-size:13px;">Nessuna consegna</div>';
+}
+
+// alias typo fix
+function statobage(c){return statoB(c);}
+function statoB(c){
+  if(c.stato===STATO_PRONTA) return '<span class="badge badge-pronta">⏳ Pronta</span>';
+  if(c.stato===STATO_CONSEGNA) return '<span class="badge badge-consegna">🚗 In consegna</span>';
+  if(c.stato===STATO_VERIFICA) return '<span class="badge badge-verificata">✓ Verificata</span>';
+  if(c.stato===STATO_PROBLEMA) return '<span class="badge badge-problema">⚠️ Problema</span>';
+  return '<span class="badge" style="background:var(--gray-l);color:#555;">'+escH(c.stato||'—')+'</span>';
+}
+// fix typo in renderStorico
+function statobage(c){return statoB(c);}
+
+function cambiaTab(tab){
+  document.getElementById('tab-paz').classList.toggle('active',tab==='paz');
+  document.getElementById('tab-data').classList.toggle('active',tab==='data');
+  document.getElementById('view-paz').style.display=tab==='paz'?'block':'none';
+  document.getElementById('view-data').style.display=tab==='data'?'block':'none';
+}
+function mostraPaz(nome){
+  var cc=CONSEGNE.filter(function(c){return c.paziente&&c.paziente.nome===nome;});
+  document.getElementById('modal-paz-titolo').textContent=nome;
+  document.getElementById('modal-paz-body').innerHTML=cc.map(function(c){return buildCard(c);}).join('')||'<p style="color:var(--gray-m);">Nessun dato</p>';
+  document.getElementById('modal-paz').classList.add('show');
+}
+function mostraData(d){
+  var cc=CONSEGNE.filter(function(c){
+    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+    return ts&&ts.toLocaleDateString('it-CH')===d;
+  });
+  document.getElementById('modal-data-titolo').textContent=d;
+  document.getElementById('modal-data-body').innerHTML=cc.map(function(c){return buildCard(c);}).join('')||'<p style="color:var(--gray-m);">Nessun dato</p>';
+  document.getElementById('modal-data').classList.add('show');
+}
+function buildCard(c){
+  var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+  var fb=(c.presenzaFrigo||c.frigo)?'<span class="badge badge-frigo">🌡️ Frigo</span>':'<span class="badge badge-ok">✓ Amb.</span>';
+  var fotoHtml='';
+  normFoto(c).forEach(function(f,i){
+    if(f.url) fotoHtml+='<a href="'+f.url+'" target="_blank" style="color:var(--blue);font-size:12px;font-weight:600;margin-right:6px;">'+(f.tipo==='etichetta'?'📦':'💊')+'</a>';
+  });
+  return '<div class="mc-card">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
+    +'<span style="font-family:var(--mono);font-weight:700;font-size:13px;color:var(--green-dark);">'+escH(fmt(c.numero))+'</span>'
+    +statoB(c)+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">📅 '+(ts?ts.toLocaleDateString('it-CH')+' '+ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—')+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">👤 '+escH(c.paziente?c.paziente.nome:'—')+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+(c.controllore?' → 👀 '+escH(c.controllore.nome):'')+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+' '+fb+'</div>'
+    +(c.note?'<div style="font-size:11px;color:var(--gray-m);font-style:italic;margin-top:3px;">📝 '+escH(c.note)+'</div>':'')
+    +(c.problemaNota?'<div style="font-size:11px;color:var(--red-dark);margin-top:3px;">⚠️ '+escH(c.problemaNota)+'</div>':'')
+    +(fotoHtml?'<div style="margin-top:6px;">'+fotoHtml+'</div>':'')
+    +'<div style="margin-top:8px;">'
+    +'<button onclick="generaPdfFromRecord(\''+c._id+'\')" class="btn btn-ghost btn-sm" style="font-size:12px;padding:6px 12px;">📄 PDF</button>'
+    +'</div>'
+    +'</div>';
+}
+
+/* ─── VERIFICA GIORNO DOPO ────────────────── */
+function toggleVerifica(id, e){
+  e.stopPropagation();
+  var c=CONSEGNE.find(function(x){return x._id===id;}); if(!c)return;
+  if(!db){toast('Offline','err');return;}
+  var newVal=!c.verificaEsitoOk;
+  var update=newVal
+    ?{verificaEsitoOk:true,verificaEsitoAt:new Date(),stato:STATO_VERIFICA}
+    :{verificaEsitoOk:false,verificaEsitoAt:null,verificaEsitoBy:null,stato:STATO_CONSEGNA};
+  db.collection('qms_consegne').doc(id).update(update).then(function(){
+    Object.assign(c,update);
+    renderStorico();
+    toast(newVal?'Consegna verificata ✓':'Verifica rimossa','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+function apriProblema(id, e){
+  e.stopPropagation();
+  document.getElementById('modal-prob-id').value=id;
+  document.getElementById('modal-prob-nota').value='';
+  document.getElementById('modal-problema').classList.add('show');
+}
+function salvaProblema(){
+  var id=document.getElementById('modal-prob-id').value;
+  var nota=(document.getElementById('modal-prob-nota').value||'').trim();
+  if(!nota){toast('Inserisci la descrizione del problema','err');return;}
+  if(!db){toast('Offline','err');return;}
+  db.collection('qms_consegne').doc(id).update({
+    stato:STATO_PROBLEMA, problemaNota:nota, problemaAt:new Date()
+  }).then(function(){
+    var c=CONSEGNE.find(function(x){return x._id===id;});
+    if(c){c.stato=STATO_PROBLEMA;c.problemaNota=nota;}
+    chiudiModal('modal-problema');
+    renderStorico();
+    toast('Problema segnalato','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+function rimuoviProblema(id, e){
+  e.stopPropagation();
+  if(!db){toast('Offline','err');return;}
+  db.collection('qms_consegne').doc(id).update({
+    stato:STATO_CONSEGNA, problemaNota:null, problemaAt:null
+  }).then(function(){
+    var c=CONSEGNE.find(function(x){return x._id===id;});
+    if(c){c.stato=STATO_CONSEGNA;c.problemaNota=null;}
+    renderStorico();
+    toast('Problema rimosso','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+
+/* ─── S7: USCITA ──────────────────────────── */
+function chiudiApp(){
+  try{window.close();}catch(e){}
+  // fallback: mostra messaggio
+  document.getElementById('s7-sub').textContent='Puoi chiudere questa scheda del browser manualmente.';
+}
+function tornaHome(){
+  mostraPronte();
+  goTo('s0');
+}
+
+/* ─── PDF OPZIONALE ───────────────────────── */
+function generaPdfFromRecord(id){
+  var c=CONSEGNE.find(function(x){return x._id===id;});
+  if(!c){toast('Dati non disponibili','err');return;}
+  try{
+    var jsPDF=window.jspdf?window.jspdf.jsPDF:jspdf.jsPDF;
+    var doc=new jsPDF({unit:'mm',format:'a4'});
+    var W=210,mg=15,cw=W-mg*2;
+    var C={gd:[45,106,79],gm:[64,145,108],gl:[216,237,223],gy:[236,239,241],bk:[26,25,22],gm2:[100,110,115]};
+    // header
+    doc.setFillColor.apply(doc,C.gd);doc.rect(0,0,W,22,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
+    doc.text('Consegna Domicilio',mg,9);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text('Farmacia Ascona SA  |  FA-SQ-CD-02',mg,16);
+    doc.text(fmt(c.numero),W-mg,9,{align:'right'});
+    doc.text('Generato: '+new Date().toLocaleDateString('it-CH'),W-mg,16,{align:'right'});
+    var y=28;
+    var p=c.paziente||{};
+    var righe=[
+      ['Stato', c.stato||'—'],
+      ['Destinatario',p.nome||'—'],
+      ['Indirizzo',[p.indirizzo,p.citta].filter(Boolean).join(', ')||'—'],
+      ['Preparatore',(c.preparatore?c.preparatore.nome:'—')],
+      ['Preparato',fmtTime(c.tsPreparazione)],
+      ['Controllore',(c.controllore?c.controllore.nome:'—')],
+      ['Controllato',fmtTime(c.tsControllo)],
+      ['Consegnante',(c.consegnante?c.consegnante.nome+(c.consegnante.esterno?' (ext)':''):'—')],
+      ['Frigo',(c.presenzaFrigo||c.frigo)?'SÌ — catena del freddo':'No']
+    ];
+    if(c.note) righe.push(['Note prep.',c.note]);
+    if(c.noteControllo) righe.push(['Note ctrl.',c.noteControllo]);
+    if(c.problemaNota) righe.push(['Problema',c.problemaNota]);
+    doc.setFillColor.apply(doc,C.gl);doc.rect(mg,y,cw,8,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor.apply(doc,C.gd);
+    doc.text('DATI CONSEGNA',mg+3,y+5.5);y+=11;
+    righe.forEach(function(r,i){
+      doc.setFillColor.apply(doc,i%2===0?[255,255,255]:C.gy);doc.rect(mg,y,cw,7,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor.apply(doc,C.gm2);
+      doc.text(r[0],mg+3,y+4.8);
+      doc.setFont('helvetica','normal');doc.setTextColor.apply(doc,C.bk);
+      var lines=doc.splitTextToSize(r[1],cw-50);
+      doc.text(lines,mg+50,y+4.8);
+      y+=7*Math.max(1,lines.length);
+    });
+    var np=doc.getNumberOfPages();
+    for(var i=1;i<=np;i++){
+      doc.setPage(i);doc.setFillColor.apply(doc,C.gy);doc.rect(0,287,W,10,'F');
+      doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor.apply(doc,C.gm2);
+      doc.text('Farmacia Ascona SA | Via Circonvallazione 6 | 6612 Ascona TI',mg,293);
+      doc.text('Pag.'+i+'/'+np,W-mg,293,{align:'right'});
+    }
+    var numStr=fmt(c.numero).replace('CD-','').replace(/\?/g,'0');
+    var dest=(p.nome||'consegna').replace(/\s+/g,'_').substring(0,18);
+    doc.save('FA-SQ-CD-02_CD-'+numStr+'_'+dest+'.pdf');
+    toast('PDF generato','ok');
+  }catch(e){toast('Errore PDF: '+e.message,'err');}
+}
+
+/* ─── UTILS ───────────────────────────────── */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function chiudiModal(id){document.getElementById(id).classList.remove('show');}
+function showLoading(msg){
+  document.getElementById('loading-msg').textContent=msg||'Attendere...';
+  document.getElementById('loading').classList.add('show');
+}
+function hideLoading(){document.getElementById('loading').classList.remove('show');}
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show'+(type==='ok'?' ok':type==='err'?' err':'');
+  clearTimeout(t._t);
+  t._t=setTimeout(function(){t.className='';},3200);
+}
+function fmt(n){
+  if(!n&&n!==0) return 'CD-?????';
+  var s=String(n);
+  return s.indexOf('CD-')===0?s:'CD-'+s.padStart(5,'0');
+}
+function fmtTime(d){
+  if(!d)return '—';
+  var dt=(d&&d.toDate)?d.toDate():new Date(d);
+  return dt.toLocaleDateString('it-CH')+' '+dt.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'});
+}
+function escH(s){
+  return String(s||'').replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function escAttr(s){return escH(String(s||'')).replace(/"/g,'&quot;');}
+function comprimi(src,maxPx,q,cb){
+  var img=new Image();
+  img.onload=function(){
+    var w=img.width,h=img.height;
+    if(w>maxPx||h>maxPx){if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}else{w=Math.round(w*maxPx/h);h=maxPx;}}
+    var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    cv.getContext('2d').drawImage(img,0,0,w,h);
+    cb(cv.toDataURL('image/jpeg',q));
+  };
+  img.src=src;
+}
+function dataURLtoBlob(dataURL){
+  var arr=dataURL.split(','),mime=arr[0].match(/:(.*?);/)[1],bstr=atob(arr[1]),n=bstr.length,u8=new Uint8Array(n);
+  while(n--) u8[n]=bstr.charCodeAt(n);
+  return new Blob([u8],{type:mime});
+}
+
+/* fix: statobage alias usato in renderStorico per tab data */
+function statobage(c){return statoB(c);}
+
 </script>
 </body>
 </html>
