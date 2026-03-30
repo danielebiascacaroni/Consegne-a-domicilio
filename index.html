@@ -165,6 +165,18 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 .modal-header h2{font-size:15px;font-weight:700;color:var(--green-dark);margin:0;}
 .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-m);padding:4px;line-height:1;}
 .mc-card{padding:11px;background:var(--gray-ll);border-radius:9px;margin-bottom:8px;border-left:4px solid var(--green-med);}
+
+/* SESSION LOCK */
+.lock-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.58);z-index:1200;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px);}
+.lock-box{background:linear-gradient(135deg,#1f5e3a,#2D6A4F);color:white;border-radius:18px;padding:26px 22px 22px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.32);text-align:center;}
+.lock-ico{font-size:40px;margin-bottom:8px;}
+.lock-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+.lock-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:18px;line-height:1.45;}
+.lock-name{display:inline-block;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;margin-bottom:14px;}
+.lock-error{color:#ffb3b3;font-size:13px;font-weight:600;min-height:18px;margin-top:10px;}
+.lock-exit{background:transparent;border:none;color:rgba(255,255,255,0.72);font-size:13px;font-weight:600;cursor:pointer;margin-top:14px;}
+.lock-exit:hover{color:white;}
+
 /* TOAST */
 #toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:9px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
 #toast.show{opacity:1;}#toast.ok{background:var(--green-med);}#toast.err{background:var(--red-dark);}
@@ -633,6 +645,37 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
   <div style="font-size:13px;color:var(--gray-m);" id="loading-msg">Attendere...</div>
 </div>
 
+
+<div class="lock-overlay" id="lock-overlay">
+  <div class="lock-box">
+    <div class="lock-ico">🔒</div>
+    <div class="lock-title">Sessione bloccata</div>
+    <div class="lock-sub" id="lock-subtitle">Reinserisci il PIN per riprendere il lavoro in corso.</div>
+    <div class="lock-name" id="lock-op-name">—</div>
+    <div class="pin-display" style="margin:10px 0 12px;">
+      <div class="pin-dot" id="lkd0"></div><div class="pin-dot" id="lkd1"></div>
+      <div class="pin-dot" id="lkd2"></div><div class="pin-dot" id="lkd3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="lockPinDigit(1)">1</button>
+      <button class="pin-btn" onclick="lockPinDigit(2)">2</button>
+      <button class="pin-btn" onclick="lockPinDigit(3)">3</button>
+      <button class="pin-btn" onclick="lockPinDigit(4)">4</button>
+      <button class="pin-btn" onclick="lockPinDigit(5)">5</button>
+      <button class="pin-btn" onclick="lockPinDigit(6)">6</button>
+      <button class="pin-btn" onclick="lockPinDigit(7)">7</button>
+      <button class="pin-btn" onclick="lockPinDigit(8)">8</button>
+      <button class="pin-btn" onclick="lockPinDigit(9)">9</button>
+      <button class="pin-btn empty"></button>
+      <button class="pin-btn" onclick="lockPinDigit(0)">0</button>
+      <button class="pin-btn del" onclick="lockPinClear()">⌫</button>
+    </div>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-exit" onclick="forceLogoutConsegne()">Esci definitivamente</button>
+  </div>
+</div>
+
+
 <!-- ═══════════════════════════════════════════
      FIREBASE + JSPDF
 ═══════════════════════════════════════════ -->
@@ -660,6 +703,14 @@ var FORN=null; // fornitura in controllo
 var stato=mkStato();
 var pinStato={s1:{digits:'',op:null}, s5:{digits:'',op:null}};
 var consSelezionato=null; // id consegnante selezionato
+
+/* ─── SESSIONE OPERATORE / TIMEOUT ───────── */
+var _sessionTimer=null;
+var _lockTimer=null;
+var _sessionState='logged_out'; // logged_out | active | locked
+var _lockPinBuf='';
+var SESSION_TIMEOUT=5*60*1000;
+var LOCK_TIMEOUT=30*60*1000;
 
 function mkStato(){
   return {
@@ -911,6 +962,7 @@ async function verificaPin(pfx){
       document.getElementById('s0-login').style.display='none';
       document.getElementById('s0-home').style.display='block';
       mostraPronte();
+      startSessionTimer();
       goTo('s0');
     } else if(pfx==='s5'){
       autenticaControllore(op);
@@ -1686,6 +1738,7 @@ function chiudiApp(){
 }
 function tornaHome(){
   mostraPronte();
+  if(hasLoggedOperator()) startSessionTimer();
   goTo('s0');
 }
 
@@ -1747,6 +1800,128 @@ function generaPdfFromRecord(id){
     toast('PDF generato','ok');
   }catch(e){toast('Errore PDF: '+e.message,'err');}
 }
+
+
+/* ─── SESSION TIMEOUT / LOCK ─────────────── */
+function hasLoggedOperator(){ return !!(stato && stato.preparatore && stato.preparatore.id); }
+function getCurrentSessionOperator(){
+  if(!hasLoggedOperator()) return null;
+  return OPERATORI.find(function(o){ return o.id===stato.preparatore.id; }) || null;
+}
+function resetRuntimeState(){
+  stato=mkStato();
+  FORN=null;
+  consSelezionato=null;
+  pinStato={s1:{digits:'',op:null}, s5:{digits:'',op:null}};
+  ['s2-search','s2-nome','s2-indirizzo','s2-citta','s3-note','s5-note','s5-esterno-nome','pin-input'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('s0-sub').textContent='Farmacia Ascona · FA-SQ-CD-02';
+  document.getElementById('s0-login').style.display='block';
+  document.getElementById('s0-home').style.display='none';
+  document.getElementById('s2-save-row').style.display='none';
+  document.getElementById('s2-save-check').checked=false;
+  document.getElementById('s2-next').disabled=true;
+  document.getElementById('s3-note').value='';
+  document.getElementById('frigo-si').classList.remove('selected');
+  document.getElementById('frigo-no').classList.remove('selected');
+  document.getElementById('frigo-info').style.display='none';
+  document.getElementById('s3-frigo-req').style.display='';
+  document.getElementById('s5-pin-card').style.display='none';
+  document.getElementById('s5-cons-card').style.display='none';
+  document.getElementById('s5-azioni-card').style.display='none';
+  document.getElementById('s5-warn-stesso').style.display='none';
+  renderFotoPrep();
+}
+function startSessionTimer(){
+  if(!hasLoggedOperator()) return;
+  _sessionState='active';
+  clearTimeout(_sessionTimer);
+  _sessionTimer=setTimeout(function(){ lockSession(); }, SESSION_TIMEOUT);
+}
+function resetSessionTimer(){
+  if(!hasLoggedOperator() || _sessionState!=='active') return;
+  startSessionTimer();
+}
+function lockSession(){
+  if(!hasLoggedOperator()) return;
+  _sessionState='locked';
+  clearTimeout(_sessionTimer);
+  _lockPinBuf='';
+  updateLockPinDots();
+  document.getElementById('lock-error').textContent='';
+  document.getElementById('lock-op-name').textContent=stato.preparatore.nome || stato.preparatore.id || 'Operatore';
+  document.getElementById('lock-subtitle').textContent='Bloccato come ' + (stato.preparatore.nome||stato.preparatore.id) + ' — reinserisci PIN per riprendere.';
+  document.getElementById('lock-overlay').style.display='flex';
+  clearTimeout(_lockTimer);
+  _lockTimer=setTimeout(function(){
+    toast('Sessione scaduta dopo 30 minuti di blocco','err');
+    forceLogoutConsegne();
+  }, LOCK_TIMEOUT);
+}
+function unlockSession(op){
+  _sessionState='active';
+  clearTimeout(_lockTimer);
+  _lockPinBuf='';
+  updateLockPinDots();
+  document.getElementById('lock-error').textContent='';
+  document.getElementById('lock-overlay').style.display='none';
+  stato.preparatore={id:op.id,nome:op.nome,ruolo:op.ruolo};
+  document.getElementById('s0-sub').textContent='👤 '+op.nome+' · Farmacia Ascona';
+  startSessionTimer();
+  toast('Sessione ripristinata','ok');
+}
+function forceLogoutConsegne(){
+  clearTimeout(_sessionTimer);
+  clearTimeout(_lockTimer);
+  _sessionState='logged_out';
+  _lockPinBuf='';
+  document.getElementById('lock-overlay').style.display='none';
+  resetRuntimeState();
+  goTo('s0');
+}
+function lockPinDigit(d){
+  if(_lockPinBuf.length>=4) return;
+  _lockPinBuf+=String(d);
+  updateLockPinDots();
+  if(_lockPinBuf.length===4) lockPinConfirm();
+}
+function lockPinClear(){
+  _lockPinBuf=_lockPinBuf.slice(0,-1);
+  updateLockPinDots();
+  document.getElementById('lock-error').textContent='';
+}
+function updateLockPinDots(){
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('lkd'+i);
+    if(el) el.classList.toggle('filled', i<_lockPinBuf.length);
+  }
+}
+async function lockPinConfirm(){
+  var errEl=document.getElementById('lock-error');
+  var op=getCurrentSessionOperator();
+  if(!op){ errEl.textContent='Operatore non trovato'; _lockPinBuf=''; updateLockPinDots(); return; }
+  if(_lockPinBuf.length<4){ errEl.textContent='PIN a 4 cifre'; return; }
+  var ok=false;
+  if(op.pinHash){
+    var hash=await sha256(_lockPinBuf);
+    ok=(hash===op.pinHash);
+  }
+  _lockPinBuf='';
+  updateLockPinDots();
+  if(ok){
+    unlockSession(op);
+  }else{
+    errEl.textContent='PIN errato';
+    for(var i=0;i<4;i++){
+      var dd=document.getElementById('lkd'+i);
+      if(dd){ dd.classList.add('filled'); setTimeout(function(x){ return function(){ x.classList.remove('filled'); }; }(dd), 180); }
+    }
+  }
+}
+document.addEventListener('touchstart', resetSessionTimer, {passive:true});
+document.addEventListener('click', resetSessionTimer);
+document.addEventListener('keydown', resetSessionTimer);
 
 /* ─── UTILS ───────────────────────────────── */
 function goTo(id){
