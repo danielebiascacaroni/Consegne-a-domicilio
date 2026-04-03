@@ -738,7 +738,7 @@ function mkStato(){
     });
     db=firebase.firestore();
     storage=firebase.storage();
-    firebase.auth().signInAnonymously().catch(function(e){console.warn(e);});
+    firebase.auth().signInWithEmailAndPassword('farmacia.ascona@gmail.com','7917139Dbc').catch(function(e){console.warn(e);});
     document.getElementById('s0-status').textContent='● Online';
     caricaDati();
   }catch(e){
