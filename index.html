@@ -116,17 +116,27 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 .c-check{margin-left:auto;color:var(--green-med);font-size:17px;display:none;}
 .consegnante-item.selected .c-check{display:block;}
 .consegnante-esterno{border-style:dashed;}
+/* LOGO HEADER */
+.logo-header{background:var(--green-dark);padding:18px 24px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:18px;color:white;margin-bottom:12px;}
+.logo-header-img{height:48px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;object-fit:contain;}
+.logo-header-divider{width:1px;height:38px;background:rgba(255,255,255,0.25);flex-shrink:0;}
+.logo-header-text{text-align:center;}
+.logo-name{font-size:18px;font-weight:700;letter-spacing:-0.2px;line-height:1.2;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.logo-date-block{text-align:center;}
+.logo-date{font-size:12px;font-weight:500;color:rgba(255,255,255,0.75);text-transform:capitalize;line-height:1.3;}
+.logo-time{font-size:24px;font-weight:300;letter-spacing:1px;font-variant-numeric:tabular-nums;line-height:1.1;}
 /* STORICO */
-.storico-tabs{display:flex;gap:7px;margin-bottom:11px;}
-.storico-tab{flex:1;padding:9px;border:none;background:var(--gray-l);border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit;}
-.storico-tab.active{background:var(--green-med);color:white;}
-.storico-group{font-size:11px;font-weight:700;color:var(--gray-m);padding:8px 2px 4px;text-transform:uppercase;letter-spacing:0.5px;}
-.storico-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:white;border:1px solid var(--gray-l);border-radius:9px;cursor:pointer;transition:all .15s;margin-bottom:6px;}
-.storico-item:hover{border-color:var(--green-med);background:var(--green-light);}
+.storico-search{width:100%;padding:10px 12px;border:1.5px solid var(--gray-l);border-radius:8px;font-size:15px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);margin-bottom:10px;}
+.storico-search:focus{border-color:var(--green-med);}
+.storico-item{background:white;border:1px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:8px;overflow:hidden;}
+.storico-item:hover{border-color:var(--green-med);}
+.storico-item-main{display:flex;align-items:flex-start;gap:8px;padding:11px 12px;}
 .storico-info{flex:1;min-width:0;}
-.storico-nome{font-weight:600;font-size:13px;}
-.storico-det{font-size:11px;color:var(--gray-m);margin-top:2px;}
-.storico-btns{display:flex;gap:5px;flex-shrink:0;}
+.storico-paziente{font-weight:800;font-size:16px;color:var(--text);line-height:1.2;margin-bottom:3px;}
+.storico-data{font-size:11px;color:var(--gray-m);margin-bottom:4px;}
+.storico-operatori{font-size:12px;color:var(--gray-m);line-height:1.5;}
+.storico-btns{display:flex;gap:5px;flex-shrink:0;padding-top:2px;}
 .verifica-toggle{background:none;border:1.5px solid var(--gray-l);border-radius:7px;padding:5px 7px;font-size:16px;cursor:pointer;transition:all .15s;line-height:1;}
 .verifica-toggle.verde{border-color:var(--green-med);background:var(--green-light);}
 .verifica-toggle.problema{border-color:var(--red-dark);background:var(--red-light);}
@@ -233,6 +243,19 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
     </div>
     <!-- Vista HOME (dopo login) -->
     <div id="s0-home" style="display:none;">
+      <div class="logo-header">
+        <img class="logo-header-img" src="logo.png" alt="Farmacia Ascona">
+        <div class="logo-header-divider"></div>
+        <div class="logo-header-text">
+          <div class="logo-name">Consegne a Domicilio</div>
+          <div class="logo-sub">Farmacia Ascona</div>
+        </div>
+        <div class="logo-header-divider"></div>
+        <div class="logo-date-block">
+          <div class="logo-date" id="home-hdr-date">—</div>
+          <div class="logo-time" id="home-hdr-time">—</div>
+        </div>
+      </div>
       <div style="max-width:580px;margin:0 auto 11px;">
         <button class="btn btn-green" onclick="iniziaNuovaPrep()" style="font-size:15px;padding:14px;">＋ Nuova preparazione</button>
       </div>
@@ -587,12 +610,8 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
   </div>
   <div class="scroll-body">
     <div class="card">
-      <div class="storico-tabs">
-        <button class="storico-tab active" id="tab-paz" onclick="cambiaTab('paz')">👤 Per Paziente</button>
-        <button class="storico-tab" id="tab-data" onclick="cambiaTab('data')">📅 Per Data</button>
-      </div>
-      <div id="view-paz"><div id="list-paz"></div></div>
-      <div id="view-data" style="display:none;"><div id="list-data"></div></div>
+      <input type="search" class="storico-search" id="s6-search" placeholder="🔍 Cerca paziente..." oninput="renderStorico()" autocomplete="off">
+      <div id="list-storico"></div>
     </div>
   </div>
 </div>
@@ -787,6 +806,23 @@ function caricaDati(){
   caricaConsegne();
   caricaNumSeq();
 }
+
+/* ─── OROLOGIO HOME HEADER ────────────────── */
+(function(){
+  var giorni=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  var mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  function pad(n){return n<10?'0'+n:String(n);}
+  function tick(){
+    var now=new Date();
+    var elD=document.getElementById('home-hdr-date');
+    var elT=document.getElementById('home-hdr-time');
+    if(elD) elD.textContent=giorni[now.getDay()]+', '+now.getDate()+' '+mesi[now.getMonth()];
+    if(elT) elT.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  }
+  tick();
+  var ms=(60-new Date().getSeconds())*1000;
+  setTimeout(function(){tick();setInterval(tick,60000);},ms);
+})();
 
 function caricaOperatori(){
   if(!db)return;
@@ -1578,24 +1614,15 @@ function goToStorico(){
   } else { renderStorico(); goTo('s6'); }
 }
 function renderStorico(){
-  var byP={}, byD={};
-  CONSEGNE.forEach(function(c){
-    var nome=c.paziente?c.paziente.nome:'Sconosciuto';
-    if(!byP[nome]) byP[nome]=[];
-    byP[nome].push(c);
-    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
-    var d=ts?ts.toLocaleDateString('it-CH'):'—';
-    if(!byD[d]) byD[d]=[];
-    byD[d].push(c);
+  var filterEl=document.getElementById('s6-search');
+  var filter=(filterEl?filterEl.value:'').trim().toLowerCase();
+
+  var lista=CONSEGNE.filter(function(c){
+    if(!filter) return true;
+    var nome=(c.paziente?c.paziente.nome:'').toLowerCase();
+    return nome.indexOf(filter)!==-1;
   });
 
-  function statoBadge(c){
-    if(c.stato===STATO_PRONTA) return '<span class="badge badge-pronta">⏳ Pronta</span>';
-    if(c.stato===STATO_CONSEGNA) return '<span class="badge badge-consegna">🚗 In consegna</span>';
-    if(c.stato===STATO_VERIFICA) return '<span class="badge badge-verificata">✓ Verificata</span>';
-    if(c.stato===STATO_PROBLEMA) return '<span class="badge badge-problema">⚠️ Problema</span>';
-    return '<span class="badge" style="background:var(--gray-l);color:#555;">'+escH(c.stato||'—')+'</span>';
-  }
   function btnsStorico(c){
     var html='';
     var mostraVerifica=(c.stato===STATO_CONSEGNA||c.stato===STATO_VERIFICA);
@@ -1617,79 +1644,62 @@ function renderStorico(){
     return html;
   }
 
-  // per paziente
-  var hP='';
-  Object.keys(byP).sort().forEach(function(nome){
-    var cc=byP[nome];
-    hP+='<div class="storico-group">👤 '+escH(nome)+' ('+cc.length+')</div>';
-    cc.forEach(function(c){
-      var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
-      hP+='<div class="storico-item" onclick="mostraPaz(\''+escAttr(nome)+'\')">'
-        +'<div class="storico-info">'
-        +'<div class="storico-nome">'+escH(fmt(c.numero))+'</div>'
-        +'<div class="storico-det">📅 '+(ts?ts.toLocaleDateString('it-CH'):'—')+' · 🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+'</div>'
-        +'<div style="margin-top:3px;">'+statoBadge(c)+'</div>'
-        +'</div>'
-        +'<div class="storico-btns">'+btnsStorico(c)+'</div>'
-        +'</div>';
-    });
-  });
-  document.getElementById('list-paz').innerHTML=hP||'<div style="padding:12px;color:var(--gray-m);font-size:13px;">Nessuna consegna</div>';
+  var html='';
+  lista.forEach(function(c){
+    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+    var dataStr=ts?ts.toLocaleDateString('it-CH',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})+' '+ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—';
+    var pazNome=escH(c.paziente?c.paziente.nome:'—');
+    var prep=escH(c.preparatore?c.preparatore.nome:'—');
+    var ctrl=c.controllore?(' → 👀 '+escH(c.controllore.nome)):'';
+    var cons=escH(c.consegnante?c.consegnante.nome+(c.consegnante.esterno?' (ext)':''):'—');
+    var frigo=(c.presenzaFrigo||c.frigo)?'<span class="badge badge-frigo">🌡️ Frigo</span>':'';
 
-  // per data
-  var hD='';
-  Object.keys(byD).sort(function(a,b){
-    var da=a.split('/').reverse().join('-'),db2=b.split('/').reverse().join('-');
-    return da>db2?-1:1;
-  }).forEach(function(d){
-    var cc=byD[d];
-    hD+='<div class="storico-group">📅 '+escH(d)+'</div>';
-    cc.forEach(function(c){
-      hD+='<div class="storico-item" onclick="mostraData(\''+escAttr(d)+'\')">'
+    // sezione foto
+    var foto=normFoto(c).filter(function(f){return f.url;});
+    var fotoHtml='';
+    if(foto.length){
+      foto.forEach(function(f){
+        fotoHtml+='<a href="'+f.url+'" target="_blank" style="display:inline-block;margin:4px;">'
+          +'<img src="'+f.url+'" style="height:72px;width:72px;object-fit:cover;border-radius:7px;border:1px solid var(--gray-l);" loading="lazy" alt="'+(f.tipo==='etichetta'?'Etichetta':'Prodotti')+'">'
+          +'</a>';
+      });
+    } else {
+      fotoHtml='<div style="font-size:12px;color:var(--gray-m);padding:4px 0;">Nessuna foto allegata</div>';
+    }
+
+    html+='<div class="storico-item" id="si-'+c._id+'">'
+      +'<div class="storico-item-main" onclick="toggleFoto(\''+c._id+'\')">'
         +'<div class="storico-info">'
-        +'<div class="storico-nome">'+escH(fmt(c.numero))+' — '+escH(c.paziente?c.paziente.nome:'—')+'</div>'
-        +'<div class="storico-det">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+'→ 🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+'</div>'
-        +'<div style="margin-top:3px;">'+statoBadge(c)+'</div>'
+          +'<div class="storico-data">📅 '+escH(dataStr)+' · '+escH(fmt(c.numero))+'</div>'
+          +'<div class="storico-paziente">'+pazNome+'</div>'
+          +'<div class="storico-operatori">🔧 '+prep+ctrl+' → 🚗 '+cons+' '+frigo+'</div>'
+          +'<div style="margin-top:5px;">'+statoB(c)+'</div>'
         +'</div>'
         +'<div class="storico-btns">'+btnsStorico(c)+'</div>'
-        +'</div>';
-    });
+      +'</div>'
+      +'<div id="foto-'+c._id+'" style="display:none;padding:10px 12px;border-top:1px solid var(--gray-l);background:var(--gray-ll);">'
+        +fotoHtml
+        +'<div style="margin-top:8px;">'
+        +'<button onclick="generaPdfFromRecord(\''+c._id+'\')" class="btn btn-ghost btn-sm" style="font-size:12px;padding:6px 12px;">📄 PDF</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
   });
-  document.getElementById('list-data').innerHTML=hD||'<div style="padding:12px;color:var(--gray-m);font-size:13px;">Nessuna consegna</div>';
+
+  document.getElementById('list-storico').innerHTML=html||'<div style="padding:12px;color:var(--gray-m);font-size:13px;">Nessuna consegna trovata</div>';
 }
 
-// alias typo fix
-function statobage(c){return statoB(c);}
+function toggleFoto(id){
+  var el=document.getElementById('foto-'+id); if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
 function statoB(c){
   if(c.stato===STATO_PRONTA) return '<span class="badge badge-pronta">⏳ Pronta</span>';
   if(c.stato===STATO_CONSEGNA) return '<span class="badge badge-consegna">🚗 In consegna</span>';
   if(c.stato===STATO_VERIFICA) return '<span class="badge badge-verificata">✓ Verificata</span>';
   if(c.stato===STATO_PROBLEMA) return '<span class="badge badge-problema">⚠️ Problema</span>';
   return '<span class="badge" style="background:var(--gray-l);color:#555;">'+escH(c.stato||'—')+'</span>';
-}
-// fix typo in renderStorico
-function statobage(c){return statoB(c);}
-
-function cambiaTab(tab){
-  document.getElementById('tab-paz').classList.toggle('active',tab==='paz');
-  document.getElementById('tab-data').classList.toggle('active',tab==='data');
-  document.getElementById('view-paz').style.display=tab==='paz'?'block':'none';
-  document.getElementById('view-data').style.display=tab==='data'?'block':'none';
-}
-function mostraPaz(nome){
-  var cc=CONSEGNE.filter(function(c){return c.paziente&&c.paziente.nome===nome;});
-  document.getElementById('modal-paz-titolo').textContent=nome;
-  document.getElementById('modal-paz-body').innerHTML=cc.map(function(c){return buildCard(c);}).join('')||'<p style="color:var(--gray-m);">Nessun dato</p>';
-  document.getElementById('modal-paz').classList.add('show');
-}
-function mostraData(d){
-  var cc=CONSEGNE.filter(function(c){
-    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
-    return ts&&ts.toLocaleDateString('it-CH')===d;
-  });
-  document.getElementById('modal-data-titolo').textContent=d;
-  document.getElementById('modal-data-body').innerHTML=cc.map(function(c){return buildCard(c);}).join('')||'<p style="color:var(--gray-m);">Nessun dato</p>';
-  document.getElementById('modal-data').classList.add('show');
 }
 function buildCard(c){
   var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
@@ -1754,11 +1764,12 @@ function salvaProblema(){
 function rimuoviProblema(id, e){
   e.stopPropagation();
   if(!db){toast('Offline','err');return;}
+  var c=CONSEGNE.find(function(x){return x._id===id;}); if(!c)return;
+  var statoRipristino=c.verificaEsitoOk?STATO_VERIFICA:STATO_CONSEGNA;
   db.collection('qms_consegne').doc(id).update({
-    stato:STATO_CONSEGNA, problemaNota:null, problemaAt:null
+    stato:statoRipristino, problemaNota:null, problemaAt:null
   }).then(function(){
-    var c=CONSEGNE.find(function(x){return x._id===id;});
-    if(c){c.stato=STATO_CONSEGNA;c.problemaNota=null;}
+    c.stato=statoRipristino; c.problemaNota=null;
     renderStorico();
     toast('Problema rimosso','ok');
   }).catch(function(err){toast('Errore: '+err.message,'err');});
@@ -2009,8 +2020,6 @@ function dataURLtoBlob(dataURL){
   return new Blob([u8],{type:mime});
 }
 
-/* fix: statobage alias usato in renderStorico per tab data */
-function statobage(c){return statoB(c);}
 
 </script>
 </body>
