@@ -117,7 +117,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 .consegnante-item.selected .c-check{display:block;}
 .consegnante-esterno{border-style:dashed;}
 /* LOGO HEADER */
-.logo-header{background:var(--green-dark);padding:18px 24px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:18px;color:white;margin-bottom:12px;}
+.logo-header{background:var(--green-dark);padding:18px 24px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:18px;color:white;}
 .logo-header-img{height:48px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;object-fit:contain;}
 .logo-header-divider{width:1px;height:38px;background:rgba(255,255,255,0.25);flex-shrink:0;}
 .logo-header-text{text-align:center;}
@@ -224,13 +224,20 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
      S0 — LOGIN / HOME OPERATIVA
 ═══════════════════════════════════════════ -->
 <div id="s0" class="screen active">
-  <div class="topbar">
-    <div class="topbar-info">
-      <div class="topbar-title">Consegna Domicilio</div>
-      <div class="topbar-sub" id="s0-sub">Farmacia Ascona · FA-SQ-CD-02</div>
+  <div class="logo-header">
+    <img class="logo-header-img" src="logo.png" alt="Farmacia Ascona">
+    <div class="logo-header-divider"></div>
+    <div class="logo-header-text">
+      <div class="logo-name">Consegne a Domicilio</div>
+      <div class="logo-sub" id="s0-sub">Farmacia Ascona · FA-SQ-CD-02</div>
     </div>
-    <span class="topbar-status" id="s0-status">●</span>
+    <div class="logo-header-divider"></div>
+    <div class="logo-date-block">
+      <div class="logo-date" id="home-hdr-date">—</div>
+      <div class="logo-time" id="home-hdr-time">—</div>
+    </div>
   </div>
+  <span id="s0-status" style="display:none;"></span>
   <div class="scroll-body">
     <!-- Vista LOGIN -->
     <div id="s0-login">
@@ -243,19 +250,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
     </div>
     <!-- Vista HOME (dopo login) -->
     <div id="s0-home" style="display:none;">
-      <div class="logo-header">
-        <img class="logo-header-img" src="logo.png" alt="Farmacia Ascona">
-        <div class="logo-header-divider"></div>
-        <div class="logo-header-text">
-          <div class="logo-name">Consegne a Domicilio</div>
-          <div class="logo-sub">Farmacia Ascona</div>
-        </div>
-        <div class="logo-header-divider"></div>
-        <div class="logo-date-block">
-          <div class="logo-date" id="home-hdr-date">—</div>
-          <div class="logo-time" id="home-hdr-time">—</div>
-        </div>
-      </div>
       <div style="max-width:580px;margin:0 auto 11px;">
         <button class="btn btn-green" onclick="iniziaNuovaPrep()" style="font-size:15px;padding:14px;">＋ Nuova preparazione</button>
       </div>
