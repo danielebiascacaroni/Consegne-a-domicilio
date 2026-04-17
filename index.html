@@ -770,7 +770,8 @@ function mkStato(){
     });
     db=firebase.firestore();
     storage=firebase.storage();
-    firebase.auth().signInWithEmailAndPassword('farmacia.ascona@gmail.com','7917139Dbc').catch(function(e){console.warn(e);});
+    // Autenticazione anonima Firebase (bootstrap) — l'operatore si autentica con il suo account dopo il PIN
+    firebase.auth().signInAnonymously().catch(function(e){console.warn('Auth anonima fallita:',e.code);});
     // DEVICE AUTH — Registro dispositivi autorizzati
     (function(){
       var DEVICE_KEY='fa_device_id';
@@ -824,7 +825,7 @@ function caricaOperatori(){
     OPERATORI=[];
     s.forEach(function(d){
       var x=d.data();
-      OPERATORI.push({id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||''});
+      OPERATORI.push({id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||'',emailFirebase:x.emailFirebase||''});
     });
     renderOpGrid('s0-op-grid','s0');
   }).catch(function(){toast('Errore caricamento operatori','err');});
@@ -1019,6 +1020,19 @@ async function verificaPin(pfx){
   if(hash===op.pinHash){
     document.getElementById(pfx+'-pin-error').style.display='none';
     if(pfx==='s1'){
+      // Re-autenticazione Firebase con account personale dell'operatore
+      if(op.emailFirebase){
+        try{
+          await firebase.auth().signOut();
+          await firebase.auth().signInWithEmailAndPassword(op.emailFirebase,hash);
+        }catch(e){
+          console.warn('Re-auth operatore fallita:',e.code);
+          await firebase.auth().signInAnonymously().catch(function(){});
+          var errEl=document.getElementById('s1-pin-error');
+          if(errEl){errEl.textContent='Errore auth Firebase — contatta admin';errEl.style.display='block';setTimeout(function(){errEl.style.display='none';},3000);}
+          pinStato[pfx].digits=''; updatePinDots(pfx); return;
+        }
+      }
       stato.preparatore={id:op.id,nome:op.nome,ruolo:op.ruolo};
       stato.tsPreparazione=new Date();
       // mostra home operativa
