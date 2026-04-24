@@ -190,6 +190,12 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 /* TOAST */
 #toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:9px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
 #toast.show{opacity:1;}#toast.ok{background:var(--green-med);}#toast.err{background:var(--red-dark);}
+/* SINGLE INSTANCE */
+#single-instance-overlay{display:none;position:fixed;inset:0;z-index:100001;background:rgba(15,23,42,.82);align-items:center;justify-content:center;padding:24px;}
+#single-instance-box{width:min(420px,100%);background:#fff;border-radius:18px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.24);}
+#single-instance-box h2{font-size:20px;font-weight:700;color:var(--green-dark);margin-bottom:10px;}
+#single-instance-box p{font-size:14px;line-height:1.5;color:var(--gray-m);margin-bottom:10px;}
+#single-instance-box .hint{font-size:12px;color:#8a867f;}
 /* LOADING */
 .loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 .loading-overlay.show{display:flex;}
@@ -200,6 +206,16 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
 </style>
 </head>
 <body>
+<!-- ════ SINGLE INSTANCE OVERLAY ════ -->
+<div id="single-instance-overlay">
+  <div id="single-instance-box">
+    <div style="font-size:44px;margin-bottom:12px;">🚫</div>
+    <h2>Applicazione già aperta</h2>
+    <p>Questa finestra è stata bloccata perché Consegne a domicilio risulta già attiva in un'altra finestra dello stesso browser.</p>
+    <p class="hint">Chiudi l'altra finestra oppure attendi alcuni secondi e riapri l'app.</p>
+  </div>
+</div>
+
 <!-- ════ DEVICE AUTH OVERLAY ════ -->
 <div id="device-auth-overlay" style="display:flex;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);flex-direction:column;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:16px;padding:32px;max-width:360px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
@@ -759,8 +775,59 @@ function mkStato(){
   };
 }
 
+var singleInstanceGuard=null;
+function createSingleInstanceGuard(appKey){
+  var LOCK_KEY='fa_single_instance:'+appKey;
+  var instanceId='inst_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
+  var HEARTBEAT_MS=4000;
+  var STALE_MS=15000;
+  var heartbeatTimer=null;
+  var storageListener=null;
+  function now(){return Date.now();}
+  function readLock(){try{return JSON.parse(localStorage.getItem(LOCK_KEY)||'null');}catch(e){return null;}}
+  function writeLock(){localStorage.setItem(LOCK_KEY,JSON.stringify({instanceId:instanceId,appKey:appKey,updatedAt:now(),path:location.pathname}));}
+  function ownsLock(lock){return !!lock&&lock.instanceId===instanceId;}
+  function isFresh(lock){return !!lock&&(now()-Number(lock.updatedAt||0)<STALE_MS);}
+  function releaseLock(){var current=readLock();if(ownsLock(current))localStorage.removeItem(LOCK_KEY);}
+  function showBlockedUi(){
+    var overlay=document.getElementById('single-instance-overlay'); if(overlay) overlay.style.display='flex';
+    var deviceOverlay=document.getElementById('device-auth-overlay'); if(deviceOverlay) deviceOverlay.style.display='none';
+    var lockOverlay=document.getElementById('lock-overlay'); if(lockOverlay) lockOverlay.style.display='none';
+    var loading=document.getElementById('loading'); if(loading) loading.classList.remove('show');
+    document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';});
+  }
+  return {
+    start:function(){
+      var existing=readLock();
+      if(existing&&!ownsLock(existing)&&isFresh(existing)){showBlockedUi();return false;}
+      writeLock();
+      storageListener=function(e){
+        if(e.key!==LOCK_KEY) return;
+        var current=readLock();
+        if(current&&!ownsLock(current)&&isFresh(current)){clearInterval(heartbeatTimer);showBlockedUi();}
+      };
+      window.addEventListener('storage',storageListener);
+      heartbeatTimer=setInterval(function(){
+        var current=readLock();
+        if(!current||ownsLock(current)||!isFresh(current)) writeLock();
+      },HEARTBEAT_MS);
+      window.addEventListener('pagehide',releaseLock);
+      window.addEventListener('beforeunload',releaseLock);
+      document.addEventListener('visibilitychange',function(){
+        if(document.visibilityState==='visible'){
+          var current=readLock();
+          if(!current||!isFresh(current)||ownsLock(current)) writeLock();
+        }
+      });
+      return true;
+    }
+  };
+}
+
 /* ─── INIT FIREBASE ───────────────────────── */
 (function(){
+  singleInstanceGuard=createSingleInstanceGuard('consegne_domicilio');
+  if(!singleInstanceGuard.start()) return;
   try{
     firebase.initializeApp({
       apiKey:'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
