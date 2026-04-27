@@ -687,6 +687,21 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll)
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-cancellazione">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>🗑️ Annulla consegna</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-cancellazione')">✕</button>
+    </div>
+    <input type="hidden" id="modal-canc-id">
+    <div class="field" style="margin-bottom:12px;">
+      <label>Motivo annullamento *</label>
+      <textarea id="modal-canc-nota" placeholder="Descrivi il motivo della cancellazione..." style="min-height:88px;"></textarea>
+    </div>
+    <button class="btn btn-red" onclick="salvaCancellazione()">Conferma cancellazione</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 <div class="loading-overlay" id="loading">
   <div class="spinner"></div>
@@ -740,6 +755,7 @@ var STATO_PRONTA    = 'PRONTA PER CONTROLLO';
 var STATO_CONSEGNA  = 'IN CONSEGNA';
 var STATO_VERIFICA  = 'CONSEGNA VERIFICATA';
 var STATO_PROBLEMA  = 'PROBLEMA SEGNALATO';
+var STATO_CANCELLATA = 'CONSEGNA CANCELLATA';
 var MAX_FOTO = 4;
 var FOTO_PX = 900, FOTO_Q = 0.42;
 
@@ -1281,6 +1297,14 @@ function rie(l,v){
   return '<div class="rie-row"><div class="rie-label">'+escH(l)+'</div><div class="rie-val">'+v+'</div></div>';
 }
 
+async function uploadFotoOrThrow(base64, path) {
+  if(!storage || !base64) throw new Error('Storage non disponibile');
+  var blob = dataURLtoBlob(base64);
+  var ref = storage.ref(path);
+  var snap = await ref.put(blob,{contentType:'image/jpeg'});
+  return await snap.ref.getDownloadURL();
+}
+
 /* ─── SALVA FORNITURA ─────────────────────── */
 async function salvaFornitura(callback){
   if(!db){toast('Offline — impossibile salvare','err');return;}
@@ -1305,12 +1329,14 @@ async function salvaFornitura(callback){
     if(f.url&&!f.data){fotoSalvate.push({tipo:f.tipo,url:f.url});continue;}
     if(f.data){
       try{
-        var blob=dataURLtoBlob(f.data);
-        var r=storage.ref('foto/'+Date.now()+'_'+i+'.jpg');
-        var snap=await r.put(blob,{contentType:'image/jpeg'});
-        var url=await snap.ref.getDownloadURL();
+        var url=await uploadFotoOrThrow(f.data,'foto/'+Date.now()+'_'+i+'.jpg');
         fotoSalvate.push({tipo:f.tipo,url:url});
-      }catch(e){console.warn('upload foto:',e);fotoSalvate.push({tipo:f.tipo,url:null});}
+      }catch(e){
+        hideLoading();
+        console.warn('upload foto:',e);
+        toast('Errore upload foto. Verifica Storage Firebase e riprova.','err');
+        return;
+      }
     }
   }
   try{
@@ -1349,12 +1375,14 @@ async function aggiornaFornitura(){
     if(f.url&&!f.data){fotoSalvate.push({tipo:f.tipo,url:f.url});continue;}
     if(f.data){
       try{
-        var blob=dataURLtoBlob(f.data);
-        var r=storage.ref('foto/'+Date.now()+'_'+i+'.jpg');
-        var snap=await r.put(blob,{contentType:'image/jpeg'});
-        var url=await snap.ref.getDownloadURL();
+        var url=await uploadFotoOrThrow(f.data,'foto/'+Date.now()+'_'+i+'.jpg');
         fotoSalvate.push({tipo:f.tipo,url:url});
-      }catch(e){fotoSalvate.push({tipo:f.tipo,url:null});}
+      }catch(e){
+        hideLoading();
+        console.warn('upload foto update:',e);
+        toast('Errore upload foto. Verifica Storage Firebase e riprova.','err');
+        return;
+      }
     }
   }
   try{
@@ -1645,12 +1673,14 @@ async function approvaFornitura(callback){
     if(f.url&&!f.data){fotoFinali.push({tipo:f.tipo,url:f.url});continue;}
     if(f.data){
       try{
-        var blob=dataURLtoBlob(f.data);
-        var r=storage.ref('foto/ctrl_'+Date.now()+'_'+i+'.jpg');
-        var snap=await r.put(blob,{contentType:'image/jpeg'});
-        var url=await snap.ref.getDownloadURL();
+        var url=await uploadFotoOrThrow(f.data,'foto/ctrl_'+Date.now()+'_'+i+'.jpg');
         fotoFinali.push({tipo:f.tipo,url:url});
-      }catch(e){fotoFinali.push({tipo:f.tipo,url:null});}
+      }catch(e){
+        hideLoading();
+        console.warn('upload foto controllo:',e);
+        toast('Errore upload foto controllo. Verifica Storage Firebase e riprova.','err');
+        return;
+      }
     }
   }
   try{
@@ -1716,6 +1746,10 @@ function renderStorico(){
       html+='<button class="verifica-toggle problema" title="Rimuovi problema" '
         +'onclick="rimuoviProblema(\''+c._id+'\',event)">🔄</button>';
     }
+    if(c.stato!==STATO_CANCELLATA){
+      html+='<button class="verifica-toggle" title="Annulla consegna" '
+        +'onclick="apriCancellazione(\''+c._id+'\',event)">🗑️</button>';
+    }
     return html;
   }
 
@@ -1728,6 +1762,7 @@ function renderStorico(){
     var ctrl=c.controllore?(' → 👀 '+escH(c.controllore.nome)):'';
     var cons=escH(c.consegnante?c.consegnante.nome+(c.consegnante.esterno?' (ext)':''):'—');
     var frigo=(c.presenzaFrigo||c.frigo)?'<span class="badge badge-frigo">🌡️ Frigo</span>':'';
+    var cancHtml=c.cancellataMotivo?'<div style="margin-top:6px;font-size:12px;color:var(--red-dark);">📝 Motivo cancellazione: '+escH(c.cancellataMotivo)+'</div>':'';
 
     // sezione foto
     var foto=normFoto(c).filter(function(f){return f.url;});
@@ -1749,6 +1784,7 @@ function renderStorico(){
           +'<div class="storico-paziente">'+pazNome+'</div>'
           +'<div class="storico-operatori">🔧 '+prep+ctrl+' → 🚗 '+cons+' '+frigo+'</div>'
           +'<div style="margin-top:5px;">'+statoB(c)+'</div>'
+          +cancHtml
         +'</div>'
         +'<div class="storico-btns">'+btnsStorico(c)+'</div>'
       +'</div>'
@@ -1774,6 +1810,7 @@ function statoB(c){
   if(c.stato===STATO_CONSEGNA) return '<span class="badge badge-consegna">🚗 In consegna</span>';
   if(c.stato===STATO_VERIFICA) return '<span class="badge badge-verificata">✓ Verificata</span>';
   if(c.stato===STATO_PROBLEMA) return '<span class="badge badge-problema">⚠️ Problema</span>';
+  if(c.stato===STATO_CANCELLATA) return '<span class="badge" style="background:#FDECEA;color:var(--red-dark);">🗑️ Cancellata</span>';
   return '<span class="badge" style="background:var(--gray-l);color:#555;">'+escH(c.stato||'—')+'</span>';
 }
 function buildCard(c){
@@ -1792,6 +1829,7 @@ function buildCard(c){
     +'<div style="font-size:12px;color:var(--gray-m);">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+(c.controllore?' → 👀 '+escH(c.controllore.nome):'')+'</div>'
     +'<div style="font-size:12px;color:var(--gray-m);">🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+' '+fb+'</div>'
     +(c.note?'<div style="font-size:11px;color:var(--gray-m);font-style:italic;margin-top:3px;">📝 '+escH(c.note)+'</div>':'')
+    +(c.cancellataMotivo?'<div style="font-size:11px;color:var(--red-dark);margin-top:3px;">🗑️ '+escH(c.cancellataMotivo)+'</div>':'')
     +(c.problemaNota?'<div style="font-size:11px;color:var(--red-dark);margin-top:3px;">⚠️ '+escH(c.problemaNota)+'</div>':'')
     +(fotoHtml?'<div style="margin-top:6px;">'+fotoHtml+'</div>':'')
     +'<div style="margin-top:8px;">'
@@ -1836,6 +1874,46 @@ function salvaProblema(){
     toast('Problema segnalato','ok');
   }).catch(function(err){toast('Errore: '+err.message,'err');});
 }
+
+function apriCancellazione(id, e){
+  e.stopPropagation();
+  document.getElementById('modal-canc-id').value=id;
+  document.getElementById('modal-canc-nota').value='';
+  document.getElementById('modal-cancellazione').classList.add('show');
+}
+
+function salvaCancellazione(){
+  var id=document.getElementById('modal-canc-id').value;
+  var nota=(document.getElementById('modal-canc-nota').value||'').trim();
+  if(!nota){toast('Inserisci il motivo della cancellazione','err');return;}
+  if(!db){toast('Offline','err');return;}
+  db.collection('qms_consegne').doc(id).update({
+    stato:STATO_CANCELLATA,
+    cancellataAt:new Date(),
+    cancellataMotivo:nota,
+    verificaEsitoOk:false,
+    verificaEsitoAt:null,
+    verificaEsitoBy:null,
+    problemaNota:null,
+    problemaAt:null
+  }).then(function(){
+    var c=CONSEGNE.find(function(x){return x._id===id;});
+    if(c){
+      c.stato=STATO_CANCELLATA;
+      c.cancellataAt=new Date();
+      c.cancellataMotivo=nota;
+      c.verificaEsitoOk=false;
+      c.verificaEsitoAt=null;
+      c.verificaEsitoBy=null;
+      c.problemaNota=null;
+      c.problemaAt=null;
+    }
+    chiudiModal('modal-cancellazione');
+    renderStorico();
+    toast('Consegna cancellata','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+
 function rimuoviProblema(id, e){
   e.stopPropagation();
   if(!db){toast('Offline','err');return;}
