@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Consegne Domicilio — Farmacia Ascona</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --green-dark:#2D6A4F;--green-med:#40916C;--green-light:#D8EDDF;
+  --red-dark:#C0392B;--red-light:#FDEDEC;
+  --blue:#2980B9;--blue-light:#EBF5FB;
+  --amber:#856404;--amber-light:#FFF3CD;--amber-border:#FFC107;
+  --gray-m:#6B6760;--gray-l:#D8D4CC;--gray-ll:#F4F2EE;
+  --text:#1A1916;--radius:12px;--shadow:0 2px 10px rgba(0,0,0,0.07);
+  --mono:'DM Mono',monospace;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--gray-ll);color:var(--text);font-size:15px;}
+.screen{display:none;flex-direction:column;min-height:100vh;background:var(--gray-ll);}
+.screen.active{display:flex;}
+/* TOPBAR */
+.topbar{background:var(--green-dark);color:white;padding:11px 15px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.topbar-back{background:rgba(255,255,255,0.15);border:none;color:white;width:34px;height:34px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.topbar-info{flex:1;min-width:0;}
+.topbar-title{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-sub{font-size:11px;opacity:0.75;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-status{font-size:11px;opacity:0.7;flex-shrink:0;}
+/* PROGRESS */
+.progress-bar{background:var(--green-med);padding:7px 15px;display:flex;gap:5px;align-items:center;}
+.step-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.3);transition:all .2s;}
+.step-dot.done{background:rgba(255,255,255,0.7);}
+.step-dot.active{background:white;width:20px;border-radius:3px;}
+.step-label{color:rgba(255,255,255,0.85);font-size:11px;margin-left:5px;}
+/* SCROLL */
+.scroll-body{flex:1;overflow-y:auto;padding:12px 14px 100px;}
+.scroll-body>*{max-width:580px;margin-left:auto;margin-right:auto;}
+/* CARDS */
+.card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:11px;width:100%;}
+.card-title{font-size:12px;font-weight:700;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+/* FIELDS */
+.field{margin-bottom:11px;}.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--gray-m);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;}
+.field input,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--gray-l);border-radius:8px;font-size:16px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);}
+.field input:focus,.field textarea:focus{border-color:var(--green-med);}
+.field textarea{min-height:58px;resize:vertical;font-size:15px;}
+/* SEARCH */
+.search-wrap{position:relative;}
+.search-results{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--green-med);border-top:none;border-radius:0 0 8px 8px;z-index:100;max-height:220px;overflow-y:auto;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+.search-result-item{padding:10px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--gray-l);}
+.search-result-item:last-child{border-bottom:none;}
+.search-result-item:hover,.search-result-item:active{background:var(--green-light);}
+.item-nome{font-weight:600;}.item-addr{font-size:11px;color:var(--gray-m);}
+/* OP GRID */
+.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;}
+.op-card{background:var(--gray-ll);border:2px solid var(--gray-l);border-radius:10px;padding:11px 8px;text-align:center;cursor:pointer;transition:all .15s;}
+.op-card:hover,.op-card:active,.op-card.selected{border-color:var(--green-med);background:var(--green-light);}
+.op-sigla{font-size:22px;font-weight:800;color:var(--green-dark);}
+.op-nome{font-size:11px;color:var(--gray-m);margin-top:3px;}
+.op-ruolo{font-size:10px;color:var(--gray-m);margin-top:1px;}
+/* PIN */
+.pin-display{display:flex;justify-content:center;gap:10px;margin:12px 0 6px;}
+.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--gray-l);background:white;transition:all .2s;}
+.pin-dot.filled{background:var(--green-dark);border-color:var(--green-dark);}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:254px;margin:0 auto;}
+.pin-btn{background:var(--green-med);border:2px solid var(--green-dark);border-radius:50%;width:68px;height:68px;font-size:24px;font-weight:500;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;color:white;box-shadow:0 3px 10px rgba(45,106,79,0.25);-webkit-tap-highlight-color:transparent;}
+.pin-btn:active{background:var(--green-dark);border-color:var(--green-dark);transform:scale(0.93);box-shadow:none;}
+.pin-btn.del{font-size:18px;background:#EDEAE4;border-color:var(--gray-l);color:var(--gray-m);box-shadow:none;}
+.pin-btn.del:active{background:var(--gray-l);}
+.pin-btn.empty{visibility:hidden;background:transparent;border-color:transparent;box-shadow:none;}
+.pin-error{color:var(--red-dark);font-size:13px;text-align:center;margin-top:7px;display:none;}
+/* Lock overlay — PIN glass style su sfondo scuro */
+.lock-box .pin-btn{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.45);color:white;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.lock-box .pin-btn:active{background:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.75);}
+.lock-box .pin-btn.del{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);}
+.lock-box .pin-dot{border-color:rgba(255,255,255,0.4);background:transparent;}
+.lock-box .pin-dot.filled{background:white;border-color:white;}
+/* FRIGO */
+.frigo-scelta{display:flex;gap:8px;margin-top:6px;}
+.frigo-btn{flex:1;padding:11px;border:2px solid var(--gray-l);border-radius:9px;background:var(--gray-ll);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
+.frigo-btn.si.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+.frigo-btn.no.selected{border-color:var(--green-med);background:var(--green-light);color:var(--green-dark);}
+.frigo-info-msg{background:var(--blue-light);border:1.5px solid var(--blue);border-radius:8px;padding:10px 12px;margin-top:9px;font-size:13px;color:var(--blue);line-height:1.4;display:none;}
+/* FRIGO WARN S5 */
+.frigo-warn-s5{background:var(--blue-light);border:2px solid var(--blue);border-radius:10px;padding:13px;margin-bottom:11px;}
+.frigo-warn-title{font-weight:700;color:var(--blue);font-size:14px;margin-bottom:6px;}
+.frigo-confirm-row{display:flex;gap:8px;margin-top:9px;}
+.frigo-confirm-btn{flex:1;padding:10px;border:2px solid var(--gray-l);border-radius:8px;background:white;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;}
+.frigo-confirm-btn.si.sel{border-color:var(--green-med);background:var(--green-light);color:var(--green-dark);}
+.frigo-confirm-btn.no.sel{border-color:var(--red-dark);background:var(--red-light);color:var(--red-dark);}
+/* FOTO */
+.foto-section{margin-bottom:11px;}
+.foto-section-label{font-size:12px;font-weight:700;color:var(--gray-m);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;}
+.foto-thumbs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:7px;}
+.foto-thumb{position:relative;width:74px;height:74px;}
+.foto-thumb img{width:74px;height:74px;object-fit:cover;border-radius:8px;border:1.5px solid var(--gray-l);}
+.foto-thumb-badge{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,0.55);color:white;font-size:9px;padding:1px 4px;border-radius:3px;font-weight:600;}
+.foto-thumb-remove{position:absolute;top:-5px;right:-5px;background:var(--red-dark);color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.foto-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 13px;border:1.5px dashed var(--gray-l);border-radius:8px;background:var(--gray-ll);font-size:13px;font-weight:600;color:var(--gray-m);cursor:pointer;transition:all .15s;width:100%;font-family:inherit;}
+.foto-add-btn:not(:disabled):hover,.foto-add-btn:not(:disabled):active{border-color:var(--green-med);background:var(--green-light);color:var(--green-dark);}
+.foto-add-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.foto-counter-total{font-size:12px;color:var(--gray-m);text-align:right;margin-top:4px;}
+/* RIEPILOGO */
+.rie-row{display:flex;padding:7px 0;border-bottom:1px solid var(--gray-l);font-size:13px;}
+.rie-row:last-child{border-bottom:none;}
+.rie-label{color:var(--gray-m);width:95px;flex-shrink:0;font-weight:600;font-size:11px;padding-top:1px;}
+.rie-val{flex:1;line-height:1.35;}
+/* BADGES */
+.badge{padding:2px 8px;border-radius:9px;font-size:11px;font-weight:700;display:inline-block;}
+.badge-frigo{background:var(--blue-light);color:var(--blue);}
+.badge-ok{background:var(--green-light);color:var(--green-dark);}
+.badge-num{background:var(--gray-l);color:#555;padding:3px 8px;border-radius:9px;font-size:12px;font-weight:700;font-family:var(--mono);}
+.badge-pronta{background:#FFF3CD;color:#856404;}
+.badge-consegna{background:var(--blue-light);color:var(--blue);}
+.badge-verificata{background:var(--green-light);color:var(--green-dark);}
+.badge-problema{background:var(--red-light);color:var(--red-dark);}
+/* CONSEGNANTE */
+.consegnante-list{display:flex;flex-direction:column;gap:7px;}
+.consegnante-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--gray-l);border-radius:9px;cursor:pointer;transition:all .15s;}
+.consegnante-item:hover,.consegnante-item:active,.consegnante-item.selected{border-color:var(--green-med);background:var(--green-light);}
+.c-sigla{font-size:17px;font-weight:800;color:var(--green-dark);width:34px;text-align:center;}
+.c-nome{font-size:13px;font-weight:600;}.c-ruolo{font-size:11px;color:var(--gray-m);}
+.c-check{margin-left:auto;color:var(--green-med);font-size:17px;display:none;}
+.consegnante-item.selected .c-check{display:block;}
+.consegnante-esterno{border-style:dashed;}
+/* LOGO HEADER */
+.logo-header{background:var(--green-dark);padding:12px 24px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:18px;color:white;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.logo-header-img{height:58px;width:auto;filter:brightness(0) invert(1);flex-shrink:0;object-fit:contain;}
+.logo-header-divider{width:1px;height:38px;background:rgba(255,255,255,0.25);flex-shrink:0;}
+.logo-header-text{text-align:center;}
+.logo-name{font-size:18px;font-weight:700;letter-spacing:-0.2px;line-height:1.2;}
+.logo-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.logo-op-line{font-size:13px;font-weight:700;color:rgba(255,255,255,0.95);margin-top:4px;letter-spacing:0.01em;}
+.logo-date-block{text-align:center;}
+.logo-date{font-size:12px;font-weight:500;color:rgba(255,255,255,0.75);text-transform:capitalize;line-height:1.3;}
+.logo-time{font-size:24px;font-weight:300;letter-spacing:1px;font-variant-numeric:tabular-nums;line-height:1.1;}
+.header-logout{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);color:white;width:40px;height:40px;border-radius:10px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;-webkit-tap-highlight-color:transparent;}
+.header-logout:active{background:rgba(255,255,255,0.3);}
+/* STORICO */
+.storico-search{width:100%;padding:10px 12px;border:1.5px solid var(--gray-l);border-radius:8px;font-size:15px;font-family:inherit;outline:none;background:white;transition:border .15s;color:var(--text);margin-bottom:10px;}
+.storico-search:focus{border-color:var(--green-med);}
+.storico-item{background:white;border:1px solid var(--gray-l);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:8px;overflow:hidden;}
+.storico-item:hover{border-color:var(--green-med);}
+.storico-item-main{display:flex;align-items:flex-start;gap:8px;padding:11px 12px;}
+.storico-info{flex:1;min-width:0;}
+.storico-paziente{font-weight:800;font-size:16px;color:var(--text);line-height:1.2;margin-bottom:3px;}
+.storico-data{font-size:11px;color:var(--gray-m);margin-bottom:4px;}
+.storico-operatori{font-size:12px;color:var(--gray-m);line-height:1.5;}
+.storico-btns{display:flex;gap:5px;flex-shrink:0;padding-top:2px;}
+.verifica-toggle{background:none;border:1.5px solid var(--gray-l);border-radius:7px;padding:5px 7px;font-size:16px;cursor:pointer;transition:all .15s;line-height:1;}
+.verifica-toggle.verde{border-color:var(--green-med);background:var(--green-light);}
+.verifica-toggle.problema{border-color:var(--red-dark);background:var(--red-light);}
+/* PRONTE CARDS */
+.pronta-card{background:white;border-radius:var(--radius);padding:13px 14px;margin-bottom:9px;cursor:pointer;border:2px solid var(--gray-l);transition:all .15s;width:100%;display:block;text-align:left;}
+.pronta-card:hover,.pronta-card:active{border-color:var(--green-med);box-shadow:0 3px 12px rgba(64,145,108,0.15);}
+.pronta-paziente{font-size:18px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:5px;}
+.pronta-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--gray-m);}
+.pronta-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+/* BOTTOM CTA */
+.bottom-cta{position:fixed;bottom:0;left:0;right:0;padding:9px 13px;background:white;border-top:1px solid var(--gray-l);z-index:40;}
+.bottom-cta .inner{max-width:580px;margin:0 auto;}
+.action-2x2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+/* BUTTONS */
+.btn{width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.2;}
+.btn-green{background:var(--green-med);color:white;}
+.btn-green:hover{background:var(--green-dark);}
+.btn-green:disabled{background:var(--gray-l);color:var(--gray-m);cursor:not-allowed;}
+.btn-outline{background:white;color:var(--green-med);border:2px solid var(--green-med);}
+.btn-dark{background:var(--green-dark);color:white;}
+.btn-red{background:var(--red-dark);color:white;}
+.btn-amber{background:var(--amber-light);color:var(--amber);border:1.5px solid var(--amber-border);}
+.btn-ghost{background:transparent;color:var(--gray-m);border:1.5px solid var(--gray-l);}
+.btn-sm{padding:8px 14px;font-size:13px;width:auto;border-radius:8px;}
+/* SAVE ROW */
+.save-row{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--blue-light);border-radius:8px;margin-top:8px;}
+.save-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);}
+.save-row label{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;}
+/* WARN */
+.warn-box{background:var(--amber-light);border:1.5px solid var(--amber-border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--amber);line-height:1.4;}
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-end;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:white;border-radius:18px 18px 0 0;padding:20px;width:100%;max-width:600px;max-height:82vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;padding-bottom:10px;border-bottom:1px solid var(--gray-l);}
+.modal-header h2{font-size:15px;font-weight:700;color:var(--green-dark);margin:0;}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-m);padding:4px;line-height:1;}
+.mc-card{padding:11px;background:var(--gray-ll);border-radius:9px;margin-bottom:8px;border-left:4px solid var(--green-med);}
+
+/* SESSION LOCK */
+.lock-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.58);z-index:1200;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px);}
+.lock-box{background:linear-gradient(135deg,#1f5e3a,#2D6A4F);color:white;border-radius:18px;padding:26px 22px 22px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.32);text-align:center;}
+.lock-ico{font-size:40px;margin-bottom:8px;}
+.lock-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+.lock-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:18px;line-height:1.45;}
+.lock-name{display:inline-block;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.16);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;margin-bottom:14px;}
+.lock-error{color:#ffb3b3;font-size:13px;font-weight:600;min-height:18px;margin-top:10px;}
+.lock-exit{background:transparent;border:none;color:rgba(255,255,255,0.72);font-size:13px;font-weight:600;cursor:pointer;margin-top:14px;}
+.lock-exit:hover{color:white;}
+
+/* TOAST */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:9px 18px;border-radius:9px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+#toast.show{opacity:1;}#toast.ok{background:var(--green-med);}#toast.err{background:var(--red-dark);}
+/* SINGLE INSTANCE */
+#single-instance-overlay{display:none;position:fixed;inset:0;z-index:100001;background:rgba(15,23,42,.82);align-items:center;justify-content:center;padding:24px;}
+#single-instance-box{width:min(420px,100%);background:#fff;border-radius:18px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.24);}
+#single-instance-box h2{font-size:20px;font-weight:700;color:var(--green-dark);margin-bottom:10px;}
+#single-instance-box p{font-size:14px;line-height:1.5;color:var(--gray-m);margin-bottom:10px;}
+#single-instance-box .hint{font-size:12px;color:#8a867f;}
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.loading-overlay.show{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid var(--gray-l);border-top:3px solid var(--green-med);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* SEPARATORE */
+.sep{border:none;border-top:1px solid var(--gray-l);margin:11px 0;}
+</style>
+</head>
+<body>
+<!-- ════ SINGLE INSTANCE OVERLAY ════ -->
+<div id="single-instance-overlay">
+  <div id="single-instance-box">
+    <div style="font-size:44px;margin-bottom:12px;">🚫</div>
+    <h2>Applicazione già aperta</h2>
+    <p>Questa finestra è stata bloccata perché Consegne a domicilio risulta già attiva in un'altra finestra dello stesso browser.</p>
+    <p class="hint">Chiudi l'altra finestra oppure attendi alcuni secondi e riapri l'app.</p>
+  </div>
+</div>
+
+<!-- ════ DEVICE AUTH OVERLAY ════ -->
+<div id="device-auth-overlay" style="display:flex;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);flex-direction:column;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px;max-width:360px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+    <div style="font-size:42px;margin-bottom:12px;">🔒</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;color:#111;">Dispositivo non riconosciuto</div>
+    <div style="font-size:14px;color:#666;margin-bottom:24px;">Inserisci il codice amministratore per autorizzare questo dispositivo.</div>
+    <div id="da-step1">
+      <input id="da-code" type="password" placeholder="Codice amministratore" style="width:100%;box-sizing:border-box;padding:12px;border:1.5px solid #ddd;border-radius:8px;font-size:16px;margin-bottom:8px;">
+      <div id="da-error" style="color:#e53935;font-size:13px;margin-bottom:8px;min-height:18px;"></div>
+      <button onclick="daVerificaCodice()" style="width:100%;padding:12px;background:#1a73e8;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">Verifica codice</button>
+    </div>
+    <div id="da-step2" style="display:none;">
+      <div style="font-size:14px;color:#333;margin-bottom:16px;">✅ Codice corretto. Dai un nome a questo dispositivo:</div>
+      <input id="da-nome" type="text" placeholder="Es: iPad farmacia, PC Daniele…" style="width:100%;box-sizing:border-box;padding:12px;border:1.5px solid #ddd;border-radius:8px;font-size:16px;margin-bottom:8px;">
+      <div id="da-error2" style="color:#e53935;font-size:13px;margin-bottom:8px;min-height:18px;"></div>
+      <button onclick="daRegistraDispositivo()" style="width:100%;padding:12px;background:#2e7d32;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">Invia richiesta dispositivo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S0 — LOGIN / HOME OPERATIVA
+═══════════════════════════════════════════ -->
+<div id="s0" class="screen active">
+  <div class="logo-header" style="position:relative">
+    <img class="logo-header-img" src="logo.png" alt="Farmacia Ascona">
+    <div class="logo-header-divider"></div>
+    <div class="logo-header-text">
+      <div class="logo-name">Consegne a Domicilio</div>
+      <div class="logo-sub">Farmacia Ascona · FA-SQ-CD-02</div>
+      <div class="logo-op-line" id="s0-op-line" style="display:none">👤 <span id="s0-op-name">—</span></div>
+    </div>
+    <div class="logo-header-divider"></div>
+    <div class="logo-date-block">
+      <div class="logo-date" id="home-hdr-date">—</div>
+      <div class="logo-time" id="home-hdr-time">—</div>
+    </div>
+    <button class="header-logout" id="s0-logout-btn" onclick="doLogoutConsegne()" title="Esci dall'app" style="display:none">⏻</button>
+  </div>
+  <span id="s0-status" style="display:none;"></span>
+  <div class="scroll-body">
+    <!-- Vista LOGIN -->
+    <div id="s0-login">
+      <div class="card">
+        <div class="card-title">👤 Chi sei?</div>
+        <div class="op-grid" id="s0-op-grid">
+          <div style="color:var(--gray-m);font-size:13px;padding:8px;">Caricamento...</div>
+        </div>
+      </div>
+    </div>
+    <!-- Vista HOME (dopo login) -->
+    <div id="s0-home" style="display:none;">
+      <div style="max-width:580px;margin:0 auto 11px;">
+        <button class="btn btn-green" onclick="iniziaNuovaPrep()" style="font-size:15px;padding:14px;">＋ Nuova preparazione</button>
+      </div>
+      <div id="s0-pronte-wrap">
+        <div class="card" id="s0-pronte-card">
+          <div class="card-title">⏳ Da controllare</div>
+          <div id="s0-pronte-list"></div>
+        </div>
+      </div>
+      <div style="max-width:580px;margin:11px auto 0;">
+        <button class="btn btn-ghost" onclick="goToStorico()" style="width:100%;font-size:13px;padding:10px;">📋 Storico consegne</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S1 — PIN PREPARATORE
+═══════════════════════════════════════════ -->
+<div id="s1" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s0');resetPinS1()">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Identificazione</div>
+      <div class="topbar-sub" id="s1-nome-label">—</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="card" style="max-width:320px;margin:16px auto 0;">
+      <div class="card-title" style="justify-content:center;">🔑 PIN</div>
+      <div class="pin-display">
+        <div class="pin-dot" id="s1d0"></div><div class="pin-dot" id="s1d1"></div>
+        <div class="pin-dot" id="s1d2"></div><div class="pin-dot" id="s1d3"></div>
+      </div>
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="pinPress('s1',1)">1</button>
+        <button class="pin-btn" onclick="pinPress('s1',2)">2</button>
+        <button class="pin-btn" onclick="pinPress('s1',3)">3</button>
+        <button class="pin-btn" onclick="pinPress('s1',4)">4</button>
+        <button class="pin-btn" onclick="pinPress('s1',5)">5</button>
+        <button class="pin-btn" onclick="pinPress('s1',6)">6</button>
+        <button class="pin-btn" onclick="pinPress('s1',7)">7</button>
+        <button class="pin-btn" onclick="pinPress('s1',8)">8</button>
+        <button class="pin-btn" onclick="pinPress('s1',9)">9</button>
+        <button class="pin-btn empty"></button>
+        <button class="pin-btn" onclick="pinPress('s1',0)">0</button>
+        <button class="pin-btn del" onclick="pinDel('s1')">⌫</button>
+      </div>
+      <div class="pin-error" id="s1-pin-error">PIN non corretto</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S2 — DESTINATARIO
+═══════════════════════════════════════════ -->
+<div id="s2" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s0')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Destinatario</div>
+      <div class="topbar-sub" id="s2-prep-label">—</div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
+    <span class="step-label">1 · Destinatario</span>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <div class="card-title">📋 Dati destinatario</div>
+      <div class="field">
+        <label>Cerca paziente esistente</label>
+        <div class="search-wrap">
+          <input type="text" id="s2-search" placeholder="Digita cognome o nome..." autocomplete="off"
+            oninput="(function(v){clearTimeout(window._cpTs);window._cpTs=setTimeout(function(){cercaPaziente(v);},200);})(this.value)" onfocus="cercaPaziente(this.value)">
+          <div class="search-results" id="s2-results"></div>
+        </div>
+      </div>
+      <hr class="sep">
+      <div class="field">
+        <label>Cognome e Nome *</label>
+        <input type="text" id="s2-nome" placeholder="Es. Rossi Mario" autocomplete="off" oninput="checkS2Ready()">
+      </div>
+      <div class="field">
+        <label>Indirizzo</label>
+        <input type="text" id="s2-indirizzo" placeholder="Via, numero civico">
+      </div>
+      <div class="field">
+        <label>Comune / CAP</label>
+        <input type="text" id="s2-citta" placeholder="Es. Ascona 6612">
+      </div>
+      <div class="save-row" id="s2-save-row" style="display:none;">
+        <input type="checkbox" id="s2-save-check">
+        <label for="s2-save-check">Salva come paziente per le prossime consegne</label>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-cta">
+    <div class="inner">
+      <button class="btn btn-green" id="s2-next" onclick="goToS3()" disabled>Avanti →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S3 — PRODOTTI / FOTO / FRIGO / NOTE
+═══════════════════════════════════════════ -->
+<div id="s3" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s2')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Prodotti</div>
+      <div class="topbar-sub" id="s3-dest-label">—</div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
+    <span class="step-label">2 · Prodotti</span>
+  </div>
+  <div class="scroll-body">
+    <!-- FOTO -->
+    <div class="card">
+      <div class="card-title">
+        📷 Foto documentazione
+        <span id="s3-tot-label" style="margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--gray-m);font-weight:600;">0 / 4</span>
+      </div>
+      <!-- Etichetta -->
+      <div class="foto-section">
+        <div class="foto-section-label">
+          <span>📦 Etichetta / busta <span style="color:var(--red-dark);font-size:10px;">*</span></span>
+        </div>
+        <div class="foto-thumbs" id="s3-et-thumbs"></div>
+        <button class="foto-add-btn" id="s3-add-et" onclick="document.getElementById('s3-in-et').click()">
+          📷 Aggiungi foto etichetta
+        </button>
+        <input type="file" id="s3-in-et" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoPrep('etichetta',this)">
+      </div>
+      <hr class="sep">
+      <!-- Prodotti -->
+      <div class="foto-section" style="margin-bottom:0;">
+        <div class="foto-section-label">
+          <span>💊 Prodotti <span style="color:var(--red-dark);font-size:10px;">*</span></span>
+        </div>
+        <div class="foto-thumbs" id="s3-pr-thumbs"></div>
+        <button class="foto-add-btn" id="s3-add-pr" onclick="document.getElementById('s3-in-pr').click()">
+          📷 Aggiungi foto prodotti
+        </button>
+        <input type="file" id="s3-in-pr" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoPrep('prodotti',this)">
+      </div>
+      <div class="foto-counter-total" id="s3-foto-msg"></div>
+    </div>
+    <!-- FRIGO -->
+    <div class="card">
+      <div class="card-title">
+        🌡️ Prodotti termosensibili
+        <span id="s3-frigo-req" style="font-size:11px;color:var(--red-dark);font-weight:600;text-transform:none;margin-left:4px;">— obbligatorio</span>
+      </div>
+      <div class="frigo-scelta">
+        <button class="frigo-btn si" id="frigo-si" onclick="setFrigo(true)">🌡️ SÌ — Frigo</button>
+        <button class="frigo-btn no" id="frigo-no" onclick="setFrigo(false)">✓ NO — Ambiente</button>
+      </div>
+      <div class="frigo-info-msg" id="frigo-info">
+        ⚠️ Prodotti frigo presenti. Il dispensatore/consegnante dovrà essere avvisato nella fase di controllo-consegna.
+      </div>
+    </div>
+    <!-- NOTE -->
+    <div class="card">
+      <div class="card-title">📝 Note <span style="font-size:11px;color:var(--gray-m);font-weight:400;text-transform:none;">(facoltative)</span></div>
+      <div class="field" style="margin-bottom:0;">
+        <textarea id="s3-note" placeholder="Istruzioni particolari, orari, ecc."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-cta">
+    <div class="inner">
+      <button class="btn btn-green" id="s3-next" onclick="goToS4()" disabled>Avanti →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S4 — RIEPILOGO + 4 AZIONI
+═══════════════════════════════════════════ -->
+<div id="s4" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s3')">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title" id="s4-title">Riepilogo</div>
+      <div class="topbar-sub" id="s4-sub">Verifica prima di salvare</div>
+    </div>
+  </div>
+  <div class="progress-bar">
+    <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div>
+    <span class="step-label">3 · Riepilogo</span>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <div class="card-title">✓ Riepilogo preparazione</div>
+      <div id="s4-riepilogo"></div>
+    </div>
+    <div class="card" id="s4-foto-card">
+      <div class="card-title">📷 Foto allegate</div>
+      <div class="foto-thumbs" id="s4-foto-thumbs"></div>
+    </div>
+    <!-- AZIONI NORMALE -->
+    <div class="card" id="s4-azioni-normal">
+      <div class="card-title">↪ Cosa vuoi fare?</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost" onclick="goTo('s3')">← Torna indietro</button>
+        <button class="btn btn-outline" onclick="salvaEProssima()">✚ Salva e nuova preparazione</button>
+        <button class="btn btn-amber" onclick="salvaEdEsci('prep')">🚪 Salva ed esci</button>
+        <button class="btn btn-green" onclick="salvaEProsegui()">→ Salva e prosegui con la consegna</button>
+      </div>
+    </div>
+    <!-- AZIONI MODIFICA -->
+    <div class="card" id="s4-azioni-modifica" style="display:none;">
+      <div class="card-title">↪ Azioni modifica</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost" onclick="goTo('s3')">← Torna indietro</button>
+        <button class="btn btn-red" onclick="annullaModifica()">✕ Annulla modifiche</button>
+        <button class="btn btn-green" onclick="aggiornaFornitura()">💾 Aggiorna e torna al controllo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S5 — CONTROLLO-CONSEGNA
+═══════════════════════════════════════════ -->
+<div id="s5" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="tornaIndietroS5()">←</button>
+    <div class="topbar-info">
+      <div class="topbar-title">Controllo-Consegna</div>
+      <div class="topbar-sub" id="s5-label">—</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <!-- FRIGO WARN -->
+    <div class="frigo-warn-s5" id="s5-frigo-warn" style="display:none;">
+      <div class="frigo-warn-title">🌡️ ATTENZIONE — Prodotti frigo</div>
+      <div style="font-size:13px;color:var(--blue);margin-bottom:6px;">Verificare catena del freddo prima della consegna.</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Hai avvisato il dispensatore/consegnante?</div>
+      <div class="frigo-confirm-row">
+        <button class="frigo-confirm-btn si" id="frigo-avv-si" onclick="setFrigoAvvisato(true)">✓ Sì, avvisato</button>
+        <button class="frigo-confirm-btn no" id="frigo-avv-no" onclick="setFrigoAvvisato(false)">✗ Non ancora</button>
+      </div>
+    </div>
+    <!-- RIEPILOGO PREP -->
+    <div class="card">
+      <div class="card-title">🔍 Preparazione</div>
+      <div id="s5-prep-rie"></div>
+    </div>
+    <!-- FOTO -->
+    <div class="card">
+      <div class="card-title">
+        📷 Foto
+        <span id="s5-tot-label" style="margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--gray-m);font-weight:600;">0 / 4</span>
+      </div>
+      <div class="foto-section">
+        <div class="foto-section-label"><span>📦 Etichetta</span></div>
+        <div class="foto-thumbs" id="s5-et-thumbs"></div>
+        <button class="foto-add-btn" id="s5-add-et" onclick="document.getElementById('s5-in-et').click()">
+          📷 Aggiungi foto etichetta
+        </button>
+        <input type="file" id="s5-in-et" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoS5('etichetta',this)">
+      </div>
+      <hr class="sep">
+      <div class="foto-section" style="margin-bottom:0;">
+        <div class="foto-section-label"><span>💊 Prodotti</span></div>
+        <div class="foto-thumbs" id="s5-pr-thumbs"></div>
+        <button class="foto-add-btn" id="s5-add-pr" onclick="document.getElementById('s5-in-pr').click()">
+          📷 Aggiungi foto prodotti
+        </button>
+        <input type="file" id="s5-in-pr" accept="image/*" capture="environment" style="display:none;"
+          onchange="addFotoS5('prodotti',this)">
+      </div>
+    </div>
+    <!-- NOTE CONTROLLO -->
+    <div class="card">
+      <div class="card-title">📝 Note controllo <span style="font-size:11px;color:var(--gray-m);font-weight:400;text-transform:none;">(facoltative)</span></div>
+      <div class="field" style="margin-bottom:0;">
+        <textarea id="s5-note" placeholder="Modifiche, problemi rilevati, ecc."></textarea>
+      </div>
+    </div>
+    <!-- STESSO PREP WARN -->
+    <div class="warn-box" id="s5-warn-stesso" style="display:none;margin-bottom:11px;">
+      ⚠️ Stai controllando una fornitura che hai preparato tu. Viene registrato nel log.
+    </div>
+    <!-- CONTROLLORE -->
+    <div class="card">
+      <div class="card-title">👤 Controllore</div>
+      <div class="op-grid" id="s5-op-grid"></div>
+      <div id="s5-pin-card" style="display:none;margin-top:13px;">
+        <div class="card-title" style="margin-bottom:9px;">🔑 PIN — <span id="s5-op-nome-label" style="color:var(--green-med);"></span></div>
+        <div class="pin-display">
+          <div class="pin-dot" id="s5d0"></div><div class="pin-dot" id="s5d1"></div>
+          <div class="pin-dot" id="s5d2"></div><div class="pin-dot" id="s5d3"></div>
+        </div>
+        <div class="pin-pad">
+          <button class="pin-btn" onclick="pinPress('s5',1)">1</button>
+          <button class="pin-btn" onclick="pinPress('s5',2)">2</button>
+          <button class="pin-btn" onclick="pinPress('s5',3)">3</button>
+          <button class="pin-btn" onclick="pinPress('s5',4)">4</button>
+          <button class="pin-btn" onclick="pinPress('s5',5)">5</button>
+          <button class="pin-btn" onclick="pinPress('s5',6)">6</button>
+          <button class="pin-btn" onclick="pinPress('s5',7)">7</button>
+          <button class="pin-btn" onclick="pinPress('s5',8)">8</button>
+          <button class="pin-btn" onclick="pinPress('s5',9)">9</button>
+          <button class="pin-btn empty"></button>
+          <button class="pin-btn" onclick="pinPress('s5',0)">0</button>
+          <button class="pin-btn del" onclick="pinDel('s5')">⌫</button>
+        </div>
+        <div class="pin-error" id="s5-pin-error">PIN non corretto</div>
+      </div>
+    </div>
+    <!-- CONSEGNANTE -->
+    <div class="card" id="s5-cons-card" style="display:none;">
+      <div class="card-title">🚗 Consegnante</div>
+      <div class="consegnante-list" id="s5-cons-list"></div>
+      <div id="s5-esterno-field" style="display:none;margin-top:10px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Nome consegnante esterno</label>
+          <input type="text" id="s5-esterno-nome" placeholder="Es. Mario Rossi (corriere)" oninput="checkS5Ready()">
+        </div>
+      </div>
+    </div>
+    <!-- 4 AZIONI FINALI -->
+    <div class="card" id="s5-azioni-card" style="display:none;">
+      <div class="card-title">↪ Azioni finali</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-ghost" onclick="tornaIndietroS5()">← Torna indietro</button>
+        <button class="btn btn-amber" onclick="modificaPreparazione()">✏️ Modifica preparazione</button>
+        <button class="btn btn-outline" onclick="salvaEdEsci('ctrl')">🚪 Salva ed esci</button>
+        <button class="btn btn-green" id="s5-btn-approva" onclick="approvaFornitura()" disabled>✓ Salva — In consegna</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S6 — STORICO
+═══════════════════════════════════════════ -->
+<div id="s6" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="goTo('s0')">←</button>
+    <div class="topbar-info"><div class="topbar-title">Storico Consegne</div></div>
+  </div>
+  <div class="scroll-body">
+    <div class="card">
+      <input type="search" class="storico-search" id="s6-search" placeholder="🔍 Cerca paziente..." oninput="(function(){clearTimeout(window._rsTs);window._rsTs=setTimeout(renderStorico,200);}).call(this)" autocomplete="off">
+      <div id="list-storico"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     S7 — USCITA
+═══════════════════════════════════════════ -->
+<div id="s7" class="screen">
+  <div class="topbar">
+    <div class="topbar-info">
+      <div class="topbar-title">Fornitura salvata</div>
+      <div class="topbar-sub">Farmacia Ascona · FA-SQ-CD-02</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div style="text-align:center;padding:32px 20px;max-width:380px;margin:0 auto;">
+      <div style="font-size:52px;margin-bottom:14px;">✅</div>
+      <div style="font-size:19px;font-weight:800;color:var(--green-dark);margin-bottom:8px;" id="s7-title">Fornitura salvata correttamente</div>
+      <div style="font-size:13px;color:var(--gray-m);margin-bottom:24px;line-height:1.5;" id="s7-sub">Record salvato in Firebase.</div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <button class="btn btn-ghost" onclick="chiudiApp()">× Chiudi scheda</button>
+        <button class="btn btn-green" onclick="tornaHome()">⌂ Torna alla home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MODALI
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-paz">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-paz-titolo">Paziente</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-paz')">✕</button>
+    </div>
+    <div id="modal-paz-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-data">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-data-titolo">Data</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-data')">✕</button>
+    </div>
+    <div id="modal-data-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-problema">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>⚠️ Segnala problema</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-problema')">✕</button>
+    </div>
+    <input type="hidden" id="modal-prob-id">
+    <div class="field" style="margin-bottom:12px;">
+      <label>Descrizione problema *</label>
+      <textarea id="modal-prob-nota" placeholder="Descrivi il problema riscontrato..." style="min-height:80px;"></textarea>
+    </div>
+    <button class="btn btn-red" onclick="salvaProblema()">Segnala problema</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-cancellazione">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>🗑️ Annulla consegna</h2>
+      <button class="modal-close" onclick="chiudiModal('modal-cancellazione')">✕</button>
+    </div>
+    <input type="hidden" id="modal-canc-id">
+    <div class="field" style="margin-bottom:12px;">
+      <label>Motivo annullamento *</label>
+      <textarea id="modal-canc-nota" placeholder="Descrivi il motivo della cancellazione..." style="min-height:88px;"></textarea>
+    </div>
+    <button class="btn btn-red" onclick="salvaCancellazione()">Conferma cancellazione</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div style="font-size:13px;color:var(--gray-m);" id="loading-msg">Attendere...</div>
+</div>
+
+
+<!-- ════ SESSIONE TERMINATA ════ -->
+<div id="s-terminata" class="screen" style="background:var(--green-dark);align-items:center;justify-content:center;flex-direction:column;padding:40px 24px;text-align:center;">
+  <div style="font-size:60px;margin-bottom:20px;">👋</div>
+  <div style="font-size:26px;font-weight:800;color:white;margin-bottom:8px;">Sessione terminata</div>
+  <div style="font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:48px;">Arrivederci!</div>
+  <button id="btn-chiudi-consegne" onclick="doCloseWindowConsegne()" style="background:white;color:var(--green-dark);border:none;border-radius:14px;padding:15px 28px;font-size:16px;font-weight:700;cursor:pointer;width:100%;max-width:280px;margin-bottom:14px;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,0.18);">✕ Chiudi scheda</button>
+  <button onclick="goTo('s0')" style="background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);border:1.5px solid rgba(255,255,255,0.35);border-radius:14px;padding:13px 28px;font-size:14px;font-weight:600;cursor:pointer;width:100%;max-width:280px;font-family:inherit;">↩ Nuova sessione</button>
+</div>
+
+<div class="lock-overlay" id="lock-overlay">
+  <div class="lock-box">
+    <div class="lock-ico">🔒</div>
+    <div class="lock-title">Sessione bloccata</div>
+    <div class="lock-sub" id="lock-subtitle">Reinserisci il PIN per riprendere il lavoro in corso.</div>
+    <div class="lock-name" id="lock-op-name">—</div>
+    <div class="pin-display" style="margin:10px 0 12px;">
+      <div class="pin-dot" id="lkd0"></div><div class="pin-dot" id="lkd1"></div>
+      <div class="pin-dot" id="lkd2"></div><div class="pin-dot" id="lkd3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="lockPinDigit(1)">1</button>
+      <button class="pin-btn" onclick="lockPinDigit(2)">2</button>
+      <button class="pin-btn" onclick="lockPinDigit(3)">3</button>
+      <button class="pin-btn" onclick="lockPinDigit(4)">4</button>
+      <button class="pin-btn" onclick="lockPinDigit(5)">5</button>
+      <button class="pin-btn" onclick="lockPinDigit(6)">6</button>
+      <button class="pin-btn" onclick="lockPinDigit(7)">7</button>
+      <button class="pin-btn" onclick="lockPinDigit(8)">8</button>
+      <button class="pin-btn" onclick="lockPinDigit(9)">9</button>
+      <button class="pin-btn empty"></button>
+      <button class="pin-btn" onclick="lockPinDigit(0)">0</button>
+      <button class="pin-btn del" onclick="lockPinClear()">⌫</button>
+    </div>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-exit" onclick="doLogoutConsegne()">Esci definitivamente</button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     FIREBASE + JSPDF
+═══════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+'use strict';
+/* ─── COSTANTI STATI ──────────────────────── */
+var STATO_PRONTA    = 'PRONTA PER CONTROLLO';
+var STATO_CONSEGNA  = 'IN CONSEGNA';
+var STATO_VERIFICA  = 'CONSEGNA VERIFICATA';
+var STATO_PROBLEMA  = 'PROBLEMA SEGNALATO';
+var STATO_CANCELLATA = 'CONSEGNA CANCELLATA';
+var MAX_FOTO = 4;
+var FOTO_PX = 900, FOTO_Q = 0.42;
+
+/* ─── GLOBALS ─────────────────────────────── */
+var db=null, storage=null;
+var OPERATORI=[], PAZIENTI=[], CONSEGNE=[];
+var NUMERO_SEQ=1;
+var FORN=null; // fornitura in controllo
+var stato=mkStato();
+var pinStato={s1:{digits:'',op:null}, s5:{digits:'',op:null}};
+var consSelezionato=null; // id consegnante selezionato
+
+/* ─── SESSIONE OPERATORE / TIMEOUT ───────── */
+var _sessionTimer=null;
+var _lockTimer=null;
+var _sessionState='logged_out'; // logged_out | active | locked
+var _lockPinBuf='';
+var SESSION_TIMEOUT=5*60*1000;
+var LOCK_TIMEOUT=30*60*1000;
+var _authInitialized=false;
+
+function mkStato(){
+  return {
+    preparatore:null, tsPreparazione:null,
+    paziente:null, salvaPaziente:false,
+    foto:[], // [{tipo:'etichetta'|'prodotti', data:base64|null, url:string|null}]
+    presenzaFrigo:false, frigoCompilato:false,
+    note:'',
+    controllore:null, tsControllo:null,
+    consegnante:null, dispensatoreAvvisatoFrigo:null,
+    numero:null, firestoreId:null,
+    modalitaModifica:false,
+    fotoS5:[] // pool foto per fase controllo
+  };
+}
+
+var singleInstanceGuard=null;
+function createSingleInstanceGuard(appKey){
+  var LOCK_KEY='fa_single_instance:'+appKey;
+  var instanceId='inst_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
+  var HEARTBEAT_MS=4000;
+  var STALE_MS=15000;
+  var heartbeatTimer=null;
+  var storageListener=null;
+  function now(){return Date.now();}
+  function readLock(){try{return JSON.parse(localStorage.getItem(LOCK_KEY)||'null');}catch(e){return null;}}
+  function writeLock(){localStorage.setItem(LOCK_KEY,JSON.stringify({instanceId:instanceId,appKey:appKey,updatedAt:now(),path:location.pathname}));}
+  function ownsLock(lock){return !!lock&&lock.instanceId===instanceId;}
+  function isFresh(lock){return !!lock&&(now()-Number(lock.updatedAt||0)<STALE_MS);}
+  function releaseLock(){var current=readLock();if(ownsLock(current))localStorage.removeItem(LOCK_KEY);}
+  function showBlockedUi(){
+    var overlay=document.getElementById('single-instance-overlay'); if(overlay) overlay.style.display='flex';
+    var deviceOverlay=document.getElementById('device-auth-overlay'); if(deviceOverlay) deviceOverlay.style.display='none';
+    var lockOverlay=document.getElementById('lock-overlay'); if(lockOverlay) lockOverlay.style.display='none';
+    var loading=document.getElementById('loading'); if(loading) loading.classList.remove('show');
+    document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';});
+  }
+  return {
+    start:function(){
+      var existing=readLock();
+      if(existing&&!ownsLock(existing)&&isFresh(existing)){showBlockedUi();return false;}
+      writeLock();
+      storageListener=function(e){
+        if(e.key!==LOCK_KEY) return;
+        var current=readLock();
+        if(current&&!ownsLock(current)&&isFresh(current)){clearInterval(heartbeatTimer);showBlockedUi();}
+      };
+      window.addEventListener('storage',storageListener);
+      heartbeatTimer=setInterval(function(){
+        var current=readLock();
+        if(!current||ownsLock(current)||!isFresh(current)) writeLock();
+      },HEARTBEAT_MS);
+      window.addEventListener('pagehide',releaseLock);
+      window.addEventListener('beforeunload',releaseLock);
+      document.addEventListener('visibilitychange',function(){
+        if(document.visibilityState==='visible'){
+          var current=readLock();
+          if(!current||!isFresh(current)||ownsLock(current)) writeLock();
+        }
+      });
+      return true;
+    }
+  };
+}
+
+/* ─── INIT FIREBASE ───────────────────────── */
+(function(){
+  singleInstanceGuard=createSingleInstanceGuard('consegne_domicilio');
+  if(!singleInstanceGuard.start()) return;
+  try{
+    firebase.initializeApp({
+      apiKey:'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
+      authDomain:'dosettes-farmacia.firebaseapp.com',
+      projectId:'dosettes-farmacia',
+      storageBucket:'dosettes-farmacia.firebasestorage.app'
+    });
+    db=firebase.firestore();
+    storage=firebase.storage();
+    // DEVICE AUTH — Registro dispositivi autorizzati
+    (function(){
+      var DEVICE_KEY='fa_device_id';
+      function getOrCreateDeviceId(){var id=localStorage.getItem(DEVICE_KEY);if(!id){id='dev_'+Date.now().toString(36)+Math.random().toString(36).substr(2,9);localStorage.setItem(DEVICE_KEY,id);}return id;}
+      async function sha256(s){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');}
+      window._daDeviceId=getOrCreateDeviceId();
+      firebase.auth().onAuthStateChanged(async function(user){
+        if(!user) return;
+        var db=firebase.firestore();
+        try{var doc=await db.collection('dispositivi').doc(window._daDeviceId).get();if(doc.exists&&doc.data().autorizzato===true){db.collection('dispositivi').doc(window._daDeviceId).update({ultimoAccesso:new Date()});document.getElementById('device-auth-overlay').style.display='none';return;}}catch(e){console.warn('Device check:',e);}
+      });
+      window.daVerificaCodice=async function(){var code=(document.getElementById('da-code').value||'').trim();if(!code)return;var hash=await sha256(code);if(hash!=='81a7ad73c35f4ef750d4471a0be8482de72b0d8327b4337573d712970131b8c4'){document.getElementById('da-error').textContent='Codice non valido.';return;}document.getElementById('da-step1').style.display='none';document.getElementById('da-step2').style.display='block';};
+      window.daRegistraDispositivo=async function(){var nome=(document.getElementById('da-nome').value||'').trim();if(!nome){document.getElementById('da-error2').textContent='Inserisci un nome.';return;}try{var db=firebase.firestore();await db.collection('dispositivi').doc(window._daDeviceId).set({nome:nome,autorizzato:false,richiesta:true,primoAccesso:new Date(),ultimoAccesso:new Date(),userAgent:navigator.userAgent},{merge:true});document.getElementById('da-error2').style.color='#2e7d32';document.getElementById('da-error2').textContent='Richiesta inviata. Autorizza il dispositivo dalla console admin su un dispositivo già abilitato.';}catch(e){document.getElementById('da-error2').textContent='Errore di salvataggio. Riprova.';}};
+      document.addEventListener('keydown',function(e){if(e.key!=='Enter')return;if(document.getElementById('da-step2').style.display==='block')daRegistraDispositivo();else daVerificaCodice();});
+    })();
+    firebase.auth().onAuthStateChanged(function(user){
+      if(!_authInitialized){
+        _authInitialized=true;
+        if(!user){
+          firebase.auth().signInAnonymously().catch(function(e){console.warn('Auth anonima fallita:',e.code);});
+          return;
+        }
+      }
+      if(user && !user.isAnonymous){
+        caricaDati();
+        loginOperatoreDaAuth(user);
+      } else if(user && user.isAnonymous) {
+        caricaDati();
+      }
+    });
+    document.getElementById('s0-status').textContent='● Online';
+  }catch(e){
+    document.getElementById('s0-status').textContent='● Offline';
+    toast('Firebase offline — modalità solo lettura','err');
+  }
+})();
+
+function caricaDati(){
+  caricaOperatori();
+  caricaPazienti();
+  caricaConsegne();
+  caricaNumSeq();
+}
+
+function attivaSessionePreparatore(op, ts){
+  stato.preparatore={id:op.id,nome:op.nome,ruolo:op.ruolo};
+  stato.tsPreparazione=ts||new Date();
+  document.getElementById('s0-op-name').textContent=op.nome;
+  document.getElementById('s0-op-line').style.display='';
+  document.getElementById('s0-logout-btn').style.display='';
+  document.getElementById('s0-login').style.display='none';
+  document.getElementById('s0-home').style.display='block';
+  mostraPronte();
+  startSessionTimer();
+  goTo('s0');
+}
+
+function loginOperatoreDaAuth(user){
+  if(!db || !user || user.isAnonymous || !user.email || hasLoggedOperator()) return;
+  db.collection('operatori').get().then(function(s){
+    var found=null;
+    OPERATORI=[];
+    s.forEach(function(d){
+      var x=d.data()||{};
+      var op={id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||'',emailFirebase:x.emailFirebase||'',attivo:x.attivo!==false};
+      OPERATORI.push(op);
+      if(op.attivo && String(op.emailFirebase||'').toLowerCase()===String(user.email||'').toLowerCase()) found=op;
+    });
+    OPERATORI=OPERATORI.filter(function(op){return op.attivo!==false;});
+    renderOpGrid('s0-op-grid','s0');
+    if(found) {
+      attivaSessionePreparatore(found, new Date());
+      toast('Accesso da launcher: '+found.nome,'ok');
+    }
+  }).catch(function(e){
+    console.warn('SSO operatori:', e && e.code || e);
+  });
+}
+
+/* ─── OROLOGIO HOME HEADER ────────────────── */
+(function(){
+  var giorni=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  var mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  function pad(n){return n<10?'0'+n:String(n);}
+  function tick(){
+    var now=new Date();
+    var elD=document.getElementById('home-hdr-date');
+    var elT=document.getElementById('home-hdr-time');
+    if(elD) elD.textContent=giorni[now.getDay()]+', '+now.getDate()+' '+mesi[now.getMonth()];
+    if(elT) elT.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  }
+  tick();
+  var ms=(60-new Date().getSeconds())*1000;
+  setTimeout(function(){tick();setInterval(tick,60000);},ms);
+})();
+
+function caricaOperatori(){
+  if(!db)return;
+  var _user=firebase.auth().currentUser;
+  var _col=(_user&&!_user.isAnonymous)?'operatori':'operatori_pubblici';
+  db.collection(_col).get().then(function(s){
+    OPERATORI=[];
+    s.forEach(function(d){
+      var x=d.data();
+      OPERATORI.push({id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||'',emailFirebase:x.emailFirebase||''});
+    });
+    renderOpGrid('s0-op-grid','s0');
+  }).catch(function(){toast('Errore caricamento operatori','err');});
+}
+
+function caricaPazienti(){
+  if(!db)return;
+  db.collection('pazienti').get().then(function(s){
+    PAZIENTI=[];
+    s.forEach(function(d){
+      var x=d.data();
+      PAZIENTI.push({
+        id:d.id,
+        nome:((x.cognome||'')+' '+(x.nome||'')).trim()||(x.nome||d.id),
+        indirizzo:x.indirizzo||x.address||'',
+        citta:x.citta||x.city||''
+      });
+    });
+  }).catch(function(){});
+}
+
+function caricaConsegne(){
+  if(!db)return;
+  db.collection('qms_consegne').orderBy('tsPreparazione','desc').limit(300).get()
+    .then(function(s){
+      CONSEGNE=[];
+      s.forEach(function(d){CONSEGNE.push(Object.assign({_id:d.id},d.data()));});
+      if(stato.preparatore) mostraPronte();
+    }).catch(function(e){console.warn('consegne:',e);});
+}
+
+function caricaNumSeq(){
+  if(!db)return;
+  db.collection('qms_consegne').orderBy('numero','desc').limit(1).get()
+    .then(function(s){NUMERO_SEQ=s.empty?1:((s.docs[0].data().numero||0)+1);})
+    .catch(function(){NUMERO_SEQ=1;});
+}
+
+/* ─── S0: LOGIN / HOME ────────────────────── */
+function renderOpGrid(cid, pfx){
+  var el=document.getElementById(cid); if(!el)return;
+  if(!OPERATORI.length){
+    el.innerHTML='<div style="color:var(--gray-m);font-size:13px;padding:8px;">Nessun operatore trovato</div>';
+    return;
+  }
+  el.innerHTML=OPERATORI.map(function(op){
+    return '<div class="op-card" id="oc-'+pfx+'-'+op.id+'" onclick="selectOp(\''+pfx+'\',\''+op.id+'\')">'
+      +'<div class="op-sigla">'+escH(op.id)+'</div>'
+      +'<div class="op-nome">'+escH(op.nome)+'</div>'
+      +'<div class="op-ruolo">'+escH(op.ruolo)+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function selectOp(pfx, opId){
+  var op=OPERATORI.find(function(o){return o.id===opId;}); if(!op)return;
+  document.querySelectorAll('[id^="oc-'+pfx+'-"]').forEach(function(c){c.classList.remove('selected');});
+  var card=document.getElementById('oc-'+pfx+'-'+opId);
+  if(card) card.classList.add('selected');
+
+  if(pfx==='s0'){
+    // porta a schermata PIN
+    pinStato.s1={digits:'',op:op};
+    document.getElementById('s1-nome-label').textContent=op.nome;
+    updatePinDots('s1');
+    goTo('s1');
+    return;
+  }
+  if(pfx==='s5'){
+    // se stesso operatore che ha preparato la fornitura: skip PIN, mostra avviso
+    if(FORN && FORN.preparatore && FORN.preparatore.id===op.id){
+      document.getElementById('s5-warn-stesso').style.display='block';
+      pinStato.s5={digits:'',op:op};
+      autenticaControllore(op);
+      return;
+    }
+    pinStato.s5={digits:'',op:op};
+    var pc=document.getElementById('s5-pin-card');
+    pc.style.display='block';
+    document.getElementById('s5-op-nome-label').textContent=op.nome;
+    updatePinDots('s5');
+    setTimeout(function(){pc.scrollIntoView({behavior:'smooth',block:'center'});},100);
+  }
+}
+
+function autenticaControllore(op){
+  stato.controllore={id:op.id,nome:op.nome,ruolo:op.ruolo};
+  stato.tsControllo=new Date();
+  document.getElementById('s5-pin-card').style.display='none';
+  document.getElementById('s5-cons-card').style.display='block';
+  document.getElementById('s5-azioni-card').style.display='block';
+  renderConsegnante();
+  checkS5Ready();
+  setTimeout(function(){document.getElementById('s5-cons-card').scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+
+function mostraPronte(){
+  var pronte=CONSEGNE.filter(function(c){return c.stato===STATO_PRONTA;});
+  // ordine: più vecchie in alto
+  pronte.sort(function(a,b){
+    var ta=a.tsPreparazione?(a.tsPreparazione.toDate?a.tsPreparazione.toDate():new Date(a.tsPreparazione)):new Date(0);
+    var tb=b.tsPreparazione?(b.tsPreparazione.toDate?b.tsPreparazione.toDate():new Date(b.tsPreparazione)):new Date(0);
+    return ta-tb;
+  });
+  var wrap=document.getElementById('s0-pronte-wrap');
+  if(!pronte.length){
+    wrap.innerHTML='<div style="text-align:center;padding:16px;color:var(--gray-m);font-size:13px;max-width:580px;margin:0 auto;">Nessuna fornitura in attesa</div>';
+    return;
+  }
+  var html=pronte.map(function(c){
+    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+    var dataStr=ts?ts.toLocaleDateString('it-CH'):'—';
+    var oraStr=ts?ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—';
+    var nFoto=(c.foto&&Array.isArray(c.foto))?c.foto.length:0;
+    var badges='';
+    if(c.presenzaFrigo||c.frigo) badges+='<span class="badge badge-frigo">🌡️ Frigo</span>';
+    if(c.note) badges+='<span class="badge" style="background:#f8f4ee;color:var(--gray-m);">📝 Note</span>';
+    if(nFoto>0) badges+='<span class="badge" style="background:#f8f4ee;color:var(--gray-m);">📷 '+nFoto+'</span>';
+    return '<button class="pronta-card" onclick="apriControllo(\''+c._id+'\')">'
+      +'<div class="pronta-paziente">'+escH(c.paziente?c.paziente.nome:'—')+'</div>'
+      +'<div class="pronta-meta">'
+      +'<span>🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+'</span>'
+      +'<span>📅 '+escH(dataStr)+'</span>'
+      +'<span>🕐 '+escH(oraStr)+'</span>'
+      +'<span style="font-family:var(--mono);font-size:11px;">'+escH(fmt(c.numero))+'</span>'
+      +'</div>'
+      +(badges?'<div class="pronta-badges">'+badges+'</div>':'')
+      +'</button>';
+  }).join('');
+  wrap.innerHTML='<div class="card" style="max-width:580px;margin:0 auto;">'
+    +'<div class="card-title">⏳ Da controllare ('+pronte.length+')</div>'
+    +html+'</div>';
+}
+
+function iniziaNuovaPrep(){
+  // reset flusso preparazione (mantieni preparatore)
+  var prep=stato.preparatore;
+  stato=mkStato();
+  stato.preparatore=prep;
+  stato.tsPreparazione=new Date();
+  // reset form S2
+  ['s2-nome','s2-indirizzo','s2-citta','s2-search'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('s2-save-row').style.display='none';
+  document.getElementById('s2-save-check').checked=false;
+  document.getElementById('s2-next').disabled=true;
+  // reset S3
+  document.getElementById('s3-note').value='';
+  document.getElementById('frigo-si').classList.remove('selected');
+  document.getElementById('frigo-no').classList.remove('selected');
+  document.getElementById('frigo-info').style.display='none';
+  document.getElementById('s3-frigo-req').style.display='';
+  renderFotoPrep();
+  checkS3Ready();
+  document.getElementById('s2-prep-label').textContent='Preparatore: '+prep.nome;
+  goTo('s2');
+}
+
+function apriControllo(id){
+  caricaFornPrimaControllo(id);
+}
+
+function resetPinS1(){
+  pinStato.s1={digits:'',op:null};
+  updatePinDots('s1');
+  document.getElementById('s1-pin-error').style.display='none';
+}
+
+/* ─── PIN ─────────────────────────────────── */
+function pinPress(pfx, d){
+  if(pinStato[pfx].digits.length>=4)return;
+  pinStato[pfx].digits+=String(d);
+  updatePinDots(pfx);
+  if(pinStato[pfx].digits.length===4) verificaPin(pfx);
+}
+function pinDel(pfx){
+  pinStato[pfx].digits=pinStato[pfx].digits.slice(0,-1);
+  updatePinDots(pfx);
+  document.getElementById(pfx+'-pin-error').style.display='none';
+}
+function updatePinDots(pfx){
+  var n=pinStato[pfx].digits.length;
+  for(var i=0;i<4;i++){
+    var d=document.getElementById(pfx+'d'+i);
+    if(d) d.classList.toggle('filled',i<n);
+  }
+}
+async function verificaPin(pfx){
+  var op=pinStato[pfx].op;
+  var hash=await sha256(pinStato[pfx].digits);
+
+  if(pfx==='s1'){
+    if(!op.emailFirebase){
+      var errNoFb=document.getElementById('s1-pin-error');
+      if(errNoFb){errNoFb.textContent='Operatore senza account Firebase — contatta admin';errNoFb.style.display='block';setTimeout(function(){errNoFb.style.display='none';},3000);}
+      pinStato[pfx].digits=''; updatePinDots(pfx); return;
+    }
+    try{
+      await firebase.auth().signOut();
+      await firebase.auth().signInWithEmailAndPassword(op.emailFirebase,hash);
+    }catch(e){
+      await firebase.auth().signInAnonymously().catch(function(){});
+      var errLogin=document.getElementById('s1-pin-error');
+      if(errLogin){errLogin.textContent='PIN errato';errLogin.style.display='block';setTimeout(function(){errLogin.style.display='none';},2000);}
+      pinStato[pfx].digits=''; updatePinDots(pfx); return;
+    }
+    document.getElementById('s1-pin-error').style.display='none';
+    attivaSessionePreparatore(op, new Date());
+    caricaOperatori(); // ricarica da 'operatori' (autenticato) per avere pinHash per i controlli successivi
+    return;
+  }
+
+  if(hash===op.pinHash){
+    document.getElementById(pfx+'-pin-error').style.display='none';
+    if(pfx==='s5'){
+      autenticaControllore(op);
+    }
+  } else {
+    pinStato[pfx].digits='';
+    updatePinDots(pfx);
+    var e=document.getElementById(pfx+'-pin-error');
+    e.style.display='block';
+    setTimeout(function(){e.style.display='none';},2000);
+  }
+}
+async function sha256(str){
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+
+/* ─── S2: DESTINATARIO ────────────────────── */
+function cercaPaziente(val){
+  var res=document.getElementById('s2-results');
+  if(!val||val.length<2){res.style.display='none';return;}
+  var f=PAZIENTI.filter(function(p){return p.nome.toLowerCase().includes(val.toLowerCase());});
+  if(!f.length){res.style.display='none';return;}
+  res.innerHTML=f.slice(0,8).map(function(p){
+    return '<div class="search-result-item" onclick="selezionaPaziente(\''+p.id+'\')">'
+      +'<div class="item-nome">'+escH(p.nome)+'</div>'
+      +'<div class="item-addr">'+escH([p.indirizzo,p.citta].filter(Boolean).join(', ')||'Indirizzo non registrato')+'</div>'
+      +'</div>';
+  }).join('');
+  res.style.display='block';
+}
+function selezionaPaziente(id){
+  var p=PAZIENTI.find(function(x){return x.id===id;}); if(!p)return;
+  document.getElementById('s2-search').value=p.nome;
+  document.getElementById('s2-nome').value=p.nome;
+  document.getElementById('s2-indirizzo').value=p.indirizzo||'';
+  document.getElementById('s2-citta').value=p.citta||'';
+  document.getElementById('s2-results').style.display='none';
+  document.getElementById('s2-save-row').style.display='none';
+  stato.paziente={id:p.id,nome:p.nome,indirizzo:p.indirizzo,citta:p.citta,esistente:true};
+  checkS2Ready();
+  toast(p.nome+' selezionato','ok');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.search-wrap')) document.getElementById('s2-results').style.display='none';
+});
+function checkS2Ready(){
+  var nome=(document.getElementById('s2-nome').value||'').trim();
+  document.getElementById('s2-next').disabled=!nome;
+  var esiste=PAZIENTI.find(function(p){return p.nome.toLowerCase()===nome.toLowerCase();});
+  document.getElementById('s2-save-row').style.display=(nome&&!esiste)?'flex':'none';
+}
+function goToS3(){
+  var nome=(document.getElementById('s2-nome').value||'').trim();
+  if(!nome){toast('Inserisci il destinatario','err');return;}
+  if(!stato.paziente||stato.paziente.nome!==nome){
+    stato.paziente={
+      id:null,
+      nome:nome,
+      indirizzo:(document.getElementById('s2-indirizzo').value||'').trim(),
+      citta:(document.getElementById('s2-citta').value||'').trim(),
+      esistente:false
+    };
+  } else {
+    stato.paziente.indirizzo=(document.getElementById('s2-indirizzo').value||'').trim();
+    stato.paziente.citta=(document.getElementById('s2-citta').value||'').trim();
+  }
+  stato.salvaPaziente=document.getElementById('s2-save-check').checked;
+  document.getElementById('s3-dest-label').textContent=nome;
+  goTo('s3');
+}
+
+/* ─── S3: FOTO + FRIGO ────────────────────── */
+function addFotoPrep(tipo, input){
+  if(!input.files||!input.files[0])return;
+  if(stato.foto.length>=MAX_FOTO){toast('Massimo '+MAX_FOTO+' foto totali','err');input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    comprimi(e.target.result,FOTO_PX,FOTO_Q,function(c){
+      stato.foto.push({tipo:tipo,data:c,url:null});
+      renderFotoPrep();
+      checkS3Ready();
+    });
+  };
+  reader.readAsDataURL(input.files[0]);
+  input.value='';
+}
+function removeFotoPrep(idx){
+  stato.foto.splice(idx,1);
+  renderFotoPrep();
+  checkS3Ready();
+}
+function renderFotoPrep(){
+  var et=stato.foto.filter(function(f){return f.tipo==='etichetta';});
+  var pr=stato.foto.filter(function(f){return f.tipo==='prodotti';});
+  var tot=stato.foto.length;
+
+  function thumb(f, globalIdx){
+    var src=f.data||f.url||'';
+    return '<div class="foto-thumb">'
+      +'<img src="'+src+'" alt="'+f.tipo+'">'
+      +'<button class="foto-thumb-remove" onclick="removeFotoPrep('+globalIdx+')">✕</button>'
+      +'</div>';
+  }
+
+  // etichetta
+  var etHtml='';
+  stato.foto.forEach(function(f,i){if(f.tipo==='etichetta')etHtml+=thumb(f,i);});
+  document.getElementById('s3-et-thumbs').innerHTML=etHtml;
+
+  // prodotti
+  var prHtml='';
+  stato.foto.forEach(function(f,i){if(f.tipo==='prodotti')prHtml+=thumb(f,i);});
+  document.getElementById('s3-pr-thumbs').innerHTML=prHtml;
+
+  // counter e bottoni
+  document.getElementById('s3-tot-label').textContent=tot+' / '+MAX_FOTO;
+  var pieno=tot>=MAX_FOTO;
+  document.getElementById('s3-add-et').disabled=pieno;
+  document.getElementById('s3-add-pr').disabled=pieno;
+  document.getElementById('s3-foto-msg').textContent=pieno?'Limite foto raggiunto ('+MAX_FOTO+')':'';
+}
+function setFrigo(val){
+  stato.presenzaFrigo=val;
+  stato.frigoCompilato=true;
+  document.getElementById('frigo-si').classList.toggle('selected',val===true);
+  document.getElementById('frigo-no').classList.toggle('selected',val===false);
+  document.getElementById('s3-frigo-req').style.display='none';
+  document.getElementById('frigo-info').style.display=val?'block':'none';
+  checkS3Ready();
+}
+function checkS3Ready(){
+  var etOk=stato.foto.some(function(f){return f.tipo==='etichetta';});
+  var prOk=stato.foto.some(function(f){return f.tipo==='prodotti';});
+  var frigoOk=stato.frigoCompilato;
+  document.getElementById('s3-next').disabled=!(etOk&&prOk&&frigoOk);
+}
+function goToS4(){
+  stato.note=(document.getElementById('s3-note').value||'').trim();
+  renderS4();
+  goTo('s4');
+}
+
+/* ─── S4: RIEPILOGO ───────────────────────── */
+function renderS4(){
+  var modifica=stato.modalitaModifica;
+  document.getElementById('s4-title').textContent=modifica?'Modifica preparazione':'Riepilogo';
+  document.getElementById('s4-sub').textContent=modifica?'Revisione prima di aggiornare':'Verifica prima di salvare';
+  document.getElementById('s4-azioni-normal').style.display=modifica?'none':'block';
+  document.getElementById('s4-azioni-modifica').style.display=modifica?'block':'none';
+
+  var p=stato.paziente;
+  var h='';
+  h+=rie('Preparatore',escH(stato.preparatore?stato.preparatore.nome:'—'));
+  h+=rie('Paziente',escH(p?p.nome:'—'));
+  h+=rie('Indirizzo',escH(p?[p.indirizzo,p.citta].filter(Boolean).join(', ')||'—':'—'));
+  h+=rie('Frigo',stato.presenzaFrigo?'<span class="badge badge-frigo">🌡️ Sì</span>':'<span class="badge badge-ok">✓ Ambiente</span>');
+  if(stato.note) h+=rie('Note',escH(stato.note));
+  document.getElementById('s4-riepilogo').innerHTML=h;
+
+  // miniature foto
+  var thumbs=stato.foto.map(function(f){
+    var src=f.data||f.url||'';
+    return '<div class="foto-thumb"><img src="'+src+'" alt="'+f.tipo+'">'
+      +'<div class="foto-thumb-badge">'+escH(f.tipo==='etichetta'?'ET':'PR')+'</div></div>';
+  }).join('');
+  document.getElementById('s4-foto-thumbs').innerHTML=thumbs;
+  document.getElementById('s4-foto-card').style.display=stato.foto.length?'block':'none';
+}
+function rie(l,v){
+  return '<div class="rie-row"><div class="rie-label">'+escH(l)+'</div><div class="rie-val">'+v+'</div></div>';
+}
+
+async function uploadFotoOrThrow(base64, path) {
+  if(!storage || !base64) throw new Error('Storage non disponibile');
+  var blob = dataURLtoBlob(base64);
+  var ref = storage.ref(path);
+  var snap = await ref.put(blob,{contentType:'image/jpeg'});
+  return await snap.ref.getDownloadURL();
+}
+
+/* ─── SALVA FORNITURA ─────────────────────── */
+async function salvaFornitura(callback){
+  if(!db){toast('Offline — impossibile salvare','err');return;}
+  showLoading('Salvataggio fornitura...');
+  stato.numero=NUMERO_SEQ++;
+  // salva paziente nuovo se richiesto
+  if(stato.salvaPaziente&&stato.paziente&&!stato.paziente.esistente){
+    try{
+      var pts=stato.paziente.nome.split(' ');
+      var ref=await db.collection('pazienti').add({
+        cognome:pts[0]||'',nome:pts.slice(1).join(' ')||'',
+        indirizzo:stato.paziente.indirizzo,citta:stato.paziente.citta
+      });
+      stato.paziente.id=ref.id;
+      PAZIENTI.push({id:ref.id,nome:stato.paziente.nome,indirizzo:stato.paziente.indirizzo,citta:stato.paziente.citta});
+    }catch(e){console.warn('salva paziente:',e);}
+  }
+  // upload foto
+  var fotoSalvate=[];
+  for(var i=0;i<stato.foto.length;i++){
+    var f=stato.foto[i];
+    if(f.url&&!f.data){fotoSalvate.push({tipo:f.tipo,url:f.url});continue;}
+    if(f.data){
+      try{
+        var url=await uploadFotoOrThrow(f.data,'foto/'+Date.now()+'_'+i+'.jpg');
+        fotoSalvate.push({tipo:f.tipo,url:url});
+      }catch(e){
+        hideLoading();
+        console.warn('upload foto:',e);
+        toast('Errore upload foto. Verifica Storage Firebase e riprova.','err');
+        return;
+      }
+    }
+  }
+  try{
+    var docRef=await db.collection('qms_consegne').add({
+      numero:stato.numero,
+      stato:STATO_PRONTA,
+      tsPreparazione:stato.tsPreparazione||new Date(),
+      preparatore:stato.preparatore,
+      paziente:stato.paziente,
+      foto:fotoSalvate,
+      presenzaFrigo:stato.presenzaFrigo,
+      note:stato.note||''
+    });
+    stato.firestoreId=docRef.id;
+    var rec=Object.assign({_id:docRef.id},{numero:stato.numero,stato:STATO_PRONTA,
+      tsPreparazione:stato.tsPreparazione||new Date(),
+      preparatore:stato.preparatore,paziente:stato.paziente,
+      foto:fotoSalvate,presenzaFrigo:stato.presenzaFrigo,note:stato.note||''});
+    CONSEGNE.unshift(rec);
+    hideLoading();
+    toast('Fornitura salvata — '+fmt(stato.numero),'ok');
+    if(callback) callback(docRef.id, rec);
+  }catch(e){
+    hideLoading();
+    toast('Errore salvataggio: '+e.message,'err');
+  }
+}
+
+async function aggiornaFornitura(){
+  if(!db||!stato.firestoreId){toast('Impossibile aggiornare','err');return;}
+  showLoading('Aggiornamento preparazione...');
+  // upload nuove foto
+  var fotoSalvate=[];
+  for(var i=0;i<stato.foto.length;i++){
+    var f=stato.foto[i];
+    if(f.url&&!f.data){fotoSalvate.push({tipo:f.tipo,url:f.url});continue;}
+    if(f.data){
+      try{
+        var url=await uploadFotoOrThrow(f.data,'foto/'+Date.now()+'_'+i+'.jpg');
+        fotoSalvate.push({tipo:f.tipo,url:url});
+      }catch(e){
+        hideLoading();
+        console.warn('upload foto update:',e);
+        toast('Errore upload foto. Verifica Storage Firebase e riprova.','err');
+        return;
+      }
+    }
+  }
+  try{
+    await db.collection('qms_consegne').doc(stato.firestoreId).update({
+      paziente:stato.paziente,
+      foto:fotoSalvate,
+      presenzaFrigo:stato.presenzaFrigo,
+      note:stato.note||'',
+      tsUltimaModifica:new Date(),
+      modificatoDa:stato.preparatore
+    });
+    // aggiorna cache locale
+    var cached=CONSEGNE.find(function(c){return c._id===stato.firestoreId;});
+    if(cached){
+      Object.assign(cached,{paziente:stato.paziente,foto:fotoSalvate,presenzaFrigo:stato.presenzaFrigo,note:stato.note||''});
+      FORN=cached;
+    }
+    hideLoading();
+    toast('Preparazione aggiornata','ok');
+    stato.modalitaModifica=false;
+    // aggiorna S5 e torna
+    if(FORN) caricaFornPrimaControllo(stato.firestoreId);
+  }catch(e){
+    hideLoading();
+    toast('Errore aggiornamento: '+e.message,'err');
+  }
+}
+
+function salvaEProssima(){
+  salvaFornitura(function(){
+    mostraPronte();
+    iniziaNuovaPrep();
+  });
+}
+function salvaEProsegui(){
+  salvaFornitura(function(id){
+    caricaFornPrimaControllo(id);
+  });
+}
+function salvaEdEsci(fase){
+  if(fase==='prep'){
+    salvaFornitura(function(id){
+      document.getElementById('s7-title').textContent='Fornitura salvata';
+      document.getElementById('s7-sub').textContent='Stato: PRONTA PER CONTROLLO. Il record è salvato in Firebase.';
+      goTo('s7');
+    });
+  } else {
+    // ctrl: approva prima, poi esci
+    approvaFornitura(function(){
+      document.getElementById('s7-title').textContent='Controllo completato';
+      document.getElementById('s7-sub').textContent='Stato: IN CONSEGNA. Il record è salvato in Firebase.';
+      goTo('s7');
+    });
+  }
+}
+function annullaModifica(){
+  stato.modalitaModifica=false;
+  // ricarica FORN da cache e torna a S5
+  if(FORN) caricaFornPrimaControllo(FORN._id);
+  else goTo('s0');
+}
+
+/* ─── S5: CONTROLLO ───────────────────────── */
+function caricaFornPrimaControllo(id){
+  FORN=CONSEGNE.find(function(c){return c._id===id;});
+  if(!FORN){
+    if(db){
+      showLoading('Caricamento fornitura...');
+      db.collection('qms_consegne').doc(id).get().then(function(d){
+        hideLoading();
+        if(!d.exists){toast('Fornitura non trovata','err');return;}
+        FORN=Object.assign({_id:d.id},d.data());
+        CONSEGNE.push(FORN);
+        initS5();
+      }).catch(function(){hideLoading();toast('Errore caricamento','err');});
+    }else{toast('Fornitura non trovata','err');}
+    return;
+  }
+  initS5();
+}
+
+function initS5(){
+  // reset S5 state
+  stato.controllore=null;
+  stato.consegnante=null;
+  stato.dispensatoreAvvisatoFrigo=null;
+  stato.firestoreId=FORN._id;
+  consSelezionato=null;
+
+  // init pool foto S5 da URL esistenti
+  stato.fotoS5=normFoto(FORN).map(function(f){return {tipo:f.tipo,url:f.url,data:null};});
+
+  // label
+  document.getElementById('s5-label').textContent=fmt(FORN.numero);
+
+  // riepilogo preparazione
+  var p=FORN.paziente||{};
+  var h='';
+  h+=rie('Preparatore',escH(FORN.preparatore?FORN.preparatore.nome:'—'));
+  h+=rie('Paziente',escH(p.nome||'—'));
+  h+=rie('Indirizzo',escH([p.indirizzo,p.citta].filter(Boolean).join(', ')||'—'));
+  h+=rie('Frigo',(FORN.presenzaFrigo||FORN.frigo)?'<span class="badge badge-frigo">🌡️ Sì</span>':'<span class="badge badge-ok">✓ Ambiente</span>');
+  if(FORN.note) h+=rie('Note',escH(FORN.note));
+  document.getElementById('s5-prep-rie').innerHTML=h;
+
+  // frigo warning
+  var hasFrigo=!!(FORN.presenzaFrigo||FORN.frigo);
+  document.getElementById('s5-frigo-warn').style.display=hasFrigo?'block':'none';
+  if(hasFrigo){
+    document.getElementById('frigo-avv-si').classList.remove('sel');
+    document.getElementById('frigo-avv-no').classList.remove('sel');
+  }
+
+  // reset pin e controllore
+  pinStato.s5={digits:'',op:null};
+  document.getElementById('s5-pin-card').style.display='none';
+  document.getElementById('s5-cons-card').style.display='none';
+  document.getElementById('s5-azioni-card').style.display='none';
+  document.getElementById('s5-warn-stesso').style.display='none';
+  document.getElementById('s5-note').value='';
+  document.getElementById('s5-esterno-field').style.display='none';
+  document.getElementById('s5-btn-approva').disabled=true;
+
+  // render op grid
+  renderOpGrid('s5-op-grid','s5');
+
+  // render foto
+  renderFotoS5();
+
+  goTo('s5');
+}
+
+/* normalizza foto da record (gestisce formati vecchi e nuovi) */
+function normFoto(rec){
+  if(rec.foto&&Array.isArray(rec.foto)) return rec.foto;
+  var out=[];
+  if(rec.fotoEtichettaUrl) out.push({tipo:'etichetta',url:rec.fotoEtichettaUrl});
+  if(rec.fotoProdottiUrl){
+    if(Array.isArray(rec.fotoProdottiUrl)) rec.fotoProdottiUrl.forEach(function(u){out.push({tipo:'prodotti',url:u});});
+    else out.push({tipo:'prodotti',url:rec.fotoProdottiUrl});
+  }
+  return out;
+}
+
+function addFotoS5(tipo, input){
+  if(!input.files||!input.files[0])return;
+  if(stato.fotoS5.length>=MAX_FOTO){toast('Massimo '+MAX_FOTO+' foto totali','err');input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    comprimi(e.target.result,FOTO_PX,FOTO_Q,function(c){
+      stato.fotoS5.push({tipo:tipo,data:c,url:null});
+      renderFotoS5();
+    });
+  };
+  reader.readAsDataURL(input.files[0]);
+  input.value='';
+}
+function removeFotoS5(idx){
+  stato.fotoS5.splice(idx,1);
+  renderFotoS5();
+}
+function renderFotoS5(){
+  var tot=stato.fotoS5.length;
+  document.getElementById('s5-tot-label').textContent=tot+' / '+MAX_FOTO;
+  var pieno=tot>=MAX_FOTO;
+  document.getElementById('s5-add-et').disabled=pieno;
+  document.getElementById('s5-add-pr').disabled=pieno;
+
+  function thumb(f, i){
+    var src=f.data||f.url||'';
+    var badge=f.url&&!f.data?'<div class="foto-thumb-badge">Orig</div>':'';
+    return '<div class="foto-thumb"><img src="'+src+'" alt="'+f.tipo+'">'
+      +badge
+      +'<button class="foto-thumb-remove" onclick="removeFotoS5('+i+')">✕</button>'
+      +'</div>';
+  }
+
+  var etH='',prH='';
+  stato.fotoS5.forEach(function(f,i){
+    if(f.tipo==='etichetta') etH+=thumb(f,i);
+    else prH+=thumb(f,i);
+  });
+  document.getElementById('s5-et-thumbs').innerHTML=etH;
+  document.getElementById('s5-pr-thumbs').innerHTML=prH;
+}
+
+function setFrigoAvvisato(val){
+  stato.dispensatoreAvvisatoFrigo=val;
+  document.getElementById('frigo-avv-si').classList.toggle('sel',val===true);
+  document.getElementById('frigo-avv-no').classList.toggle('sel',val===false);
+  checkS5Ready();
+}
+
+function renderConsegnante(){
+  var el=document.getElementById('s5-cons-list');
+  var html=OPERATORI.map(function(op){
+    return '<div class="consegnante-item" id="cons-'+op.id+'" onclick="selCons(\''+op.id+'\',false)">'
+      +'<div class="c-sigla">'+escH(op.id)+'</div>'
+      +'<div><div class="c-nome">'+escH(op.nome)+'</div><div class="c-ruolo">'+escH(op.ruolo)+'</div></div>'
+      +'<div class="c-check">✓</div></div>';
+  });
+  html.push('<div class="consegnante-item consegnante-esterno" id="cons-esterno" onclick="selCons(\'esterno\',true)">'
+    +'<div class="c-sigla" style="color:var(--gray-m);">+</div>'
+    +'<div><div class="c-nome">Esterno / Corriere</div><div class="c-ruolo">Inserisci nome manualmente</div></div>'
+    +'<div class="c-check">✓</div></div>');
+  el.innerHTML=html.join('');
+}
+function selCons(id, esterno){
+  consSelezionato=id;
+  document.querySelectorAll('.consegnante-item').forEach(function(c){c.classList.remove('selected');});
+  var t=document.getElementById('cons-'+id); if(t) t.classList.add('selected');
+  var ext=document.getElementById('s5-esterno-field');
+  ext.style.display=esterno?'block':'none';
+  if(!esterno){
+    var op=OPERATORI.find(function(o){return o.id===id;});
+    stato.consegnante={nome:op?op.nome:id,esterno:false};
+  } else {
+    stato.consegnante=null;
+  }
+  checkS5Ready();
+}
+function checkS5Ready(){
+  var hasFrigo=!!(FORN&&(FORN.presenzaFrigo||FORN.frigo));
+  var frigoOk=!hasFrigo||stato.dispensatoreAvvisatoFrigo===true;
+  var contOk=!!stato.controllore;
+  var consOk=false;
+  if(consSelezionato&&consSelezionato!=='esterno') consOk=true;
+  if(consSelezionato==='esterno'){
+    var nome=(document.getElementById('s5-esterno-nome').value||'').trim();
+    consOk=nome.length>0;
+  }
+  document.getElementById('s5-btn-approva').disabled=!(frigoOk&&contOk&&consOk);
+}
+function tornaIndietroS5(){
+  mostraPronte();
+  goTo('s0');
+}
+function modificaPreparazione(){
+  if(!FORN){toast('Fornitura non disponibile','err');return;}
+  stato.modalitaModifica=true;
+  stato.firestoreId=FORN._id;
+  // precompila stato da FORN
+  stato.preparatore=FORN.preparatore||stato.preparatore;
+  var p=FORN.paziente||{};
+  stato.paziente={id:p.id||null,nome:p.nome||'',indirizzo:p.indirizzo||'',citta:p.citta||'',esistente:!!p.id};
+  stato.foto=normFoto(FORN).map(function(f){return {tipo:f.tipo,url:f.url,data:null};});
+  stato.presenzaFrigo=!!(FORN.presenzaFrigo||FORN.frigo);
+  stato.frigoCompilato=true;
+  stato.note=FORN.note||'';
+  // precompila form S2
+  document.getElementById('s2-nome').value=stato.paziente.nome;
+  document.getElementById('s2-indirizzo').value=stato.paziente.indirizzo;
+  document.getElementById('s2-citta').value=stato.paziente.citta;
+  document.getElementById('s2-search').value='';
+  document.getElementById('s2-save-row').style.display='none';
+  document.getElementById('s2-next').disabled=false;
+  document.getElementById('s2-prep-label').textContent='Preparatore: '+(stato.preparatore?stato.preparatore.nome:'—');
+  // precompila form S3
+  document.getElementById('s3-note').value=stato.note;
+  document.getElementById('frigo-si').classList.toggle('selected',stato.presenzaFrigo===true);
+  document.getElementById('frigo-no').classList.toggle('selected',stato.presenzaFrigo===false);
+  document.getElementById('frigo-info').style.display=stato.presenzaFrigo?'block':'none';
+  document.getElementById('s3-frigo-req').style.display='none';
+  renderFotoPrep();
+  checkS3Ready();
+  document.getElementById('s3-dest-label').textContent=stato.paziente.nome;
+  goTo('s2');
+}
+
+async function approvaFornitura(callback){
+  if(!stato.controllore){toast('Seleziona il controllore','err');return;}
+  if(!consSelezionato){toast('Seleziona il consegnante','err');return;}
+  if(consSelezionato==='esterno'){
+    var ne=(document.getElementById('s5-esterno-nome').value||'').trim();
+    if(!ne){toast('Inserisci nome consegnante','err');return;}
+    stato.consegnante={nome:ne,esterno:true};
+  }
+  var hasFrigo=!!(FORN&&(FORN.presenzaFrigo||FORN.frigo));
+  if(hasFrigo&&stato.dispensatoreAvvisatoFrigo!==true){
+    toast('Conferma di aver avvisato il consegnante (frigo)','err');return;
+  }
+  if(!db){toast('Offline — impossibile salvare','err');return;}
+  showLoading('Approvazione in corso...');
+  // upload nuove foto S5
+  var fotoFinali=[];
+  for(var i=0;i<stato.fotoS5.length;i++){
+    var f=stato.fotoS5[i];
+    if(f.url&&!f.data){fotoFinali.push({tipo:f.tipo,url:f.url});continue;}
+    if(f.data){
+      try{
+        var url=await uploadFotoOrThrow(f.data,'foto/ctrl_'+Date.now()+'_'+i+'.jpg');
+        fotoFinali.push({tipo:f.tipo,url:url});
+      }catch(e){
+        hideLoading();
+        console.warn('upload foto controllo:',e);
+        toast('Errore upload foto controllo. Verifica Storage Firebase e riprova.','err');
+        return;
+      }
+    }
+  }
+  try{
+    var update={
+      stato:STATO_CONSEGNA,
+      tsControllo:new Date(),
+      controllore:stato.controllore,
+      consegnante:stato.consegnante,
+      dispensatoreAvvisatoFrigo:stato.dispensatoreAvvisatoFrigo,
+      noteControllo:(document.getElementById('s5-note').value||'').trim(),
+      fotoControllo:fotoFinali
+    };
+    await db.collection('qms_consegne').doc(FORN._id).update(update);
+    var cached=CONSEGNE.find(function(c){return c._id===FORN._id;});
+    if(cached) Object.assign(cached,update);
+    hideLoading();
+    toast('✓ In consegna — '+fmt(FORN.numero),'ok');
+    if(callback){ callback(); }
+    else { mostraPronte(); goTo('s0'); }
+  }catch(e){
+    hideLoading();
+    toast('Errore: '+e.message,'err');
+  }
+}
+
+/* ─── S6: STORICO ─────────────────────────── */
+function goToStorico(){
+  if(db){
+    showLoading('Caricamento storico...');
+    db.collection('qms_consegne').orderBy('tsPreparazione','desc').limit(300).get()
+      .then(function(s){
+        CONSEGNE=[];
+        s.forEach(function(d){CONSEGNE.push(Object.assign({_id:d.id},d.data()));});
+        hideLoading(); renderStorico(); goTo('s6');
+      }).catch(function(){hideLoading(); renderStorico(); goTo('s6');});
+  } else { renderStorico(); goTo('s6'); }
+}
+function renderStorico(){
+  var filterEl=document.getElementById('s6-search');
+  var filter=(filterEl?filterEl.value:'').trim().toLowerCase();
+
+  var lista=CONSEGNE.filter(function(c){
+    if(!filter) return true;
+    var nome=(c.paziente?c.paziente.nome:'').toLowerCase();
+    return nome.indexOf(filter)!==-1;
+  });
+
+  function btnsStorico(c){
+    var html='';
+    var mostraVerifica=(c.stato===STATO_CONSEGNA||c.stato===STATO_VERIFICA);
+    var mostraProblema=(c.stato===STATO_CONSEGNA||c.stato===STATO_VERIFICA);
+    var mostraRimuoviProb=(c.stato===STATO_PROBLEMA);
+    if(mostraVerifica){
+      var v=c.verificaEsitoOk;
+      html+='<button class="verifica-toggle '+(v?'verde':'')+'" title="Verifica esito" '
+        +'onclick="toggleVerifica(\''+c._id+'\',event)">'+(v?'✅':'⬜')+'</button>';
+    }
+    if(mostraProblema&&!c.verificaEsitoOk){
+      html+='<button class="verifica-toggle problema" title="Segnala problema" '
+        +'onclick="apriProblema(\''+c._id+'\',event)">⚠️</button>';
+    }
+    if(mostraRimuoviProb){
+      html+='<button class="verifica-toggle problema" title="Rimuovi problema" '
+        +'onclick="rimuoviProblema(\''+c._id+'\',event)">🔄</button>';
+    }
+    if(c.stato!==STATO_CANCELLATA){
+      html+='<button class="verifica-toggle" title="Annulla consegna" '
+        +'onclick="apriCancellazione(\''+c._id+'\',event)">🗑️</button>';
+    }
+    return html;
+  }
+
+  var html='';
+  lista.forEach(function(c){
+    var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+    var dataStr=ts?ts.toLocaleDateString('it-CH',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})+' '+ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—';
+    var pazNome=escH(c.paziente?c.paziente.nome:'—');
+    var prep=escH(c.preparatore?c.preparatore.nome:'—');
+    var ctrl=c.controllore?(' → 👀 '+escH(c.controllore.nome)):'';
+    var cons=escH(c.consegnante?c.consegnante.nome+(c.consegnante.esterno?' (ext)':''):'—');
+    var frigo=(c.presenzaFrigo||c.frigo)?'<span class="badge badge-frigo">🌡️ Frigo</span>':'';
+    var cancHtml=c.cancellataMotivo?'<div style="margin-top:6px;font-size:12px;color:var(--red-dark);">📝 Motivo cancellazione: '+escH(c.cancellataMotivo)+'</div>':'';
+
+    // sezione foto
+    var foto=normFoto(c).filter(function(f){return f.url;});
+    var fotoHtml='';
+    if(foto.length){
+      foto.forEach(function(f){
+        fotoHtml+='<a href="'+f.url+'" target="_blank" style="display:inline-block;margin:4px;">'
+          +'<img src="'+f.url+'" style="height:72px;width:72px;object-fit:cover;border-radius:7px;border:1px solid var(--gray-l);" loading="lazy" alt="'+(f.tipo==='etichetta'?'Etichetta':'Prodotti')+'">'
+          +'</a>';
+      });
+    } else {
+      fotoHtml='<div style="font-size:12px;color:var(--gray-m);padding:4px 0;">Nessuna foto allegata</div>';
+    }
+
+    html+='<div class="storico-item" id="si-'+c._id+'">'
+      +'<div class="storico-item-main" onclick="toggleFoto(\''+c._id+'\')">'
+        +'<div class="storico-info">'
+          +'<div class="storico-data">📅 '+escH(dataStr)+' · '+escH(fmt(c.numero))+'</div>'
+          +'<div class="storico-paziente">'+pazNome+'</div>'
+          +'<div class="storico-operatori">🔧 '+prep+ctrl+' → 🚗 '+cons+' '+frigo+'</div>'
+          +'<div style="margin-top:5px;">'+statoB(c)+'</div>'
+          +cancHtml
+        +'</div>'
+        +'<div class="storico-btns">'+btnsStorico(c)+'</div>'
+      +'</div>'
+      +'<div id="foto-'+c._id+'" style="display:none;padding:10px 12px;border-top:1px solid var(--gray-l);background:var(--gray-ll);">'
+        +fotoHtml
+        +'<div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+        +'<button onclick="generaPdfFromRecord(\''+c._id+'\')" class="btn btn-ghost btn-sm" style="font-size:12px;padding:6px 12px;">📄 PDF</button>'
+        +'<button onclick="apriModificaNome(\''+c._id+'\')" class="btn btn-ghost btn-sm" style="font-size:12px;padding:6px 12px;">✏️ Modifica nome</button>'
+        +'</div>'
+        +'<div id="edit-nome-'+c._id+'" style="display:none;margin-top:10px;">'
+        +'<div style="font-size:12px;color:var(--gray-m);margin-bottom:4px;">Nome paziente</div>'
+        +'<div style="display:flex;gap:6px;align-items:center;">'
+        +'<input id="edit-nome-input-'+c._id+'" type="text" value="'+pazNome+'" style="flex:1;padding:6px 10px;border:1px solid var(--gray-l);border-radius:6px;font-size:14px;" />'
+        +'<button onclick="salvaNomePaziente(\''+c._id+'\')" class="btn btn-sm" style="font-size:12px;padding:6px 12px;background:var(--green-dark);color:#fff;">Salva</button>'
+        +'<button onclick="chiudiModificaNome(\''+c._id+'\')" class="btn btn-ghost btn-sm" style="font-size:12px;padding:6px 10px;">✕</button>'
+        +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  });
+
+  document.getElementById('list-storico').innerHTML=html||'<div style="padding:12px;color:var(--gray-m);font-size:13px;">Nessuna consegna trovata</div>';
+}
+
+function toggleFoto(id){
+  var el=document.getElementById('foto-'+id); if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function apriModificaNome(id){
+  var el=document.getElementById('edit-nome-'+id); if(!el)return;
+  el.style.display='block';
+  var inp=document.getElementById('edit-nome-input-'+id); if(inp)inp.focus();
+}
+function chiudiModificaNome(id){
+  var el=document.getElementById('edit-nome-'+id); if(!el)return;
+  el.style.display='none';
+}
+async function salvaNomePaziente(id){
+  var inp=document.getElementById('edit-nome-input-'+id); if(!inp)return;
+  var nuovoNome=inp.value.trim(); if(!nuovoNome){toast('Inserisci un nome valido','err');return;}
+  var c=CONSEGNE.find(function(x){return x._id===id;}); if(!c)return;
+  if(!db){toast('Offline','err');return;}
+  try{
+    showLoading('Salvataggio...');
+    await db.collection('qms_consegne').doc(id).update({'paziente.nome':nuovoNome});
+    if(c.paziente&&c.paziente.id){
+      var pts=nuovoNome.split(' ');
+      await db.collection('pazienti').doc(c.paziente.id).update({
+        cognome:pts[0]||'',
+        nome:pts.slice(1).join(' ')||''
+      });
+      var pp=PAZIENTI.find(function(x){return x.id===c.paziente.id;});
+      if(pp) pp.nome=nuovoNome;
+    }
+    if(c.paziente) c.paziente.nome=nuovoNome;
+    hideLoading();
+    chiudiModificaNome(id);
+    renderStorico();
+    toast('Nome aggiornato','ok');
+  }catch(e){
+    hideLoading();
+    toast('Errore: '+e.message,'err');
+  }
+}
+
+function statoB(c){
+  if(c.stato===STATO_PRONTA) return '<span class="badge badge-pronta">⏳ Pronta</span>';
+  if(c.stato===STATO_CONSEGNA) return '<span class="badge badge-consegna">🚗 In consegna</span>';
+  if(c.stato===STATO_VERIFICA) return '<span class="badge badge-verificata">✓ Verificata</span>';
+  if(c.stato===STATO_PROBLEMA) return '<span class="badge badge-problema">⚠️ Problema</span>';
+  if(c.stato===STATO_CANCELLATA) return '<span class="badge" style="background:#FDECEA;color:var(--red-dark);">🗑️ Cancellata</span>';
+  return '<span class="badge" style="background:var(--gray-l);color:#555;">'+escH(c.stato||'—')+'</span>';
+}
+function buildCard(c){
+  var ts=c.tsPreparazione?(c.tsPreparazione.toDate?c.tsPreparazione.toDate():new Date(c.tsPreparazione)):null;
+  var fb=(c.presenzaFrigo||c.frigo)?'<span class="badge badge-frigo">🌡️ Frigo</span>':'<span class="badge badge-ok">✓ Amb.</span>';
+  var fotoHtml='';
+  normFoto(c).forEach(function(f,i){
+    if(f.url) fotoHtml+='<a href="'+f.url+'" target="_blank" style="color:var(--blue);font-size:12px;font-weight:600;margin-right:6px;">'+(f.tipo==='etichetta'?'📦':'💊')+'</a>';
+  });
+  return '<div class="mc-card">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
+    +'<span style="font-family:var(--mono);font-weight:700;font-size:13px;color:var(--green-dark);">'+escH(fmt(c.numero))+'</span>'
+    +statoB(c)+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">📅 '+(ts?ts.toLocaleDateString('it-CH')+' '+ts.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'}):'—')+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">👤 '+escH(c.paziente?c.paziente.nome:'—')+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">🔧 '+escH(c.preparatore?c.preparatore.nome:'—')+(c.controllore?' → 👀 '+escH(c.controllore.nome):'')+'</div>'
+    +'<div style="font-size:12px;color:var(--gray-m);">🚗 '+escH(c.consegnante?c.consegnante.nome:'—')+' '+fb+'</div>'
+    +(c.note?'<div style="font-size:11px;color:var(--gray-m);font-style:italic;margin-top:3px;">📝 '+escH(c.note)+'</div>':'')
+    +(c.cancellataMotivo?'<div style="font-size:11px;color:var(--red-dark);margin-top:3px;">🗑️ '+escH(c.cancellataMotivo)+'</div>':'')
+    +(c.problemaNota?'<div style="font-size:11px;color:var(--red-dark);margin-top:3px;">⚠️ '+escH(c.problemaNota)+'</div>':'')
+    +(fotoHtml?'<div style="margin-top:6px;">'+fotoHtml+'</div>':'')
+    +'<div style="margin-top:8px;">'
+    +'<button onclick="generaPdfFromRecord(\''+c._id+'\')" class="btn btn-ghost btn-sm" style="font-size:12px;padding:6px 12px;">📄 PDF</button>'
+    +'</div>'
+    +'</div>';
+}
+
+/* ─── VERIFICA GIORNO DOPO ────────────────── */
+function toggleVerifica(id, e){
+  e.stopPropagation();
+  var c=CONSEGNE.find(function(x){return x._id===id;}); if(!c)return;
+  if(!db){toast('Offline','err');return;}
+  var newVal=!c.verificaEsitoOk;
+  var update=newVal
+    ?{verificaEsitoOk:true,verificaEsitoAt:new Date(),stato:STATO_VERIFICA}
+    :{verificaEsitoOk:false,verificaEsitoAt:null,verificaEsitoBy:null,stato:STATO_CONSEGNA};
+  db.collection('qms_consegne').doc(id).update(update).then(function(){
+    Object.assign(c,update);
+    renderStorico();
+    toast(newVal?'Consegna verificata ✓':'Verifica rimossa','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+function apriProblema(id, e){
+  e.stopPropagation();
+  document.getElementById('modal-prob-id').value=id;
+  document.getElementById('modal-prob-nota').value='';
+  document.getElementById('modal-problema').classList.add('show');
+}
+function salvaProblema(){
+  var id=document.getElementById('modal-prob-id').value;
+  var nota=(document.getElementById('modal-prob-nota').value||'').trim();
+  if(!nota){toast('Inserisci la descrizione del problema','err');return;}
+  if(!db){toast('Offline','err');return;}
+  db.collection('qms_consegne').doc(id).update({
+    stato:STATO_PROBLEMA, problemaNota:nota, problemaAt:new Date()
+  }).then(function(){
+    var c=CONSEGNE.find(function(x){return x._id===id;});
+    if(c){c.stato=STATO_PROBLEMA;c.problemaNota=nota;}
+    chiudiModal('modal-problema');
+    renderStorico();
+    toast('Problema segnalato','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+
+function apriCancellazione(id, e){
+  e.stopPropagation();
+  document.getElementById('modal-canc-id').value=id;
+  document.getElementById('modal-canc-nota').value='';
+  document.getElementById('modal-cancellazione').classList.add('show');
+}
+
+function salvaCancellazione(){
+  var id=document.getElementById('modal-canc-id').value;
+  var nota=(document.getElementById('modal-canc-nota').value||'').trim();
+  if(!nota){toast('Inserisci il motivo della cancellazione','err');return;}
+  if(!db){toast('Offline','err');return;}
+  db.collection('qms_consegne').doc(id).update({
+    stato:STATO_CANCELLATA,
+    cancellataAt:new Date(),
+    cancellataMotivo:nota,
+    verificaEsitoOk:false,
+    verificaEsitoAt:null,
+    verificaEsitoBy:null,
+    problemaNota:null,
+    problemaAt:null
+  }).then(function(){
+    var c=CONSEGNE.find(function(x){return x._id===id;});
+    if(c){
+      c.stato=STATO_CANCELLATA;
+      c.cancellataAt=new Date();
+      c.cancellataMotivo=nota;
+      c.verificaEsitoOk=false;
+      c.verificaEsitoAt=null;
+      c.verificaEsitoBy=null;
+      c.problemaNota=null;
+      c.problemaAt=null;
+    }
+    chiudiModal('modal-cancellazione');
+    renderStorico();
+    toast('Consegna cancellata','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+
+function rimuoviProblema(id, e){
+  e.stopPropagation();
+  if(!db){toast('Offline','err');return;}
+  var c=CONSEGNE.find(function(x){return x._id===id;}); if(!c)return;
+  var statoRipristino=c.verificaEsitoOk?STATO_VERIFICA:STATO_CONSEGNA;
+  db.collection('qms_consegne').doc(id).update({
+    stato:statoRipristino, problemaNota:null, problemaAt:null
+  }).then(function(){
+    c.stato=statoRipristino; c.problemaNota=null;
+    renderStorico();
+    toast('Problema rimosso','ok');
+  }).catch(function(err){toast('Errore: '+err.message,'err');});
+}
+
+/* ─── S7: USCITA ──────────────────────────── */
+function chiudiApp(){
+  try{window.close();}catch(e){}
+  // fallback: mostra messaggio
+  document.getElementById('s7-sub').textContent='Puoi chiudere questa scheda del browser manualmente.';
+}
+function tornaHome(){
+  mostraPronte();
+  if(hasLoggedOperator()) startSessionTimer();
+  goTo('s0');
+}
+
+/* ─── PDF OPZIONALE ───────────────────────── */
+function generaPdfFromRecord(id){
+  var c=CONSEGNE.find(function(x){return x._id===id;});
+  if(!c){toast('Dati non disponibili','err');return;}
+  try{
+    var jsPDF=window.jspdf?window.jspdf.jsPDF:jspdf.jsPDF;
+    var doc=new jsPDF({unit:'mm',format:'a4'});
+    var W=210,mg=15,cw=W-mg*2;
+    var C={gd:[45,106,79],gm:[64,145,108],gl:[216,237,223],gy:[236,239,241],bk:[26,25,22],gm2:[100,110,115]};
+    // header
+    doc.setFillColor.apply(doc,C.gd);doc.rect(0,0,W,22,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
+    doc.text('Consegna Domicilio',mg,9);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text('Farmacia Ascona SA  |  FA-SQ-CD-02',mg,16);
+    doc.text(fmt(c.numero),W-mg,9,{align:'right'});
+    doc.text('Generato: '+new Date().toLocaleDateString('it-CH'),W-mg,16,{align:'right'});
+    var y=28;
+    var p=c.paziente||{};
+    var righe=[
+      ['Stato', c.stato||'—'],
+      ['Destinatario',p.nome||'—'],
+      ['Indirizzo',[p.indirizzo,p.citta].filter(Boolean).join(', ')||'—'],
+      ['Preparatore',(c.preparatore?c.preparatore.nome:'—')],
+      ['Preparato',fmtTime(c.tsPreparazione)],
+      ['Controllore',(c.controllore?c.controllore.nome:'—')],
+      ['Controllato',fmtTime(c.tsControllo)],
+      ['Consegnante',(c.consegnante?c.consegnante.nome+(c.consegnante.esterno?' (ext)':''):'—')],
+      ['Frigo',(c.presenzaFrigo||c.frigo)?'SÌ — catena del freddo':'No']
+    ];
+    if(c.note) righe.push(['Note prep.',c.note]);
+    if(c.noteControllo) righe.push(['Note ctrl.',c.noteControllo]);
+    if(c.problemaNota) righe.push(['Problema',c.problemaNota]);
+    doc.setFillColor.apply(doc,C.gl);doc.rect(mg,y,cw,8,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor.apply(doc,C.gd);
+    doc.text('DATI CONSEGNA',mg+3,y+5.5);y+=11;
+    righe.forEach(function(r,i){
+      doc.setFillColor.apply(doc,i%2===0?[255,255,255]:C.gy);doc.rect(mg,y,cw,7,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor.apply(doc,C.gm2);
+      doc.text(r[0],mg+3,y+4.8);
+      doc.setFont('helvetica','normal');doc.setTextColor.apply(doc,C.bk);
+      var lines=doc.splitTextToSize(r[1],cw-50);
+      doc.text(lines,mg+50,y+4.8);
+      y+=7*Math.max(1,lines.length);
+    });
+    var np=doc.getNumberOfPages();
+    for(var i=1;i<=np;i++){
+      doc.setPage(i);doc.setFillColor.apply(doc,C.gy);doc.rect(0,287,W,10,'F');
+      doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor.apply(doc,C.gm2);
+      doc.text('Farmacia Ascona SA | Via Circonvallazione 6 | 6612 Ascona TI',mg,293);
+      doc.text('Pag.'+i+'/'+np,W-mg,293,{align:'right'});
+    }
+    var numStr=fmt(c.numero).replace('CD-','').replace(/\?/g,'0');
+    var dest=(p.nome||'consegna').replace(/\s+/g,'_').substring(0,18);
+    doc.save('FA-SQ-CD-02_CD-'+numStr+'_'+dest+'.pdf');
+    toast('PDF generato','ok');
+  }catch(e){toast('Errore PDF: '+e.message,'err');}
+}
+
+
+/* ─── SESSION TIMEOUT / LOCK ─────────────── */
+function hasLoggedOperator(){ return !!(stato && stato.preparatore && stato.preparatore.id); }
+function getCurrentSessionOperator(){
+  if(!hasLoggedOperator()) return null;
+  return OPERATORI.find(function(o){ return o.id===stato.preparatore.id; }) || null;
+}
+function resetRuntimeState(){
+  stato=mkStato();
+  FORN=null;
+  consSelezionato=null;
+  pinStato={s1:{digits:'',op:null}, s5:{digits:'',op:null}};
+  ['s2-search','s2-nome','s2-indirizzo','s2-citta','s3-note','s5-note','s5-esterno-nome','pin-input'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('s0-op-line').style.display='none';
+  document.getElementById('s0-logout-btn').style.display='none';
+  document.getElementById('s0-login').style.display='block';
+  document.getElementById('s0-home').style.display='none';
+  document.getElementById('s2-save-row').style.display='none';
+  document.getElementById('s2-save-check').checked=false;
+  document.getElementById('s2-next').disabled=true;
+  document.getElementById('s3-note').value='';
+  document.getElementById('frigo-si').classList.remove('selected');
+  document.getElementById('frigo-no').classList.remove('selected');
+  document.getElementById('frigo-info').style.display='none';
+  document.getElementById('s3-frigo-req').style.display='';
+  document.getElementById('s5-pin-card').style.display='none';
+  document.getElementById('s5-cons-card').style.display='none';
+  document.getElementById('s5-azioni-card').style.display='none';
+  document.getElementById('s5-warn-stesso').style.display='none';
+  renderFotoPrep();
+}
+function startSessionTimer(){
+  if(!hasLoggedOperator()) return;
+  _sessionState='active';
+  clearTimeout(_sessionTimer);
+  _sessionTimer=setTimeout(function(){ lockSession(); }, SESSION_TIMEOUT);
+}
+function resetSessionTimer(){
+  if(!hasLoggedOperator() || _sessionState!=='active') return;
+  startSessionTimer();
+}
+function lockSession(){
+  if(!hasLoggedOperator()) return;
+  _sessionState='locked';
+  clearTimeout(_sessionTimer);
+  _lockPinBuf='';
+  updateLockPinDots();
+  document.getElementById('lock-error').textContent='';
+  document.getElementById('lock-op-name').textContent=stato.preparatore.nome || stato.preparatore.id || 'Operatore';
+  document.getElementById('lock-subtitle').textContent='Bloccato come ' + (stato.preparatore.nome||stato.preparatore.id) + ' — reinserisci PIN per riprendere.';
+  document.getElementById('lock-overlay').style.display='flex';
+  clearTimeout(_lockTimer);
+  _lockTimer=setTimeout(function(){
+    toast('Sessione scaduta dopo 30 minuti di blocco','err');
+    forceLogoutConsegne();
+  }, LOCK_TIMEOUT);
+}
+function unlockSession(op){
+  _sessionState='active';
+  clearTimeout(_lockTimer);
+  _lockPinBuf='';
+  updateLockPinDots();
+  document.getElementById('lock-error').textContent='';
+  document.getElementById('lock-overlay').style.display='none';
+  stato.preparatore={id:op.id,nome:op.nome,ruolo:op.ruolo};
+  document.getElementById('s0-op-name').textContent=op.nome;
+  document.getElementById('s0-op-line').style.display='';
+  document.getElementById('s0-logout-btn').style.display='';
+  startSessionTimer();
+  toast('Sessione ripristinata','ok');
+}
+function forceLogoutConsegne(){
+  clearTimeout(_sessionTimer);
+  clearTimeout(_lockTimer);
+  _sessionState='logged_out';
+  _lockPinBuf='';
+  try{ firebase.auth().signOut().then(function(){ return firebase.auth().signInAnonymously(); }).catch(function(){}); }catch(e){}
+  document.getElementById('lock-overlay').style.display='none';
+  resetRuntimeState();
+  goTo('s0');
+}
+function doLogoutConsegne(){
+  forceLogoutConsegne();
+  goTo('s-terminata');
+}
+function doCloseWindowConsegne(){
+  try{ window.open('','_self',''); window.close(); }catch(e){}
+  setTimeout(function(){
+    var btn=document.getElementById('btn-chiudi-consegne');
+    if(btn) btn.textContent='Puoi chiudere manualmente questa scheda';
+  },500);
+}
+function lockPinDigit(d){
+  if(_lockPinBuf.length>=4) return;
+  _lockPinBuf+=String(d);
+  updateLockPinDots();
+  if(_lockPinBuf.length===4) lockPinConfirm();
+}
+function lockPinClear(){
+  _lockPinBuf=_lockPinBuf.slice(0,-1);
+  updateLockPinDots();
+  document.getElementById('lock-error').textContent='';
+}
+function updateLockPinDots(){
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('lkd'+i);
+    if(el) el.classList.toggle('filled', i<_lockPinBuf.length);
+  }
+}
+async function lockPinConfirm(){
+  var errEl=document.getElementById('lock-error');
+  var op=getCurrentSessionOperator();
+  if(!op){ errEl.textContent='Operatore non trovato'; _lockPinBuf=''; updateLockPinDots(); return; }
+  if(_lockPinBuf.length<4){ errEl.textContent='PIN a 4 cifre'; return; }
+  var pin=_lockPinBuf;
+  var ok=false;
+  if(op.pinHash){
+    var hash=await sha256(pin);
+    ok=(hash===op.pinHash);
+  }
+  if(!ok && op.emailFirebase){
+    try{
+      var fbHash=await sha256(pin);
+      await firebase.auth().signOut();
+      await firebase.auth().signInWithEmailAndPassword(op.emailFirebase,fbHash);
+      ok=true;
+      try{ caricaDati(); }catch(e){}
+    }catch(e){
+      ok=false;
+      firebase.auth().signInAnonymously().catch(function(){});
+    }
+  }
+  _lockPinBuf='';
+  updateLockPinDots();
+  if(ok){
+    unlockSession(op);
+  }else{
+    errEl.textContent='PIN errato';
+    for(var i=0;i<4;i++){
+      var dd=document.getElementById('lkd'+i);
+      if(dd){ dd.classList.add('filled'); setTimeout(function(x){ return function(){ x.classList.remove('filled'); }; }(dd), 180); }
+    }
+  }
+}
+document.addEventListener('touchstart', resetSessionTimer, {passive:true});
+document.addEventListener('click', resetSessionTimer);
+document.addEventListener('keydown', resetSessionTimer);
+
+/* ─── UTILS ───────────────────────────────── */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function chiudiModal(id){document.getElementById(id).classList.remove('show');}
+function showLoading(msg){
+  document.getElementById('loading-msg').textContent=msg||'Attendere...';
+  document.getElementById('loading').classList.add('show');
+}
+function hideLoading(){document.getElementById('loading').classList.remove('show');}
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show'+(type==='ok'?' ok':type==='err'?' err':'');
+  clearTimeout(t._t);
+  t._t=setTimeout(function(){t.className='';},3200);
+}
+function fmt(n){
+  if(!n&&n!==0) return 'CD-?????';
+  var s=String(n);
+  return s.indexOf('CD-')===0?s:'CD-'+s.padStart(5,'0');
+}
+function fmtTime(d){
+  if(!d)return '—';
+  var dt=(d&&d.toDate)?d.toDate():new Date(d);
+  return dt.toLocaleDateString('it-CH')+' '+dt.toLocaleTimeString('it-CH',{hour:'2-digit',minute:'2-digit'});
+}
+function escH(s){
+  return String(s||'').replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function escAttr(s){return escH(String(s||'')).replace(/"/g,'&quot;');}
+function comprimi(src,maxPx,q,cb){
+  var img=new Image();
+  img.onload=function(){
+    var w=img.width,h=img.height;
+    if(w>maxPx||h>maxPx){if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}else{w=Math.round(w*maxPx/h);h=maxPx;}}
+    var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    cv.getContext('2d').drawImage(img,0,0,w,h);
+    cb(cv.toDataURL('image/jpeg',q));
+  };
+  img.src=src;
+}
+function dataURLtoBlob(dataURL){
+  var arr=dataURL.split(','),mime=arr[0].match(/:(.*?);/)[1],bstr=atob(arr[1]),n=bstr.length,u8=new Uint8Array(n);
+  while(n--) u8[n]=bstr.charCodeAt(n);
+  return new Blob([u8],{type:mime});
+}
+
+
+</script>
+</body>
+</html>
