@@ -818,7 +818,7 @@ function createSingleInstanceGuard(appKey){
   var LOCK_KEY='fa_single_instance:'+appKey;
   var instanceId='inst_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
   var HEARTBEAT_MS=4000;
-  var STALE_MS=15000;
+  var STALE_MS=45000;
   var heartbeatTimer=null;
   var storageListener=null;
   function now(){return Date.now();}
@@ -851,6 +851,7 @@ function createSingleInstanceGuard(appKey){
       },HEARTBEAT_MS);
       window.addEventListener('pagehide',releaseLock);
       window.addEventListener('beforeunload',releaseLock);
+      window.addEventListener('pageshow',function(e){ if(e.persisted) writeLock(); });
       document.addEventListener('visibilitychange',function(){
         if(document.visibilityState==='visible'){
           var current=readLock();
@@ -866,6 +867,13 @@ function createSingleInstanceGuard(appKey){
 (function(){
   singleInstanceGuard=createSingleInstanceGuard('consegne_domicilio');
   if(!singleInstanceGuard.start()) return;
+  if(typeof BroadcastChannel!=='undefined'){
+    new BroadcastChannel('fa_operator_sync').onmessage=function(e){
+      if(e.data&&(e.data.type==='logout'||e.data.type==='operator_changed')){
+        if(typeof forceLogoutConsegne==='function') forceLogoutConsegne();
+      }
+    };
+  }
   try{
     firebase.initializeApp({
       apiKey:'AIzaSyD9McwYWAkmF7MY3twDfCu0ECU3WujYArc',
