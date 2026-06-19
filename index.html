@@ -931,6 +931,8 @@ function createSingleInstanceGuard(appKey){
       if(!_authInitialized){
         _authInitialized=true;
         if(!user){
+          // Mostra subito il login con operatori in cache, senza aspettare auth anonima
+          caricaDati();
           firebase.auth().signInAnonymously().catch(function(e){console.warn('Auth anonima fallita:',e.code);});
           return;
         }
@@ -1018,8 +1020,13 @@ function caricaOperatori(){
       var x=d.data();
       OPERATORI.push({id:d.id,nome:x.nome||d.id,ruolo:x.ruolo||'',pinHash:x.pinHash||'',emailFirebase:x.emailFirebase||''});
     });
+    if (OPERATORI.length > 0) { try { localStorage.setItem('fa_operatori_cache', JSON.stringify(OPERATORI)); } catch(e){} }
     renderOpGrid('s0-op-grid','s0');
-  }).catch(function(){toast('Errore caricamento operatori','err');});
+  }).catch(function(){
+    var cached = localStorage.getItem('fa_operatori_cache');
+    if (cached) { try { OPERATORI = JSON.parse(cached); } catch(e){ OPERATORI=[]; } renderOpGrid('s0-op-grid','s0'); }
+    else { toast('Errore caricamento operatori','err'); }
+  });
 }
 
 function caricaPazienti(){
